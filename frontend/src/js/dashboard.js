@@ -1,30 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("Dashboard loading...");
     const logoutButton = document.getElementById('logoutButton');
 
     // Add event listener for logout button
-    logoutButton.addEventListener('click', handleLogout);
-
-    // Comment out authentication code for now
-    /*
-    // Check if user is logged in
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-        // If not logged in, redirect to login page
-        window.location.href = 'login.html';
-        return;
+    if (logoutButton) {
+        logoutButton.addEventListener('click', handleLogout);
     }
 
-    // Validate token on the server
-    validateToken(token);
-    */
-
-    // Instead, just initialize the dashboard
+    // HUOM: Autentikointi on poistettu käytöstä kehitysvaiheen ajaksi
+    // Alusta dashboard suoraan ilman autentikaatiota
     initializeDashboard();
 });
 
 // Function to initialize dashboard components
 function initializeDashboard() {
+    console.log("Initializing dashboard components...");
     // Initialize calendar
     initializeCalendar();
 
@@ -38,6 +28,11 @@ function initializeCalendar() {
     const datesElement = document.getElementById("dates");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
+
+    if (!monthYearElement || !datesElement || !prevBtn || !nextBtn) {
+        console.error("Calendar elements not found!");
+        return;
+    }
 
     let currentDate = new Date();
 
@@ -128,88 +123,35 @@ function initializeCalendar() {
 
 // Placeholder function to initialize chart (just for UI demo)
 function initializeChartPlaceholder() {
-    const chartPlaceholder = document.getElementById('chart-placeholder');
-    if (!chartPlaceholder) return;
+    // Chartit piirretään nyt HTML:ssä SVG:nä, joten tätä funktiota ei tarvita tähän tarkoitukseen
 
-    // Draw a placeholder chart line
-    const beforeLine = document.createElement('div');
-    beforeLine.style.position = 'absolute';
-    beforeLine.style.left = '10%';
-    beforeLine.style.right = '10%';
-    beforeLine.style.top = '40%';
-    beforeLine.style.height = '2px';
-    beforeLine.style.backgroundColor = '#ff5869';
-    beforeLine.style.borderRadius = '2px';
+    // Lisätään mittaustyypin vaihtologiikka
+    const measurementTypeSelect = document.getElementById('measurementType');
+    const mealTypeGroup = document.getElementById('mealTypeGroup');
 
-    // Add some variation to make it look like a chart
-    beforeLine.style.clipPath = 'polygon(0% 0%, 20% 30%, 40% 10%, 60% 20%, 80% 0%, 100% 20%)';
-
-    const afterLine = document.createElement('div');
-    afterLine.style.position = 'absolute';
-    afterLine.style.left = '10%';
-    afterLine.style.right = '10%';
-    afterLine.style.top = '30%';
-    afterLine.style.height = '2px';
-    afterLine.style.backgroundColor = '#4ecdc4';
-    afterLine.style.borderRadius = '2px';
-
-    // Add some variation to make it look like a chart
-    afterLine.style.clipPath = 'polygon(0% 0%, 20% 40%, 40% 20%, 60% 30%, 80% 10%, 100% 30%)';
-
-    chartPlaceholder.appendChild(beforeLine);
-    chartPlaceholder.appendChild(afterLine);
-}
-
-// Function to validate token with the server - commented out for now
-/*
-async function validateToken(token) {
-    const authStatus = document.getElementById('authStatus');
-
-    try {
-        // Send request to verify token
-        const response = await fetch('http://localhost:3000/api/auth/validate', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
+    if (measurementTypeSelect && mealTypeGroup) {
+        // Lisätään tapahtumankäsittelijä mittaustyypin vaihdolle
+        measurementTypeSelect.addEventListener('change', function() {
+            if (this.value === 'Perus') {
+                mealTypeGroup.style.display = 'none';
+            } else {
+                mealTypeGroup.style.display = 'flex';
             }
         });
 
-        if (!response.ok) {
-            // If token is invalid, redirect to login
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = 'login.html';
-            return;
+        // Alustetaan näkyvyys nykyisen valinnan mukaan
+        if (measurementTypeSelect.value === 'Perus') {
+            mealTypeGroup.style.display = 'none';
+        } else {
+            mealTypeGroup.style.display = 'flex';
         }
-
-        // Token is valid
-        authStatus.textContent = 'OK';
-
-        // Get user info if it exists
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        if (user.username) {
-            authStatus.textContent += ` - Welcome, ${user.username}!`;
-        }
-
-    } catch (error) {
-        console.error('Token validation error:', error);
-        authStatus.textContent = 'Authentication error';
-
-        // Keep user on dashboard but show error message
-        // In a real application, you might handle this differently
     }
 }
-*/
 
 // Function to handle logout
 function handleLogout() {
-    // For demonstration only - no actual logout functionality yet
+    // Pelkkä viesti konsoliin, ei todellista uloskirjautumista
     console.log('Logout clicked');
 
-    // Remove token and user info from localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-
-    // In a real implementation, this would redirect to login page
-    // window.location.href = '../../index.html';
+    // Kehitysversiossa ei vielä tehdä uloskirjautumista tai uudelleenohjausta
 }

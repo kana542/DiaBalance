@@ -10,22 +10,39 @@
        font-family: 'Poppins', sans-serif;
    }
 
-   body {
+   html, body {
+       height: 100%;
        background-color: #f5f5f5;
-       min-height: 100vh;
+       color: #333;
+   }
+
+   body {
        display: flex;
        flex-direction: column;
-       color: #333;
+       min-height: 100vh;
    }
 
    /* ==============================================
       LAYOUT JA KONTTIEN TYYLIT
       ============================================== */
    .main-container {
+       width: 100%;
+       display: flex;
+       flex-direction: column;
+       flex: 1;
+   }
+
+   .dashboard-content {
+       display: flex;
+       flex-direction: column;
+       gap: 20px;
+       width: 100%;
        max-width: 1200px;
        margin: 0 auto;
-       padding: 20px;
-       width: 100%;
+       padding: 0 20px;
+       flex: 1;
+       /* Keskitetään sisältö pystysuunnassa */
+       justify-content: center;
    }
 
    /* ==============================================
@@ -35,8 +52,10 @@
        display: flex;
        justify-content: space-between;
        align-items: center;
-       margin-bottom: 20px;
-       padding-bottom: 10px;
+       width: 100%;
+       max-width: 1200px;
+       margin: 0 auto;
+       padding: 20px;
    }
 
    h1 {
@@ -68,16 +87,15 @@
    /* ==============================================
       DASHBOARD RAKENNE
       ============================================== */
-   .dashboard-content {
-       display: flex;
-       flex-direction: column;
-       gap: 20px;
-   }
-
    .dashboard-row {
        display: flex;
        gap: 20px;
        width: 100%;
+       margin-bottom: 20px;
+   }
+
+   .dashboard-row:last-child {
+       margin-bottom: 0;
    }
 
    .dashboard-card {
@@ -86,6 +104,8 @@
        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
        padding: 20px;
        flex: 1;
+       display: flex;
+       flex-direction: column;
    }
 
    /* ==============================================
@@ -214,20 +234,42 @@
        border: 1px solid #ddd;
        border-radius: 5px;
        background-color: white;
-       width: 200px;
+       width: 150px;
+       cursor: pointer;
+   }
+
+   .filter-select:hover {
+       border-color: #bbb;
+   }
+
+   .filter-select:focus {
+       border-color: #4ecdc4;
+       outline: none;
+   }
+
+   /* Mittausosio */
+   .measurement-section {
+       display: flex;
+       flex-direction: column;
+       flex: 1;
+       margin-top: 10px;
    }
 
    /* ==============================================
       KAAVIOT JA VISUALISOINNIT
       ============================================== */
    .chart-container {
-       height: 300px;
+       flex: 1;
+       min-height: 250px;
        width: 100%;
        position: relative;
+       margin-top: 0;
+       display: flex;
+       flex-direction: column;
    }
 
    .chart-placeholder {
-       height: 100%;
+       flex: 1;
        width: 100%;
        background-color: #f9f9f9;
        border-radius: 5px;
@@ -240,7 +282,7 @@
        top: 0;
        left: 0;
        right: 0;
-       bottom: 20px;
+       bottom: 30px;
        background-image: linear-gradient(#eee 1px, transparent 1px),
                          linear-gradient(90deg, #eee 1px, transparent 1px);
        background-size: 10% 25%, 10% 25%;
@@ -253,6 +295,17 @@
        right: 10px;
        display: flex;
        gap: 15px;
+   }
+
+   /* Keskitetty kaavion selite */
+   .chart-legend-centered {
+       position: absolute;
+       bottom: 5px;
+       left: 0;
+       right: 0;
+       display: flex;
+       justify-content: center;
+       gap: 30px;
    }
 
    .legend-item {
@@ -322,6 +375,20 @@
    /* ==============================================
       RESPONSIIVISUUS
       ============================================== */
+   @media (max-height: 800px) {
+       .dashboard-content {
+           justify-content: flex-start;
+           padding-top: 20px;
+           padding-bottom: 20px;
+       }
+   }
+
+   @media (max-width: 1024px) {
+       .dashboard-content {
+           padding: 20px;
+       }
+   }
+
    @media (max-width: 768px) {
        .dashboard-row {
            flex-direction: column;
