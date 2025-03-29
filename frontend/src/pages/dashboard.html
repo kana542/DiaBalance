@@ -3,18 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>DiaBalance Dashboard</title>
     <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Dashboard</h1>
-        <div id="dashboardContent">
-            <p id="authStatus">Authentication status checking...</p>
-        </div>
-        <div class="button-container">
-            <button id="logoutButton" class="btn">Logout</button>
-            <a href="../../index.html" class="btn btn-secondary">Back to Home</a>
+    <div class="main-container">
+        <header>
+            <h1>DiaBalance</h1>
+            <div class="user-info">
+                <span id="username">User1</span>
+                <button id="logoutButton" class="logout-btn">Kirjaudu ulos</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="dashboard-row">
+                <!-- Calendar Section -->
+                <div class="dashboard-card">
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <button id="prevBtn" class="calendar-nav-btn">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <div class="monthYear" id="monthYear">March 2025</div>
+                            <button id="nextBtn" class="calendar-nav-btn">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="days">
+                            <div class="day">Mon</div>
+                            <div class="day">Tue</div>
+                            <div class="day">Wed</div>
+                            <div class="day">Thu</div>
+                            <div class="day">Fri</div>
+                            <div class="day">Sat</div>
+                            <div class="day">Sun</div>
+                        </div>
+                        <div class="dates" id="dates">
+                            <!-- Calendar dates will be filled by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blood Sugar Tracking Section -->
+                <div class="dashboard-card">
+                    <h2>Verensokerieuranta</h2>
+                    <div class="measurement-filters">
+                        <div class="filter-group">
+                            <label for="measurementType">Mittaustyyppi</label>
+                            <select id="measurementType" class="filter-select">
+                                <option>Ateriat</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="mealType">Ateria</label>
+                            <select id="mealType" class="filter-select">
+                                <option>Iltapala</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="measurement-section">
+                        <h3>Iltapala</h3>
+                        <div class="chart-container">
+                            <canvas id="glucoseChart"></canvas>
+                            <div id="chart-placeholder" class="chart-placeholder">
+                                <!-- This will be replaced with an actual chart -->
+                                <div class="chart-grid"></div>
+                                <div class="chart-legend">
+                                    <div class="legend-item">
+                                        <span class="legend-color before"></span>
+                                        <span>Ennen</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color after"></span>
+                                        <span>Jälkeen</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Metrics Section -->
+            <div class="dashboard-row">
+                <div class="metrics-container">
+                    <div class="metric-card">
+                        <h3>Palautuminen</h3>
+                        <div class="metric-value">50</div>
+                        <div class="metric-label">Readiness Score</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Stressi</h3>
+                        <div class="metric-value stress">6.4</div>
+                        <div class="metric-label">Baevskyn stressi-indeksi</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Keskisyke</h3>
+                        <div class="metric-value heart-rate">57</div>
+                        <div class="metric-label">lyöntiä/min</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Fysiologinen ikä</h3>
+                        <div class="metric-value age">21.2</div>
+                        <div class="metric-label">vuotta</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
