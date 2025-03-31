@@ -18,6 +18,27 @@ const registerUser = async (user) => {
   }
 };
 
+
+/**
+ * Hae käyttäjä kirjautumista varten käyttäjänimen perusteella
+ * @param {string} kayttajanimi
+ * @returns {Object|null} käyttäjän tiedot salasanoineen tai null
+ */
+const loginUser = async (kayttajanimi) => {
+    try {
+      const [rows] = await promisePool.query(
+        'SELECT kayttaja_id, kayttajanimi, salasana, kayttajarooli FROM kayttaja WHERE kayttajanimi = ?',
+        [kayttajanimi]
+      );
+      return rows[0] || null;
+    } catch (error) {
+      console.error('Error loginUser:', error);
+      throw new Error('Database error');
+    }
+  };
+  
+
 export {
-    registerUser
+    registerUser,
+    loginUser
 };

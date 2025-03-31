@@ -2,7 +2,8 @@ import express from 'express';
 import { body } from 'express-validator';
 
 import {
-  register
+  register,
+  login
 } from '../controllers/user-controller.js';
 
 import { authenticateToken } from '../middlewares/authentication.js';
@@ -26,6 +27,24 @@ userRouter
       .withMessage('Salasanan tulee olla vähintään 8 merkkiä pitkä'),
     validationErrorHandler,
     register
+  );
+
+// Kirjautuminen
+userRouter
+  .route('/login')
+  .post(
+    body('kayttajanimi')
+      .trim()
+      .escape()
+      .notEmpty()
+      .withMessage('Käyttäjänimi vaaditaan'),
+    body('salasana')
+      .trim()
+      .escape()
+      .notEmpty()
+      .withMessage('Salasana vaaditaan'),
+    validationErrorHandler,
+    login
   );
 
 
