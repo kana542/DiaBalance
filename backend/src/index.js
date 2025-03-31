@@ -1,4 +1,5 @@
 import express from 'express';
+import userRouter from './routes/user-router.js'; 
 import cors from 'cors';
 import { errorHandler, notFoundHandler } from './middlewares/error-handler.js';
 
@@ -13,6 +14,9 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Tervetuloa DiaBalance backendiin!');
 });
+
+// Käyttäjäreitit käyttöön (nyt osoitteessa /api/auth)
+app.use('/api/auth', userRouter);
 
 // Virhekäsittelyt
 app.use(notFoundHandler);
