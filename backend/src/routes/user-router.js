@@ -3,7 +3,8 @@ import { body } from 'express-validator';
 
 import {
   register,
-  login
+  login,
+  validateToken
 } from '../controllers/user-controller.js';
 
 import { authenticateToken } from '../middlewares/authentication.js';
@@ -47,5 +48,8 @@ userRouter
     login
   );
 
+// Tokenin tarkistus
+userRouter.route('/validate').get(authenticateToken, validateToken);
 
-  export default userRouter;
+
+export default userRouter;

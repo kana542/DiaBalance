@@ -72,6 +72,25 @@ const login = async (req, res, next) => {
       next(customError(error.message, 400));
     }
   };
+
+// Tarkista tokenin voimassaolo ja palauta käyttäjätiedot
+const validateToken = async (req, res, next) => {
+    try {
+      //haetaan käyttäjän tiedot tietokannasta sen perusteella mitä JWT-tokenissa on
+      const user = await getMyProfile(req.user.kayttaja_id);
+      //jos käyttäjää ei löydy, palautetaan virhe
+      if (!user) {
+        return next(customError('Käyttäjää ei löytynyt', 404));
+      }
+  
+      res.json({
+        valid: true,
+        user
+      });
+    } catch (error) {
+      next(customError(error.message, 400));
+    }
+  };
   
 
-export { register, login };
+export { register, login, validateToken };
