@@ -3,36 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>DiaBalance - Register</title>
     <link rel="stylesheet" href="../css/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>create an account</h1>
-        <form id="registerForm" class="auth-form">
-            <div class="form-group">
-                <label for="username">username</label>
-                <input type="text" id="username" name="username" required>
+        <div class="auth-form">
+            <div class="auth-header">
+                <h1>create an account</h1>
+                <p>Join DiaBalance to start tracking your health data</p>
             </div>
-            <div class="form-group">
-                <label for="email">email</label>
-                <input type="email" id="email" name="email" required>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> email</label>
+                    <input type="email" id="email" name="email" placeholder="Your email address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                    <div class="password-requirements">
+                        Password should be at least 8 characters
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword"><i class="fas fa-check-circle"></i> confirm password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+
+                <div class="error-message" id="errorMessage" style="display: none;"></div>
+
+                <button type="submit" class="btn">register</button>
+            </form>
+
+            <div class="alt-links">
+                <p>already have an account? <a href="login.html">login</a></p>
+                <p><a href="../../index.html">home page</a></p>
             </div>
-            <div class="form-group">
-                <label for="password">password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">confirm password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
-            </div>
-            <div class="error-message" id="errorMessage"></div>
-            <button type="submit" class="btn">register</button>
-        </form>
-        <p>already have an account? <a href="login.html">login</a></p>
-        <p><a href="../../index.html">home page</a></p>
+        </div>
     </div>
 
-    <script src="../js/auth.js"></script>
+    <script src="../js/register.js"></script>
 </body>
 </html>

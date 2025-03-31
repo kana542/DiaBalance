@@ -1,2 +1,174 @@
 @import url('./main.css');
-@import url('./login.css');
+
+/* Registration page styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 450px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  padding: 30px;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-header h1 {
+  font-size: 28px;
+  color: #4b6cb7;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.auth-header p {
+  color: #666;
+  font-size: 15px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #444;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  border-color: #4b6cb7;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(75, 108, 183, 0.1);
+}
+
+.password-requirements {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #777;
+  text-align: left;
+}
+
+.error-message {
+  background-color: #fff2f2;
+  border-left: 3px solid #e74c3c;
+  color: #e74c3c;
+  padding: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border-radius: 3px;
+  text-align: left;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  background: #4b6cb7;
+  border-radius: 6px;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background: #3a5a9b;
+}
+
+.alt-links {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.alt-links a {
+  color: #4b6cb7;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.alt-links a:hover {
+  text-decoration: underline;
+}
+
+.logo-small {
+  width: 80px;
+  margin: 0 auto 20px;
+  display: block;
+}
+
+/* Improved buttons and interactions */
+.btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  background: #4b6cb7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn:hover {
+  background: #3a5a9b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.alt-links {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.alt-links a {
+  color: #4b6cb7;
+  text-decoration: none;
+}
+
+.alt-links a:hover {
+  text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-form {
+  animation: fadeIn 0.5s ease-out;
+}
