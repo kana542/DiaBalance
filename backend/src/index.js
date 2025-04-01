@@ -1,5 +1,6 @@
 import express from 'express';
-import userRouter from './routes/user-router.js'; 
+import userRouter from './routes/user-router.js';
+import entryRouter from './routes/entry-router.js'; 
 import cors from 'cors';
 import { errorHandler, notFoundHandler } from './middlewares/error-handler.js';
 
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 
 // Käyttäjäreitit käyttöön (nyt osoitteessa /api/auth)
 app.use('/api/auth', userRouter);
+app.use('/api/entries', entryRouter);
 
 // Virhekäsittelyt
 app.use(notFoundHandler);
