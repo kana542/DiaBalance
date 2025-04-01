@@ -131,5 +131,6 @@ function showError(message) {
     errorMessage.style.display = 'block';
     
     // Scroll to error message
-    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    errorMessage.scrollIntoVie
+    w({ behavior: 'smooth', block: 'center' });
 }
