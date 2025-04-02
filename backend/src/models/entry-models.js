@@ -38,4 +38,40 @@ const insertKirjaus = async (kayttajaId, data) => {
   }
 };
 
-export {insertKirjaus};
+const updateEntry = async (kayttajaId, pvm, entryData) => {
+  try {
+    // Luodaan tyhjät taulukot SQL-lauseen rakentamista varten
+    const updateFields = [];  
+    const values = [];       
+
+    // Käydään läpi entryData-objekti ja lisätään kentät ja arvot SQL-lauseeseen
+    // sekä values-taulukkoon
+    for (const [key, value] of Object.entries(entryData)) {
+      updateFields.push(`${key} = ?`); // Lisätään SQL-lauseeseen kenttä = ?
+      values.push(value);              // Lisätään vastaava arvo values-taulukkoon
+    }
+
+    // Lisätään käyttäjän ID ja päivämäärä WHERE-ehtoa varten
+    values.push(kayttajaId, pvm);
+
+    // Rakennetaan SQL-lause
+    const sql = `
+      UPDATE kirjaus
+      SET ${updateFields.join(', ')}
+      WHERE kayttaja_id = ? AND pvm = ?`;
+
+    // Suoritetaan päivitys tietokannassa
+    const [result] = await promisePool.query(sql, values);
+
+    return {
+      message: 'Kirjaus päivitetty onnistuneesti',
+      //affected rows kertoo kuinka monta riviä on päivitetty
+      affectedRows: result.affectedRows,
+    };
+  } catch (error) {
+    console.error('Virhe päivitettäessä kirjausta:', error);
+    return { error: 'Tietokantavirhe päivityksessä' };
+  }
+};
+
+export {insertKirjaus, updateEntry};

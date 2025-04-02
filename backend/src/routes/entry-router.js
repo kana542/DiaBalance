@@ -1,6 +1,6 @@
 import express from 'express';
 import {body} from 'express-validator';
-import {createEntry} from '../controllers/entry-controller.js';
+import {createEntry, patchEntry} from '../controllers/entry-controller.js';
 
 import {authenticateToken} from '../middlewares/authentication.js';
 import {validationErrorHandler} from '../middlewares/error-handler.js';
@@ -30,6 +30,13 @@ entryRouter
     validationErrorHandler,
     createEntry
   );
+
+entryRouter
+.route('/:pvm')
+.patch(
+  authenticateToken,
+  patchEntry
+);
   
 
 export default entryRouter;

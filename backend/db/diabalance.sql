@@ -1,7 +1,7 @@
 -- TIEDOSTO: diabalance.sql
 -- TARKOITUS: Tietokannan luonti ja alustaminen Diabalance-sovellukselle
 
-DROP DATABASE IF EXISTS diabalance;
+-- DROP DATABASE IF EXISTS diabalance;
 CREATE DATABASE diabalance;
 USE diabalance;
 
