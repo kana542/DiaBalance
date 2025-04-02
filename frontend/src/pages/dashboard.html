@@ -19,26 +19,30 @@
 
         <div class="dashboard-content">
             <div class="dashboard-row">
-                <!-- Calendar Section -->
+                <!-- Calendar Component -->
                 <div class="dashboard-card">
+                    <!-- Info button for calendar - Now positioned properly -->
+                    <button class="info-button" id="calendarInfoBtn">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </button>
                     <div class="calendar">
                         <div class="calendar-header">
                             <button id="prevBtn" class="calendar-nav-btn">
                                 <i class="fa-solid fa-chevron-left"></i>
                             </button>
-                            <div class="monthYear" id="monthYear">maaliskuu 2025</div>
+                            <div class="monthYear" id="monthYear">huhtikuu 2025</div>
                             <button id="nextBtn" class="calendar-nav-btn">
                                 <i class="fa-solid fa-chevron-right"></i>
                             </button>
                         </div>
                         <div class="days">
-                            <div class="day">Mon</div>
-                            <div class="day">Tue</div>
-                            <div class="day">Wed</div>
-                            <div class="day">Thu</div>
-                            <div class="day">Fri</div>
-                            <div class="day">Sat</div>
-                            <div class="day">Sun</div>
+                            <div class="day">Ma</div>
+                            <div class="day">Ti</div>
+                            <div class="day">Ke</div>
+                            <div class="day">To</div>
+                            <div class="day">Pe</div>
+                            <div class="day">La</div>
+                            <div class="day">Su</div>
                         </div>
                         <div class="dates" id="dates">
                             <!-- Calendar dates will be filled by JavaScript -->
@@ -46,8 +50,12 @@
                     </div>
                 </div>
 
-                <!-- Blood Sugar Tracking Section -->
+                <!-- Blood Sugar Tracking Component -->
                 <div class="dashboard-card">
+                    <!-- Info button for blood sugar tracking -->
+                    <button class="info-button" id="bloodSugarInfoBtn">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </button>
                     <h2>Verensokerieuranta</h2>
                     <div class="measurement-filters">
                         <div class="filter-group">
@@ -71,9 +79,13 @@
 
                     <div class="measurement-section">
                         <div class="chart-container">
+                            <!-- Info button for chart -->
+                            <button class="info-button" id="chartInfoBtn">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </button>
                             <div id="chart-placeholder" class="chart-placeholder">
                                 <div class="chart-grid"></div>
-                                <!-- Lisätään demoa varten käyrät -->
+                                <!-- Demo chart lines for development -->
                                 <div id="demo-chart-before" style="position: absolute; top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-30px); z-index: 2;">
                                     <svg width="100%" height="120" style="position: absolute; top: -60px;">
                                         <polyline
@@ -88,7 +100,7 @@
                                             style="fill:none; stroke:#4ecdc4; stroke-width:2;" />
                                     </svg>
                                 </div>
-                                <!-- Selite keskellä alhaalla -->
+                                <!-- Chart legend -->
                                 <div class="chart-legend-centered">
                                     <div class="legend-item">
                                         <span class="legend-color before"></span>
@@ -105,9 +117,13 @@
                 </div>
             </div>
 
-            <!-- Health Metrics Section -->
+            <!-- HRV Analysis Component (Health Metrics) -->
             <div class="dashboard-row">
                 <div class="metrics-container">
+                    <!-- Info button for HRV analysis -->
+                    <button class="info-button" id="hrvInfoBtn">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </button>
                     <div class="metric-card">
                         <h3>Palautuminen</h3>
                         <div class="metric-value">50</div>
@@ -133,6 +149,21 @@
         </div>
     </div>
 
+    <!-- Entry Modal (Hidden) -->
+    <div id="entryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2>Päiväkirjamerkintä</h2>
+            </div>
+            <div class="modal-body">
+                <!-- Modal content will be dynamically generated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication check before dashboard.js -->
+    <script src="../js/auth-check.js"></script>
     <script src="../js/dashboard.js"></script>
 </body>
 </html>

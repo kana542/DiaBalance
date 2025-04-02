@@ -3,84 +3,72 @@
  * This file should be included in dashboard.html and other protected pages
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Auth check running...');
+// Suorita autentikoinnin tarkistus heti, mutta vain kerran
+(function() {
+    console.log('Auth check initializing...');
     
-    // Check if token exists in localStorage
+    // Tarkistaa onko autentikointi jo suoritettu tällä sivulatauksella
+    if (window.authCheckComplete) {
+        console.log('Auth check already completed for this page load');
+        return;
+    }
+    
+    // Merkitse autentikointi suoritetuksi
+    window.authCheckComplete = true;
+    
+    // Tarkista, onko token olemassa
     const token = localStorage.getItem('token');
     
     if (!token) {
-        // No token found, redirect to login page
+        // Ei tokenia, ohjaa kirjautumissivulle
         console.log('No authentication token found, redirecting to login');
         window.location.href = 'login.html';
         return;
     }
     
-    // Validate token with backend
-    validateToken(token)
-        .then(isValid => {
-            if (!isValid) {
-                // Invalid token, redirect to login page
-                console.log('Invalid token, redirecting to login');
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = 'login.html';
-            } else {
-                // Token is valid, continue loading dashboard
-                console.log('Authentication successful');
-                // Update UI with user information if needed
-                updateUserInfo();
-            }
-        })
-        .catch(error => {
-            console.error('Token validation error:', error);
-            // On error, redirect to login page
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = 'login.html';
-        });
-});
+    console.log('Authentication token found, proceeding to dashboard');
+    
+    // Alusta dashboard (viittaus dashboard.js tiedostoon)
+    if (typeof initializeDashboard === 'function') {
+        initializeDashboard();
+    }
+})();
 
 /**
- * Function to validate JWT token with backend
- * @param {string} token - The JWT token to validate
- * @returns {Promise<boolean>} - Promise resolving to true if token is valid
+ * Helper function for making authenticated API requests
+ * @param {string} url - API endpoint URL
+ * @param {Object} options - Fetch options
+ * @returns {Promise<Response>} Fetch response
  */
-async function validateToken(token) {
-    try {
-        const response = await fetch('http://localhost:3000/api/auth/validate', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+async function fetchWithAuth(url, options = {}) {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+        throw new Error('No authentication token available');
+    }
+    
+    // Kehitystilassa voidaan simuloida API-kutsuja
+    if (token === 'dev-token-123') {
+        console.log('DEV MODE: Would make API call to', url);
+        // Tässä voidaan lisätä simuloitu API-vastaus tarvittaessa
+        return new Promise(resolve => {
+            resolve({
+                ok: true,
+                json: () => Promise.resolve({ success: true }),
+                text: () => Promise.resolve('{}')
+            });
         });
-
-        if (!response.ok) return false;
-
-        const data = await response.json();
-        return data.valid === true;
-    } catch (error) {
-        console.error('Token validation error:', error);
-        return false;
     }
-}
-
-/**
- * Function to update the UI with user information
- */
-function updateUserInfo() {
-    try {
-        const userString = localStorage.getItem('user');
-        if (userString) {
-            const user = JSON.parse(userString);
-            
-            // Update username in the header if the element exists
-            const usernameElement = document.getElementById('username');
-            if (usernameElement && user.username) {
-                usernameElement.textContent = user.username;
-            }
-        }
-    } catch (error) {
-        console.error('Error updating user info:', error);
-    }
+    
+    // Lisää autentikointi header
+    const headers = {
+        ...options.headers,
+        'Authorization': `Bearer ${token}`
+    };
+    
+    // Tee autentikoitu pyyntö
+    return fetch(url, {
+        ...options,
+        headers
+    });
 }

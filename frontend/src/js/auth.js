@@ -12,24 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if user is already logged in
     const token = localStorage.getItem('token');
     if (token) {
-        // Validate token before redirecting
-        validateToken(token)
-            .then(isValid => {
-                if (isValid) {
-                    // Redirect to dashboard if already logged in with valid token
-                    window.location.href = 'dashboard.html';
-                } else {
-                    // Token is invalid, remove it
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                }
-            })
-            .catch(error => {
-                console.error('Token validation error:', error);
-                // On error, remove potentially invalid token
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-            });
+        console.log('User already logged in, redirecting to dashboard');
+        window.location.href = 'dashboard.html';
+        return; // Tärkeä! Lopeta suoritus tässä, ettei muut koodit aja
     }
 
     // Add event listener for form submission
@@ -62,39 +47,20 @@ async function handleLogin(event) {
     submitButton.disabled = true;
 
     try {
-        // Prepare login data
-        const loginData = {
+        // DEV MODE: Accept any credentials in development mode
+        console.log('DEV MODE: Bypassing actual login, accepting any credentials');
+        
+        // Set mock token and user data for development
+        localStorage.setItem('token', 'dev-token-123');
+        localStorage.setItem('user', JSON.stringify({
+            id: 'dev-user-id',
+            username: email.split('@')[0], // Use part of email as username
             email: email,
-            password: password
-        };
-
-        // Send login request to backend
-        const response = await fetch('http://localhost:3000/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(loginData)
-        });
-
-        // Parse response
-        const data = await response.json();
-
-        if (!response.ok) {
-            // Show error message from server
-            displayError(errorMessage, data.message || 'Login failed. Please try again.');
-            resetButton(submitButton, originalButtonText);
-            return;
-        }
-
-        // If login successful, store token and user info
-        localStorage.setItem('token', data.token);
-        if (data.user) {
-            localStorage.setItem('user', JSON.stringify(data.user));
-        }
+            role: 'user'
+        }));
 
         // Show success message
-        alert('Login successful!');
+        alert('DEV MODE: Login successful with mock credentials');
 
         // Redirect to dashboard
         window.location.href = 'dashboard.html';
@@ -103,30 +69,6 @@ async function handleLogin(event) {
         console.error('Login error:', error);
         displayError(errorMessage, 'An error occurred connecting to the server. Please try again later.');
         resetButton(submitButton, originalButtonText);
-    }
-}
-
-/**
- * Function to validate JWT token with backend
- * @param {string} token - The JWT token to validate
- * @returns {Promise<boolean>} - Promise resolving to true if token is valid
- */
-async function validateToken(token) {
-    try {
-        const response = await fetch('http://localhost:3000/api/auth/validate', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) return false;
-
-        const data = await response.json();
-        return data.valid === true;
-    } catch (error) {
-        console.error('Token validation error:', error);
-        return false;
     }
 }
 

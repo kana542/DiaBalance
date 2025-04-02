@@ -1,123 +1,112 @@
 /**
- * Dashboard.js - DiaBalance sovelluksen dashboard-toiminnallisuus
- * Sisältää kalenterin, verensokeri- ja HRV-seurannat
+ * DiaBalance Dashboard
+ * Handles dashboard functionality, component initialization, and API integration
  */
+
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Dashboard loading...");
+    console.log("Dashboard DOM loaded");
     
-    // Uloskirjautumisnapin alustus
+    // Set up logout button
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
         logoutButton.addEventListener('click', handleLogout);
     }
     
-    // Käyttäjänimen näyttäminen, jos saatavilla
-    const usernameElement = document.getElementById('username');
-    if (usernameElement) {
-        try {
-            const userString = localStorage.getItem('user');
-            if (userString) {
-                const user = JSON.parse(userString);
-                usernameElement.textContent = user.username || 'Käyttäjä';
-            }
-        } catch (error) {
-            console.error('Virhe käyttäjätietojen käsittelyssä:', error);
-        }
+    // Näytetään käyttäjänimi - tehdään tämä vain kerran 
+    updateUserInfo();
+    
+    // Alusta dashboard jos sitä ei ole vielä alustettu
+    if (!window.dashboardInitialized) {
+        initializeDashboard();
     }
-
-    // Alustetaan dashboard-komponentit
-    initializeDashboard();
 });
 
 /**
- * Käsittelee uloskirjautumistoiminnon ja ohjaa käyttäjän takaisin menu-näkymään
+ * Initialize all dashboard components after successful authentication
+ * This function is called by auth-check.js after token validation
+ */
+function initializeDashboard() {
+    // Varmistetaan että dashboard alustetaan vain kerran
+    if (window.dashboardInitialized) {
+        console.log("Dashboard already initialized");
+        return;
+    }
+    
+    console.log("Initializing dashboard components...");
+    window.dashboardInitialized = true;
+    
+    // Initialize calendar component
+    initializeCalendar();
+    
+    // Initialize chart view
+    initializeChartView();
+    
+    // Initialize blood glucose values component
+    initializeBloodGlucoseView();
+    
+    // Initialize HRV analysis component
+    initializeHrvAnalysis();
+    
+    // Setup info buttons
+    setupInfoButtons();
+}
+
+/**
+ * Handle user logout
  */
 function handleLogout() {
-    console.log('Uloskirjautuminen...');
+    console.log('Logging out...');
     
-    // Poista token ja käyttäjätiedot local storagesta
+    // Remove auth data from localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     
-    // Näytä viesti käyttäjälle
-    alert('Olet kirjautunut ulos onnistuneesti.');
+    // Show success message
+    alert('Kirjauduttu ulos onnistuneesti.');
     
-    // Ohjaa käyttäjä takaisin päävalikkoon/etusivulle
+    // Redirect to home page
     window.location.href = '../../index.html';
 }
 
 /**
- * Alustaa kaikki dashboard-komponentit
+ * Update user information in the UI
  */
-function initializeDashboard() {
-    console.log("Alustetaan dashboard-komponentit...");
-    
-    // Alustetaan kalenteri
-    initializeCalendar();
-    
-    // Alustetaan kaavionäkymä
-    initializeChartPlaceholder();
-    
-    // Lisätään info-napit komponenteille (lukuunottamatta kalenteria, se lisätään erikseen)
-    setupComponentInfoButtons();
+function updateUserInfo() {
+    try {
+        const userString = localStorage.getItem('user');
+        if (userString) {
+            const user = JSON.parse(userString);
+            
+            // Update username in header
+            const usernameElement = document.getElementById('username');
+            if (usernameElement && user.username) {
+                usernameElement.textContent = user.username;
+            }
+        }
+    } catch (error) {
+        console.error('Error updating user info:', error);
+    }
 }
 
 /**
- * Alustaa kalenterin toiminnallisuuden
+ * Initialize calendar component
  */
 function initializeCalendar() {
+    console.log("Initializing calendar");
+    
     const monthYearElement = document.getElementById("monthYear");
     const datesElement = document.getElementById("dates");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
     if (!monthYearElement || !datesElement || !prevBtn || !nextBtn) {
-        console.error("Kalenterin elementtejä ei löydy!");
+        console.error("Calendar elements not found!");
         return;
     }
 
     let currentDate = new Date();
 
-    // Funktio merkintöjen hakemiseen nykyiselle kuukaudelle
-    // Tämä on vain esimerkki ja tulisi korvata todellisella API-kutsulla
-    const fetchMonthEntries = async () => {
-        try {
-            // Kehitysversiossa palautetaan testidataa
-            // Puuttuvan API:n vuoksi käytämme kovakoodattua dataa
-            return [
-                { date: '2025-04-01', isComplete: true },
-                { date: '2025-04-02', isComplete: false },
-                { date: '2025-04-09', isComplete: true },
-                { date: '2025-04-13', isComplete: false },
-                { date: '2025-04-15', isComplete: true }
-            ];
-            
-            /* Todellinen API-kutsu, kun backend on valmis:
-            const token = localStorage.getItem('token');
-            if (!token) return [];
-            
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth() + 1; // JavaScript kuukaudet ovat 0-indeksoituja
-            
-            const response = await fetch(`http://localhost:3000/api/entries/month/${year}/${month}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error('Merkintöjen haku epäonnistui');
-            }
-            
-            return await response.json();
-            */
-        } catch (error) {
-            console.error('Virhe haettaessa kuukauden merkintöjä:', error);
-            return [];
-        }
-    };
-    
+    // Function to render the calendar
     const updateCalendar = async () => {
         const currentYear = currentDate.getFullYear();
         const currentMonth = currentDate.getMonth();
@@ -126,66 +115,78 @@ function initializeCalendar() {
         const lastDay = new Date(currentYear, currentMonth + 1, 0);
         const totalDays = lastDay.getDate();
 
-        // Korjaa viikon alkamaan maanantaista (0 = maanantai ruudukossamme)
+        // Adjust week to start from Monday (0 = Monday in our grid)
         let firstDayIndex = firstDay.getDay() - 1;
-        if (firstDayIndex === -1) firstDayIndex = 6; // Sunnuntai tulee arvoksi 6
+        if (firstDayIndex === -1) firstDayIndex = 6; // Sunday becomes 6
 
         let lastDayIndex = lastDay.getDay() - 1;
         if (lastDayIndex === -1) lastDayIndex = 6;
 
-        const monthYearString = currentDate.toLocaleString("default", {
+        // Set month and year text
+        const monthYearString = currentDate.toLocaleString("fi-FI", {
             month: "long",
             year: "numeric",
         });
         monthYearElement.textContent = monthYearString;
 
-        // Hae merkinnät kuukaudelle
-        const monthEntries = await fetchMonthEntries();
+        // Placeholder for fetching entries for the current month
+        // This will be implemented when backend is available
         
-        // Luo kartta päivistä, joilla on merkintöjä
+        // For now, use example entries to show functionality
+        const exampleEntries = [
+            { date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-05`, isComplete: true },
+            { date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-10`, isComplete: false },
+            { date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-15`, isComplete: true },
+            { date: `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-20`, isComplete: false }
+        ];
+        
+        // Create a map of dates with entries
         const entriesMap = new Map();
-        monthEntries.forEach(entry => {
-            const date = new Date(entry.date);
-            const day = date.getDate();
-            entriesMap.set(day, {
-                isComplete: entry.isComplete
-            });
+        exampleEntries.forEach(entry => {
+            // Parse the entry date and get the day
+            const entryDate = new Date(entry.date);
+            if (entryDate.getMonth() === currentMonth && 
+                entryDate.getFullYear() === currentYear) {
+                entriesMap.set(entryDate.getDate(), {
+                    isComplete: entry.isComplete
+                });
+            }
         });
 
         let datesHTML = "";
 
-        // Edellisen kuukauden päivät
+        // Previous month's days
         for (let i = firstDayIndex; i > 0; i--) {
             const prevDate = new Date(currentYear, currentMonth, 0 - i + 1);
             datesHTML += `<div class="date inactive">${prevDate.getDate()}</div>`;
         }
 
-        // Nykyisen kuukauden päivät
+        // Current month's days
         for (let i = 1; i <= totalDays; i++) {
             const date = new Date(currentYear, currentMonth, i);
             const today = new Date();
 
-            // Tarkista onko päivä tänään
+            // Check if this date is today
             const isToday = date.getDate() === today.getDate() &&
                            date.getMonth() === today.getMonth() &&
                            date.getFullYear() === today.getFullYear();
 
-            // Tarkista onko päivällä merkintä
+            // Check if the date has an entry
             const hasEntry = entriesMap.has(i);
             
-            // Määritä CSS-luokat merkinnän tilan perusteella
-            let notificationClass = '';
+            // Define CSS classes based on entry status
+            let entryClass = '';
             if (hasEntry) {
-                const entryInfo = entriesMap.get(i);
-                notificationClass = entryInfo.isComplete ? 'has-complete-entry' : 'has-partial-entry';
+                const entry = entriesMap.get(i);
+                entryClass = entry.isComplete ? 'has-complete-entry' : 'has-partial-entry';
             }
             
             const activeClass = isToday ? "active" : "";
 
-            datesHTML += `<div class="date ${activeClass} ${notificationClass}" data-date="${i}">${i}</div>`;
+            datesHTML += `<div class="date ${activeClass} ${entryClass}" data-date="${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}">${i}</div>`;
         }
 
-        // Seuraavan kuukauden päivät
+        // Next month's days
         for (let i = 1; i <= 7 - lastDayIndex - 1; i++) {
             const nextDate = new Date(currentYear, currentMonth + 1, i);
             datesHTML += `<div class="date inactive">${nextDate.getDate()}</div>`;
@@ -193,43 +194,46 @@ function initializeCalendar() {
 
         datesElement.innerHTML = datesHTML;
 
-        // Lisää klikkaustapahtumankäsittelijät päivämäärille
+        // Add click handlers to date elements
+        setupDateClickHandlers();
+    };
+
+    // Set up date click handlers
+    function setupDateClickHandlers() {
         document.querySelectorAll('.date:not(.inactive)').forEach(dateElement => {
-            // Yksittäinen klikkaus valitsee päivän ja lataa tiedot
-            dateElement.addEventListener('click', () => {
-                // Poista active-luokka kaikilta päiviltä
+            // Single click selects the date
+            dateElement.addEventListener('click', (e) => {
+                // Remove active class from all dates
                 document.querySelectorAll('.date').forEach(el => {
                     el.classList.remove('active');
                 });
 
-                // Lisää active-luokka klikatulle päivälle
+                // Add active class to clicked date
                 dateElement.classList.add('active');
                 
-                // Hae valitun päivän tiedot
-                const day = parseInt(dateElement.getAttribute('data-date'));
-                const selectedDate = new Date(currentYear, currentMonth, day);
-                const formattedDate = selectedDate.toISOString().split('T')[0];
-                console.log(`Valittiin päivä: ${formattedDate}`);
+                // Get the selected date
+                const dateStr = dateElement.getAttribute('data-date');
+                console.log(`Selected date: ${dateStr}`);
                 
-                // Tässä kutsuisimme funktiota päivän tietojen lataamiseksi
-                // loadDayData(formattedDate);
+                // Here we would load data for the selected date
+                // This will be implemented when backend is available
             });
             
-            // Tuplaklikkaus avaa modaalin merkinnän lisäystä/muokkausta varten
-            dateElement.addEventListener('dblclick', () => {
-                const day = parseInt(dateElement.getAttribute('data-date'));
-                const selectedDate = new Date(currentYear, currentMonth, day);
-                const formattedDate = selectedDate.toISOString().split('T')[0];
-                console.log(`Tuplaklikkaus päivälle: ${formattedDate} - avattaisiin modaali`);
+            // Double click opens entry modal
+            dateElement.addEventListener('dblclick', (e) => {
+                const dateStr = dateElement.getAttribute('data-date');
+                console.log(`Double-clicked date: ${dateStr} - would open modal`);
                 
-                // Tässä avaisimme modaalin merkinnän muokkausta varten
-                // openEntryModal(formattedDate);
-                alert(`Tässä aukeaisi modaali merkinnän lisäämiseksi/muokkaamiseksi päivälle ${formattedDate}`);
+                // Prevent the click event from firing
+                e.stopPropagation();
+                
+                // Here we would open entry modal
+                alert(`Tässä aukeaisi modaali merkinnän lisäämiseksi/muokkaamiseksi päivälle ${dateStr}`);
             });
         });
-    };
+    }
 
-    // Lisää tapahtumankäsittelijät edellinen/seuraava napeille
+    // Add event listeners to previous/next buttons
     prevBtn.addEventListener("click", () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         updateCalendar();
@@ -239,54 +243,22 @@ function initializeCalendar() {
         currentDate.setMonth(currentDate.getMonth() + 1);
         updateCalendar();
     });
-
-    // Lisää info-nappi kalenteriin
-    addCalendarInfoButton();
-
-    // Alusta kalenteri
+    
+    // Initial calendar render
     updateCalendar();
 }
 
 /**
- * Lisää info-napin kalenterin otsikkoriville
+ * Initialize chart view component
  */
-function addCalendarInfoButton() {
-    // Etsi kalenterin header-elementti
-    const calendarHeader = document.querySelector(".calendar-header");
+function initializeChartView() {
+    console.log("Initializing chart view");
     
-    if (calendarHeader) {
-        // Luo info-nappi
-        const infoButton = document.createElement("button");
-        infoButton.className = "calendar-info-btn"; 
-        infoButton.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
-        infoButton.setAttribute("title", "Kalenterin ohje");
-        
-        // Lisää nappi kalenterin headeriin monthYear-elementin ja nextBtn:n väliin
-        const monthYearElem = document.querySelector(".monthYear");
-        if (monthYearElem && monthYearElem.nextSibling) {
-            calendarHeader.insertBefore(infoButton, monthYearElem.nextSibling);
-        } else {
-            // Jos nextSibling ei toimi, lisätään se headeriin
-            calendarHeader.appendChild(infoButton);
-        }
-        
-        // Lisää tapahtumankäsittelijä info-napille
-        infoButton.addEventListener("click", function() {
-            alert("Kalenteri: Klikkaa päivämäärää nähdäksesi sen päivän tiedot. Tuplaklikkaa päivämäärää lisätäksesi tai muokataksesi merkintää. Punaisella merkityt päivät sisältävät täydellisiä merkintöjä, oranssilla merkityt osittaisia merkintöjä.");
-        });
-    }
-}
-
-/**
- * Alustaa kaavio-osion
- */
-function initializeChartPlaceholder() {
-    // Mittaustyypin vaihtologiikka
     const measurementTypeSelect = document.getElementById('measurementType');
     const mealTypeGroup = document.getElementById('mealTypeGroup');
 
     if (measurementTypeSelect && mealTypeGroup) {
-        // Lisää tapahtumankäsittelijä mittaustyypin vaihtoon
+        // Add event listener for measurement type change
         measurementTypeSelect.addEventListener('change', function() {
             if (this.value === 'Perus') {
                 mealTypeGroup.style.display = 'none';
@@ -294,8 +266,17 @@ function initializeChartPlaceholder() {
                 mealTypeGroup.style.display = 'flex';
             }
         });
+        
+        // Initialize meal type selector
+        const mealTypeSelect = document.getElementById('mealType');
+        if (mealTypeSelect) {
+            mealTypeSelect.addEventListener('change', function() {
+                // Chart update would happen here when backend is ready
+                console.log("Meal type changed:", this.value);
+            });
+        }
 
-        // Alusta näkyvyys nykyisen valinnan mukaan
+        // Initialize based on current selection
         if (measurementTypeSelect.value === 'Perus') {
             mealTypeGroup.style.display = 'none';
         } else {
@@ -305,44 +286,64 @@ function initializeChartPlaceholder() {
 }
 
 /**
- * Lisää info-napit verensokeri- ja terveysmetriikat-komponentteihin
+ * Initialize blood glucose values component
  */
-function setupComponentInfoButtons() {
-    // Komponentit, joihin lisätään info-napit
-    const components = [
-        { 
-            selector: '.dashboard-card:nth-child(2)', 
-            title: 'Verensokeri-ohje',
-            content: 'Tämä osio näyttää verensokeriarvosi valitulta päivältä. Voit tarkastella perusseurannan arvoja (aamu- ja ilta-arvot) tai ateriakohtaisia arvoja (ennen ja jälkeen).'
-        },
-        { 
-            selector: '.metrics-container', 
-            title: 'Terveysmetriikat-ohje',
-            content: 'Tässä osiossa näet HRV-analyysistä lasketut terveysmetriikat: palautumisen, stressin, keskisykkeen ja fysiologisen iän.'
-        }
-    ];
+function initializeBloodGlucoseView() {
+    console.log("Initializing blood glucose view");
+    // This will be implemented in future tasks
+}
+
+/**
+ * Initialize HRV analysis component
+ */
+function initializeHrvAnalysis() {
+    console.log("Initializing HRV analysis");
+    // This will be implemented in future tasks
+}
+
+/**
+ * Setup info buttons for all components
+ */
+function setupInfoButtons() {
+    console.log("Setting up info buttons");
     
-    components.forEach(component => {
-        const container = document.querySelector(component.selector);
-        if (container) {
-            // Luo info-nappi
-            const infoButton = document.createElement('button');
-            infoButton.className = 'info-button';
-            infoButton.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
-            infoButton.setAttribute('title', component.title);
-            
-            // Lisää tapahtumankäsittelijä
-            infoButton.addEventListener('click', () => {
-                alert(`${component.title}\n\n${component.content}`);
-            });
-            
-            // Varmista että kontainerilla on position relative
-            if (getComputedStyle(container).position === 'static') {
-                container.style.position = 'relative';
-            }
-            
-            // Lisää nappi kontaineriin
-            container.appendChild(infoButton);
+    // Define info content for each component
+    const infoContent = {
+        calendar: {
+            title: "Kalenterin käyttö",
+            content: "Kalenteri näyttää kaikki kuukauden päivät. Punaisella merkityt päivät sisältävät valmiit merkinnät, oranssilla merkityt osittaiset merkinnät. Klikkaa päivämäärää nähdäksesi sen päivän tiedot. Tuplaklikkaa päivämäärää lisätäksesi tai muokataksesi merkintää."
+        },
+        bloodSugar: {
+            title: "Verensokeriseuranta",
+            content: "Tämä osio näyttää verensokeriarvosi valitulta päivältä. Voit tarkastella perusseurannan arvoja (aamu- ja ilta-arvot) tai ateriakohtaisia arvoja (ennen ja jälkeen)."
+        },
+        chart: {
+            title: "Kaaviotieto",
+            content: "Kaavio näyttää verensokeriarvojen kehityksen kuukauden ajalta. Voit valita näytettäväksi perusseurannan tai ateriakohtaiset arvot. Punaiset pisteet ovat mittauksia ennen ateriaa, turkoosin väriset mittauksia aterian jälkeen."
+        },
+        hrv: {
+            title: "HRV-analyysi",
+            content: "Tämä osio näyttää ladatun HRV-datan analyysin tulokset: palautumisen, stressin, keskisykkeen ja fysiologisen iän. Lataa HRV-data päiväkirjamerkinnän kautta."
         }
-    });
+    };
+    
+    // Setup info button event listeners
+    const infoButtons = {
+        calendar: document.getElementById('calendarInfoBtn'),
+        bloodSugar: document.getElementById('bloodSugarInfoBtn'),
+        chart: document.getElementById('chartInfoBtn'),
+        hrv: document.getElementById('hrvInfoBtn')
+    };
+    
+    // Add click event listeners to each info button
+    for (const [key, button] of Object.entries(infoButtons)) {
+        if (button) {
+            button.addEventListener('click', () => {
+                const info = infoContent[key];
+                alert(`${info.title}\n\n${info.content}`);
+            });
+        } else {
+            console.error(`Info button for ${key} not found`);
+        }
+    }
 }
