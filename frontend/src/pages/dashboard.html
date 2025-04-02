@@ -56,7 +56,7 @@
                     <button class="info-button" id="bloodSugarInfoBtn">
                         <i class="fa-solid fa-circle-info"></i>
                     </button>
-                    <h2>Verensokerieuranta</h2>
+                    <h2>Verensokeriseuranta</h2>
                     <div class="measurement-filters">
                         <div class="filter-group">
                             <label for="measurementType">Mittaustyyppi</label>
@@ -149,15 +149,145 @@
         </div>
     </div>
 
-    <!-- Entry Modal (Hidden) -->
+    <!-- Merkintämodaali -->
     <div id="entryModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <div class="modal-header">
-                <h2>Päiväkirjamerkintä</h2>
+                <h2 class="modal-title">Merkintä</h2>
             </div>
             <div class="modal-body">
-                <!-- Modal content will be dynamically generated -->
+                <form id="entryForm">
+                    <!-- Perusseurannan arvot -->
+                    <h3>Perusseuranta</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="morningValue">Aamuarvo (mmol/l)</label>
+                            <input type="number" id="morningValue" name="morningValue" step="0.1" min="0" max="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="eveningValue">Ilta-arvo (mmol/l)</label>
+                            <input type="number" id="eveningValue" name="eveningValue" step="0.1" min="0" max="30">
+                        </div>
+                    </div>
+
+                    <!-- Aamupala -->
+                    <h3>Aamupala</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="breakfastBefore">Ennen (mmol/l)</label>
+                            <input type="number" id="breakfastBefore" name="breakfastBefore" step="0.1" min="0" max="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="breakfastAfter">Jälkeen (mmol/l)</label>
+                            <input type="number" id="breakfastAfter" name="breakfastAfter" step="0.1" min="0" max="30">
+                        </div>
+                    </div>
+
+                    <!-- Lounas -->
+                    <h3>Lounas</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lunchBefore">Ennen (mmol/l)</label>
+                            <input type="number" id="lunchBefore" name="lunchBefore" step="0.1" min="0" max="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="lunchAfter">Jälkeen (mmol/l)</label>
+                            <input type="number" id="lunchAfter" name="lunchAfter" step="0.1" min="0" max="30">
+                        </div>
+                    </div>
+
+                    <!-- Välipala -->
+                    <h3>Välipala</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="snackBefore">Ennen (mmol/l)</label>
+                            <input type="number" id="snackBefore" name="snackBefore" step="0.1" min="0" max="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="snackAfter">Jälkeen (mmol/l)</label>
+                            <input type="number" id="snackAfter" name="snackAfter" step="0.1" min="0" max="30">
+                        </div>
+                    </div>
+
+                    <!-- Päivällinen -->
+                    <h3>Päivällinen</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dinnerBefore">Ennen (mmol/l)</label>
+                            <input type="number" id="dinnerBefore" name="dinnerBefore" step="0.1" min="0" max="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="dinnerAfter">Jälkeen (mmol/l)</label>
+                            <input type="number" id="dinnerAfter" name="dinnerAfter" step="0.1" min="0" max="30">
+                        </div>
+                    </div>
+
+                    <!-- Iltapala -->
+                    <h3>Iltapala</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eveningSnackBefore">Ennen (mmol/l)</label>
+                            <input type="number" id="eveningSnackBefore" name="eveningSnackBefore" step="0.1" min="0" max="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="eveningSnackAfter">Jälkeen (mmol/l)</label>
+                            <input type="number" id="eveningSnackAfter" name="eveningSnackAfter" step="0.1" min="0" max="30">
+                        </div>
+                    </div>
+
+                    <!-- Oireet -->
+                    <h3>Oireet</h3>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="symptomHunger" name="symptoms" value="poikkeuksellinen nälkä">
+                                <label for="symptomHunger">Poikkeuksellinen nälkä</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="symptomVision" name="symptoms" value="sumentunut näkö">
+                                <label for="symptomVision">Sumentunut näkö</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="symptomExtremities" name="symptoms" value="puutuneet/kihelmöivät ääriraajat">
+                                <label for="symptomExtremities">Puutuneet/kihelmöivät ääriraajat</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="symptomFatigue" name="symptoms" value="poikkeuksellinen väsymys">
+                                <label for="symptomFatigue">Poikkeuksellinen väsymys</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="symptomWounds" name="symptoms" value="huonosti paranevat haavaumat">
+                                <label for="symptomWounds">Huonosti paranevat haavaumat</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="symptomInfections" name="symptoms" value="infektiot">
+                                <label for="symptomInfections">Infektiot</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kommentti -->
+                    <h3>Kommentti</h3>
+                    <div class="form-group">
+                        <textarea id="comment" name="comment" rows="3" placeholder="Lisää tarvittaessa kommentti..."></textarea>
+                    </div>
+
+                    <!-- HRV-data -->
+                    <h3>HRV-data</h3>
+                    <div class="form-group">
+                        <div id="hrvUploadContainer">
+                            <input type="file" id="hrvDataFile" name="hrvDataFile" accept=".hrm,.zip">
+                            <button type="button" id="uploadHrvButton" class="btn-primary">Lataa HRV-data</button>
+                            <button type="button" id="deleteHrvButton" class="btn-danger" style="display: none;">Poista HRV-data</button>
+                        </div>
+                        <div id="hrvStatusMessage"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelButton" class="btn-secondary">Peruuta</button>
+                <button type="button" id="saveButton" class="btn-primary">Tallenna</button>
             </div>
         </div>
     </div>
