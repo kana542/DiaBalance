@@ -1,4 +1,4 @@
-import { insertKirjaus, updateEntry } from "../models/entry-models.js";
+import { insertKirjaus, updateEntry, deleteEntry } from "../models/entry-models.js";
 import { customError } from "../middlewares/error-handler.js";
 
 const createEntry = async (req, res, next) => {
@@ -33,4 +33,18 @@ const patchEntry = async (req, res, next) => {
   }
 };
 
-export { createEntry, patchEntry };
+const deleteEntryByDate = async (req, res, next) => {
+  try {
+    const result = await deleteEntry(req.user.kayttaja_id, req.params.pvm);
+
+    if (result.error) {
+      return next(customError(result.error, 404));
+    }
+
+    res.status(200).json({message: result.message});
+  } catch (error) {
+    next(customError(error.message, 400));
+  }
+};
+
+export { createEntry, patchEntry, deleteEntryByDate };

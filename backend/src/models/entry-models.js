@@ -74,4 +74,30 @@ const updateEntry = async (kayttajaId, pvm, entryData) => {
   }
 };
 
-export {insertKirjaus, updateEntry};
+
+const deleteEntry = async (kayttajaId, pvm) => {
+  try {
+    //Tarkistetaan, löytyykö merkintä ja kuuluuko se käyttäjälle
+    const [rows] = await promisePool.query(
+      'SELECT * FROM kirjaus WHERE kayttaja_id = ? AND pvm = ?',
+      [kayttajaId, pvm]
+    );
+
+    if (rows.length === 0) {
+      return { error: 'Kirjausta ei löytynyt tai ei ole oikeutta poistaa sitä' };
+    }
+
+    // tarkirstuksen jälkeen Suoritetaan poisto
+    await promisePool.query(
+      'DELETE FROM kirjaus WHERE kayttaja_id = ? AND pvm = ?',
+      [kayttajaId, pvm]
+    );
+
+    return { message: 'Kirjaus poistettu onnistuneesti' };
+  } catch (error) {
+    console.error('Virhe kirjauksen poistossa:', error);
+    return { error: 'Tietokantavirhe poistossa' };
+  }
+};
+
+export {insertKirjaus, updateEntry, deleteEntry};
