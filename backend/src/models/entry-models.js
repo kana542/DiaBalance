@@ -100,4 +100,18 @@ const deleteEntry = async (kayttajaId, pvm) => {
   }
 };
 
-export {insertKirjaus, updateEntry, deleteEntry};
+const getEntryByDate = async (kayttajaId, pvm) => {
+  try {
+    const [rows] = await promisePool.query(
+      'SELECT * FROM kirjaus WHERE kayttaja_id = ? AND pvm = ?',
+      [kayttajaId, pvm]
+    );
+    
+    //jos ei löydy merkintää, palautetaan null
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error('Virhe kirjauksen haussa:', error);
+    throw new Error('Tietokantavirhe haussa');
+  }
+};
+export {insertKirjaus, updateEntry, deleteEntry, getEntryByDate};

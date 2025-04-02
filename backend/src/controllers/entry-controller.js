@@ -1,4 +1,4 @@
-import { insertKirjaus, updateEntry, deleteEntry } from "../models/entry-models.js";
+import { insertKirjaus, updateEntry, deleteEntry, getEntryByDate } from "../models/entry-models.js";
 import { customError } from "../middlewares/error-handler.js";
 
 const createEntry = async (req, res, next) => {
@@ -47,4 +47,21 @@ const deleteEntryByDate = async (req, res, next) => {
   }
 };
 
-export { createEntry, patchEntry, deleteEntryByDate };
+const getEntry = async (req, res, next) => {
+  try {
+    const result = await getEntryByDate(
+      req.user.kayttaja_id,
+      req.params.pvm
+    );
+
+    if (!result) {
+      return next(customError('Kirjausta ei löytynyt annetulle päivämäärälle', 404));
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(customError(error.message, 400));
+  }
+};
+
+export { createEntry, patchEntry, deleteEntryByDate, getEntry };

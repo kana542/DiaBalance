@@ -1,6 +1,6 @@
 import express from 'express';
 import {body} from 'express-validator';
-import {createEntry, patchEntry, deleteEntryByDate} from '../controllers/entry-controller.js';
+import {createEntry, patchEntry, deleteEntryByDate, getEntry} from '../controllers/entry-controller.js';
 
 import {authenticateToken} from '../middlewares/authentication.js';
 import {validationErrorHandler} from '../middlewares/error-handler.js';
@@ -40,6 +40,10 @@ entryRouter
 .delete(
   authenticateToken,
   deleteEntryByDate
+)
+.get(
+  authenticateToken,
+  getEntry
 );
   
 
