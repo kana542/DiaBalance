@@ -12,5 +12,5 @@ const createEntry = async (req, res, next) => {
         next(customError(error.message, 400));
       }
     };
-    
+
     export { createEntry };

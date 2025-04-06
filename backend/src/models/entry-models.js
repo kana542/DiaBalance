@@ -8,8 +8,8 @@ import promisePool from '../utils/database.js';
 const insertKirjaus = async (kayttajaId, data) => {
   try {
     const [result] = await promisePool.query(
-      `INSERT INTO kirjaus 
-        (kayttaja_id, pvm, hrv_data, vs_aamu, vs_ilta, vs_aamupala_ennen, vs_aamupala_jalkeen, vs_lounas_ennen, vs_lounas_jalkeen, vs_valipala_ennen, vs_valipala_jalkeen, vs_paivallinen_ennen, vs_paivallinen_jalkeen, vs_iltapala_ennen, vs_iltapala_jalkeen, oireet, kommentti) 
+      `INSERT INTO kirjaus
+        (kayttaja_id, pvm, hrv_data, vs_aamu, vs_ilta, vs_aamupala_ennen, vs_aamupala_jalkeen, vs_lounas_ennen, vs_lounas_jalkeen, vs_valipala_ennen, vs_valipala_jalkeen, vs_paivallinen_ennen, vs_paivallinen_jalkeen, vs_iltapala_ennen, vs_iltapala_jalkeen, oireet, kommentti)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         kayttajaId,

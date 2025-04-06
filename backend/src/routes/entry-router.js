@@ -30,6 +30,6 @@ entryRouter
     validationErrorHandler,
     createEntry
   );
-  
+
 
 export default entryRouter;
