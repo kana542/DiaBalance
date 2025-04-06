@@ -5,10 +5,10 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Rekisteröintisivu ladattu');
-    
+
     // Haetaan rekisteröintilomake
     const registerForm = document.getElementById('registerForm');
-    
+
     // Tarkistetaan onko käyttäjä jo kirjautunut
     const token = localStorage.getItem('token');
     if (token) {
@@ -42,7 +42,7 @@ async function handleRegister(event) {
 
     // Nollataan virheilmoitukset
     errorMessage.style.display = 'none';
-    
+
     // Perusvalidointi
     if (!username || !email || !password) {
         showError(errorMessage, 'Täytä kaikki pakolliset kentät');
@@ -66,41 +66,41 @@ async function handleRegister(event) {
     submitButton.disabled = true;
 
     try {
-        // Rekisteröintitiedot
-        const registerData = {
-            username: username,
-            email: email,
-            password: password
-        };
-
-        // Lähetetään rekisteröintipyyntö backend-API:lle
+        // CHANGED: Replace fetch call with proper endpoint and parameters
         const response = await fetch('http://localhost:3000/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(registerData)
+            body: JSON.stringify({
+                kayttajanimi: username, // Map username field to kayttajanimi
+                salasana: password,
+                // Use email as additional info (if backend is updated later)
+                // email: email
+            })
         });
 
-        // Käsitellään vastaus
+        // Process the response
         const data = await response.json();
 
         if (!response.ok) {
-            // Näytetään virheilmoitus
+            // CHANGED: Display error with alert and in error element
+            alert(data.message || 'Rekisteröinti epäonnistui.');
             showError(errorMessage, data.message || 'Rekisteröinti epäonnistui. Yritä uudelleen.');
             submitButton.textContent = originalButtonText;
             submitButton.disabled = false;
             return;
         }
 
-        // Näytetään onnistumisilmoitus alert-funktiolla
+        // Display success message with alert
         alert('Rekisteröinti onnistui! Voit nyt kirjautua sisään uudella tililläsi.');
-        
-        // Ohjataan käyttäjä kirjautumissivulle
+
+        // Redirect to login page
         window.location.href = 'login.html';
 
     } catch (error) {
         console.error('Rekisteröintivirhe:', error);
+        alert('Yhteysvirhe palvelimeen. Yritä myöhemmin uudelleen.');
         showError(errorMessage, 'Tapahtui virhe yhdistettäessä palvelimeen. Yritä myöhemmin uudelleen.');
         submitButton.textContent = originalButtonText;
         submitButton.disabled = false;
@@ -116,7 +116,7 @@ function setupFormValidation() {
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirmPassword');
     const passwordRequirements = document.querySelector('.password-requirements');
-    
+
     if (passwordInput && confirmPasswordInput) {
         // Tarkistetaan salasanojen täsmäävyys kirjoitettaessa
         confirmPasswordInput.addEventListener('input', () => {
@@ -128,7 +128,7 @@ function setupFormValidation() {
                 }
             }
         });
-        
+
         // Tarkistetaan salasanan pituus kirjoitettaessa
         passwordInput.addEventListener('input', () => {
             if (passwordRequirements) {
@@ -142,7 +142,7 @@ function setupFormValidation() {
             }
         });
     }
-    
+
     // Perus sähköpostiosoitteen validointi
     if (emailInput) {
         emailInput.addEventListener('blur', () => {
@@ -165,7 +165,7 @@ function showError(errorElement, message) {
     if (errorElement) {
         errorElement.textContent = message;
         errorElement.style.display = 'block';
-        
+
         // Vieritetään virheviestielementtiin
         errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {

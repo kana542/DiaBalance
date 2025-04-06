@@ -5,10 +5,10 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Auth module loaded');
-    
+
     // Get the login form
     const loginForm = document.getElementById('loginForm');
-    
+
     // Check if user is already logged in
     const token = localStorage.getItem('token');
     if (token) {
@@ -47,26 +47,45 @@ async function handleLogin(event) {
     submitButton.disabled = true;
 
     try {
-        // DEV MODE: Accept any credentials in development mode
-        console.log('DEV MODE: Bypassing actual login, accepting any credentials');
-        
-        // Set mock token and user data for development
-        localStorage.setItem('token', 'dev-token-123');
+        // CHANGED: Replace mock authentication with actual API call
+        const response = await fetch('http://localhost:3000/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                kayttajanimi: email, // Map email field to kayttajanimi
+                salasana: password
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // Handle error response
+            alert(data.message || 'Kirjautuminen epäonnistui. Tarkista tunnukset.');
+            displayError(errorMessage, data.message || 'Login failed. Please check your credentials.');
+            resetButton(submitButton, originalButtonText);
+            return;
+        }
+
+        // CHANGED: Store real token and user data
+        localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify({
-            id: 'dev-user-id',
-            username: email.split('@')[0], // Use part of email as username
-            email: email,
-            role: 'user'
+            id: data.user.kayttaja_id,
+            username: data.user.kayttajanimi,
+            role: data.user.kayttajarooli
         }));
 
         // Show success message
-        alert('DEV MODE: Login successful with mock credentials');
+        alert('Kirjautuminen onnistui!');
 
         // Redirect to dashboard
         window.location.href = 'dashboard.html';
 
     } catch (error) {
         console.error('Login error:', error);
+        alert('Yhteysvirhe palvelimeen. Yritä myöhemmin uudelleen.');
         displayError(errorMessage, 'An error occurred connecting to the server. Please try again later.');
         resetButton(submitButton, originalButtonText);
     }
