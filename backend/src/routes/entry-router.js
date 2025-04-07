@@ -1,35 +1,74 @@
 import express from 'express';
 import {body} from 'express-validator';
-import {createEntry} from '../controllers/entry-controller.js';
+import {createEntry, getEntriesByMonth, updateEntry, deleteEntry} from '../controllers/entry-controller.js';
 
 import {authenticateToken} from '../middlewares/authentication.js';
 import {validationErrorHandler} from '../middlewares/error-handler.js';
 
 const entryRouter = express.Router();
 
-entryRouter
-  .route('/')
-  .post(
-    authenticateToken,
-    body('pvm').isISO8601(),
-    body('hrv_data').isString().optional(),
-    body('vs_aamu').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_ilta').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_aamupala_ennen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_aamupala_jalkeen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_lounas_ennen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_lounas_jalkeen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_valipala_ennen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_valipala_jalkeen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_paivallinen_ennen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_paivallinen_jalkeen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_ilapala_ennen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('vs_ilapala_jalkeen').isNumeric().isFloat({min: 0, max: 30}).optional().trim().escape(),
-    body('oireet').optional().isString().isLength({ max: 200 }),
-    body('kommentti').optional().isString().isLength({ max: 500 }),
-    validationErrorHandler,
-    createEntry
-  );
+// Hae kuukauden merkinnät: GET /api/entries?year=2025&month=4
+entryRouter.get(
+  '/',
+  authenticateToken,
+  getEntriesByMonth
+);
 
+// Luo uusi merkintä: POST /api/entries
+entryRouter.post(
+  '/',
+  authenticateToken,
+  body('pvm').isISO8601(),
+  body('hrv_data').optional(),
+  // Kaikki nämä kentät sallivat null-arvon
+  body('vs_aamu').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_ilta').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_aamupala_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_aamupala_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_lounas_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_lounas_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_valipala_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_valipala_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_paivallinen_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_paivallinen_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_iltapala_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_iltapala_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('oireet').optional().isString(),
+  body('kommentti').optional().isString(),
+  validationErrorHandler,
+  createEntry
+);
+
+// Päivitä merkintä: PUT /api/entries
+entryRouter.put(
+  '/',
+  authenticateToken,
+  body('pvm').isISO8601(),
+  body('hrv_data').optional(),
+  // Kaikki nämä kentät sallivat null-arvon
+  body('vs_aamu').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_ilta').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_aamupala_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_aamupala_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_lounas_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_lounas_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_valipala_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_valipala_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_paivallinen_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_paivallinen_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_iltapala_ennen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('vs_iltapala_jalkeen').optional({ nullable: true }).isFloat({min: 0, max: 30}),
+  body('oireet').optional().isString(),
+  body('kommentti').optional().isString(),
+  validationErrorHandler,
+  updateEntry
+);
+
+// Poista merkintä: DELETE /api/entries/2025-04-10
+entryRouter.delete(
+  '/:date',
+  authenticateToken,
+  deleteEntry
+);
 
 export default entryRouter;

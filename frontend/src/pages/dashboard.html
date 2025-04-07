@@ -85,21 +85,6 @@
                             </button>
                             <div id="chart-placeholder" class="chart-placeholder">
                                 <div class="chart-grid"></div>
-                                <!-- Demo chart lines for development -->
-                                <div id="demo-chart-before" style="position: absolute; top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-30px); z-index: 2;">
-                                    <svg width="100%" height="120" style="position: absolute; top: -60px;">
-                                        <polyline
-                                            points="30,60 70,40 120,70 170,50 220,65 270,45 320,60"
-                                            style="fill:none; stroke:#ff5869; stroke-width:2;" />
-                                    </svg>
-                                </div>
-                                <div id="demo-chart-after" style="position: absolute; top: 50%; left: 0; right: 0; height: 2px; transform: translateY(10px); z-index: 2;">
-                                    <svg width="100%" height="120" style="position: absolute; top: -60px;">
-                                        <polyline
-                                            points="30,40 70,30 120,50 170,25 220,35 270,30 320,40"
-                                            style="fill:none; stroke:#4ecdc4; stroke-width:2;" />
-                                    </svg>
-                                </div>
                                 <!-- Chart legend -->
                                 <div class="chart-legend-centered">
                                     <div class="legend-item">
@@ -117,7 +102,7 @@
                 </div>
             </div>
 
-            <!-- HRV Analysis Component (Health Metrics) -->
+            <!-- HRV Analysis Component (Health Metrics) - Placeholder only -->
             <div class="dashboard-row">
                 <div class="metrics-container">
                     <!-- Info button for HRV analysis -->
@@ -126,22 +111,22 @@
                     </button>
                     <div class="metric-card">
                         <h3>Palautuminen</h3>
-                        <div class="metric-value">50</div>
+                        <div class="metric-value">–</div>
                         <div class="metric-label">Readiness Score</div>
                     </div>
                     <div class="metric-card">
                         <h3>Stressi</h3>
-                        <div class="metric-value stress">6.4</div>
+                        <div class="metric-value stress">–</div>
                         <div class="metric-label">Baevskyn stressi-indeksi</div>
                     </div>
                     <div class="metric-card">
                         <h3>Keskisyke</h3>
-                        <div class="metric-value heart-rate">57</div>
+                        <div class="metric-value heart-rate">–</div>
                         <div class="metric-label">lyöntiä/min</div>
                     </div>
                     <div class="metric-card">
                         <h3>Fysiologinen ikä</h3>
-                        <div class="metric-value age">21.2</div>
+                        <div class="metric-value age">–</div>
                         <div class="metric-label">vuotta</div>
                     </div>
                 </div>
@@ -272,28 +257,17 @@
                     <div class="form-group">
                         <textarea id="comment" name="comment" rows="3" placeholder="Lisää tarvittaessa kommentti..."></textarea>
                     </div>
-
-                    <!-- HRV-data -->
-                    <h3>HRV-data</h3>
-                    <div class="form-group">
-                        <div id="hrvUploadContainer">
-                            <input type="file" id="hrvDataFile" name="hrvDataFile" accept=".hrm,.zip">
-                            <button type="button" id="uploadHrvButton" class="btn-primary">Lataa HRV-data</button>
-                            <button type="button" id="deleteHrvButton" class="btn-danger" style="display: none;">Poista HRV-data</button>
-                        </div>
-                        <div id="hrvStatusMessage"></div>
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" id="cancelButton" class="btn-secondary">Peruuta</button>
+                <button type="button" id="deleteButton" class="btn-danger">Poista merkintä</button>
                 <button type="button" id="saveButton" class="btn-primary">Tallenna</button>
             </div>
         </div>
     </div>
 
-    <!-- Authentication check before dashboard.js -->
-    <script src="../js/auth-check.js"></script>
-    <script src="../js/dashboard.js"></script>
+    <!-- Käytetään vain tyyppimoduulia, joka lataa muut moduulit -->
+    <script type="module" src="../js/dashboard/dashboard-main.js"></script>
 </body>
 </html>

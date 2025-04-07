@@ -1,8 +1,14 @@
 /**
- * Rekisteröintilogiikka DiaBalance-sovellukseen
- * Käsittelee käyttäjän rekisteröitymisen ja API-integraation
+ * register.js
+ * Rekisteröintilogiikka ES moduuleina
  */
 
+import { register, getAuthToken } from '../utils/api-client.js';
+import { showError } from '../utils/ui-utils.js';
+
+/**
+ * Alustus kun DOM on latautunut
+ */
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Rekisteröintisivu ladattu');
 
@@ -10,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('registerForm');
 
     // Tarkistetaan onko käyttäjä jo kirjautunut
-    const token = localStorage.getItem('token');
+    const token = getAuthToken();
     if (token) {
         // Jos käyttäjä on jo kirjautunut, ohjataan dashboard-sivulle
         window.location.href = 'dashboard.html';
@@ -66,31 +72,8 @@ async function handleRegister(event) {
     submitButton.disabled = true;
 
     try {
-        // CHANGED: Replace fetch call with proper endpoint and parameters
-        const response = await fetch('http://localhost:3000/api/auth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                kayttajanimi: username, // Map username field to kayttajanimi
-                salasana: password,
-                // Use email as additional info (if backend is updated later)
-                // email: email
-            })
-        });
-
-        // Process the response
-        const data = await response.json();
-
-        if (!response.ok) {
-            // CHANGED: Display error with alert and in error element
-            alert(data.message || 'Rekisteröinti epäonnistui.');
-            showError(errorMessage, data.message || 'Rekisteröinti epäonnistui. Yritä uudelleen.');
-            submitButton.textContent = originalButtonText;
-            submitButton.disabled = false;
-            return;
-        }
+        // Käytä API-clientia rekisteröintiin
+        await register(username, password, email);
 
         // Display success message with alert
         alert('Rekisteröinti onnistui! Voit nyt kirjautua sisään uudella tililläsi.');
@@ -101,9 +84,8 @@ async function handleRegister(event) {
     } catch (error) {
         console.error('Rekisteröintivirhe:', error);
         alert('Yhteysvirhe palvelimeen. Yritä myöhemmin uudelleen.');
-        showError(errorMessage, 'Tapahtui virhe yhdistettäessä palvelimeen. Yritä myöhemmin uudelleen.');
-        submitButton.textContent = originalButtonText;
-        submitButton.disabled = false;
+        showError(errorMessage, error.message || 'Rekisteröinti epäonnistui. Yritä uudelleen.');
+        resetButton(submitButton, originalButtonText);
     }
 }
 
@@ -157,19 +139,17 @@ function setupFormValidation() {
 }
 
 /**
- * Näyttää virheilmoituksen
- * @param {HTMLElement} errorElement - Elementti, johon virheilmoitus näytetään
- * @param {string} message - Virheilmoituksen teksti
+ * Palauttaa napin alkuperäiseen tilaan
+ * @param {HTMLElement} button - Nappi-elementti
+ * @param {string} text - Alkuperäinen teksti
  */
-function showError(errorElement, message) {
-    if (errorElement) {
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
-
-        // Vieritetään virheviestielementtiin
-        errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-        // Jos virheilmoituselementtiä ei löydy, käytetään alert-funktiota
-        alert('Virhe: ' + message);
-    }
+function resetButton(button, text) {
+    button.textContent = text;
+    button.disabled = false;
 }
+
+// Vie funktiot, jotta niitä voidaan käyttää globaalisti
+export {
+    handleRegister,
+    setupFormValidation
+};
