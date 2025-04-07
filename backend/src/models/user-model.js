@@ -99,9 +99,36 @@ const updateMyProfile = async (kayttajaId, data) => {
     }
   };
 
+
+  
+  // TÄMÄ ALLA OLEVA SELECUSERBYEMAIL LIITTYY KUBIOKSEEN
+ // Hae käyttäjä sähköpostiosoitteen perusteella, jos se jo löytyy tietokannasta
+ //Meidän tauluissa e ole email joten käytetään kayttajanimeä, käyttäjänimi on sähköposti
+ const selectUserByEmail = async (email) => {
+  try {
+    const sql = 'SELECT * FROM kayttaja WHERE kayttajanimi = ?';
+    const params = [email];
+    const [rows] = await promisePool.query(sql, params);
+
+    if (rows.length === 0) {
+      return { error: 404, message: 'user not found' };
+    }
+    // Poistetaan salasana tuloksista ennen palautusta
+    delete rows[0].salasana;
+
+    return rows[0];
+  } catch (error) {
+    console.error('selectUserByEmail error', error);
+    return { error: 500, message: 'db error' };
+  }
+};
+
+
+
 export {
     registerUser,
     loginUser,
     getMyProfile,
-    updateMyProfile
+    updateMyProfile,
+    selectUserByEmail
 };

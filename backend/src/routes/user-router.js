@@ -9,12 +9,14 @@ import {
   updateMe,
 } from "../controllers/user-controller.js";
 
+import { postLogin, getKubiosMe } from "../controllers/kubios-auth-controller.js";
+
 import { authenticateToken } from "../middlewares/authentication.js";
 import { validationErrorHandler } from "../middlewares/error-handler.js";
 
 const userRouter = express.Router();
 
-// Rekisteröityminen
+// Rekisteröityminen, joilla ei ole Kubios-tiliä
 userRouter
   .route("/register")
   .post(
@@ -32,7 +34,7 @@ userRouter
     register
   );
 
-// Kirjautuminen
+// Kirjautuminen, joilla ei ole Kubios-tiliä
 userRouter
   .route("/login")
   .post(
@@ -49,6 +51,17 @@ userRouter
     validationErrorHandler,
     login
   );
+
+
+// Kubios-kirjautuminen
+userRouter
+  .route('/kubios-login')
+  .post(postLogin);
+
+// Kubios käyttäjän tiedot
+userRouter
+  .route('/kubios-me')
+  .get(authenticateToken, getKubiosMe);  
 
 // Tokenin tarkistus
 userRouter.route("/validate").get(authenticateToken, validateToken);
