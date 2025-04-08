@@ -51,6 +51,9 @@ export function initializeChartView() {
         
         // Valmistele chart-placeholder kaaviolle
         prepareChartContainer();
+        
+        // Lisää tapahtumakuuntelija kalenterin muutostapahtumille
+        setupCalendarChangeListener();
     }
 }
 
@@ -132,9 +135,10 @@ function initializeChart() {
                     data: [],
                     borderColor: '#4ecdc4',
                     backgroundColor: '#4ecdc4',
-                    tension: 0.3,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
+                    tension: 0.4, // Pehmeämmät kaaret
+                    fill: false, // Ei täyttöä viivan alle
+                    pointRadius: 5,
+                    pointHoverRadius: 8
                 }
             ]
         },
@@ -193,6 +197,72 @@ function initializeChart() {
     
     // Päivitä kaavio nykyisillä asetuksilla
     updateMonthChart();
+}
+
+/**
+ * Seuraa kalenterin muutoksia ja päivittää kaavion
+ */
+function setupCalendarChangeListener() {
+    // 1. Lisää tapahtumakuuntelija prev/next -napeille
+    const prevButton = document.getElementById('prevBtn');
+    const nextButton = document.getElementById('nextBtn');
+    
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            // Odota hetki, että kalenterimoduuli on päivittänyt tiedot
+            setTimeout(() => refreshChart(), 300);
+        });
+    }
+    
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            // Odota hetki, että kalenterimoduuli on päivittänyt tiedot
+            setTimeout(() => refreshChart(), 300);
+        });
+    }
+    
+    // 2. Ylikirjoita alkuperäinen loadMonthEntries-funktio, jotta voimme lisätä
+    // kaavion päivityksen sen perään
+    if (window.DiaBalance && window.DiaBalance.entries) {
+        const originalLoadMonthEntries = window.DiaBalance.entries.loadMonthEntries;
+        
+        if (typeof originalLoadMonthEntries === 'function') {
+            // Korvaa alkuperäinen funktio uudella, joka kutsuu myös kaaviota
+            window.DiaBalance.entries.loadMonthEntries = async function(...args) {
+                // Kutsu alkuperäistä funktiota ja odota sen valmistumista
+                const result = await originalLoadMonthEntries.apply(this, args);
+                
+                // Päivitä kaavio kun kuukausi on ladattu
+                refreshChart();
+                
+                // Palauta alkuperäisen funktion tulos
+                return result;
+            };
+        }
+    }
+    
+    // 3. Tarkkaile myös kalenteri-moduulin updateCalendarView-funktiota
+    if (window.DiaBalance && window.DiaBalance.calendar) {
+        const originalUpdateCalendarView = window.DiaBalance.calendar.updateCalendarView;
+        
+        if (typeof originalUpdateCalendarView === 'function') {
+            window.DiaBalance.calendar.updateCalendarView = function(...args) {
+                // Kutsu alkuperäistä funktiota
+                const result = originalUpdateCalendarView.apply(this, args);
+                
+                // Päivitä kaavio
+                refreshChart();
+                
+                // Palauta alkuperäisen funktion tulos
+                return result;
+            };
+        }
+    }
+    
+    // 4. Lisää ensimmäinen päivitys kun sivu on ladattu
+    window.addEventListener('load', () => {
+        setTimeout(() => refreshChart(), 500);
+    });
 }
 
 /**
@@ -383,6 +453,7 @@ export function getCurrentChartSettings() {
  * Päivittää kaavion kun merkintöjä lisätään tai poistetaan
  */
 export function refreshChart() {
+    console.log("Refreshing chart with current month data");
     // Kutsu tätä kun merkintöjä lisätään tai poistetaan
     updateMonthChart();
 }
