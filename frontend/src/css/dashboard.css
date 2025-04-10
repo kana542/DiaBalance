@@ -12,8 +12,8 @@
    
    html, body {
        height: 100%;
-       background-color: #f5f5f5;
-       color: #333;
+       background-color: #f0f0f0;
+       color: #1a1a1a;
    }
    
    body {
@@ -123,7 +123,7 @@
        display: flex;
        justify-content: space-between;
        align-items: center;
-       margin-bottom: 15px;
+       margin-bottom: 25px;
    }
    
    .monthYear {
@@ -148,34 +148,39 @@
    .days {
        display: grid;
        grid-template-columns: repeat(7, 1fr);
-       margin-bottom: 10px;
+       margin-bottom: 15px;
    }
    
    .day {
        text-align: center;
        padding: 5px;
        font-size: 14px;
-       color: #777;
+       color: #505050;
+       font-weight: 600;
    }
    
    /* Päivämäärät */
    .dates {
-       display: grid;
-       grid-template-columns: repeat(7, 1fr);
-       grid-gap: 8px;
-   }
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-row-gap: 16px;
+    grid-column-gap: 8px;
+    padding: 5px 0 15px 0;
+ }
    
    .date {
-       height: 35px;
-       width: 35px;
+       height: 40px;
+       width: 40px;
        display: flex;
        align-items: center;
        justify-content: center;
        margin: 0 auto;
        border-radius: 50%;
        cursor: pointer;
-       font-size: 14px;
+       font-size: 15px;
        position: relative;
+       color:#1a1a1a;
+       font-weight: 500;
    }
    
    .date.active, .date:hover {
@@ -201,17 +206,17 @@
    }
    
    .date.has-notification::after {
-       background-color: #ff5869;
+       background-color: #e64458;
    }
    
    /* Valmiit merkinnät punaisella indikaattorilla */
    .date.has-complete-entry::after {
-       background-color: #ff5869; 
+       background-color: #e64458 
    }
    
    /* Keskeneräiset merkinnät oranssilla indikaattorilla */
    .date.has-partial-entry::after {
-       background-color: #ff9f43; 
+       background-color: #d98a38
    }
    
    /* ==============================================
@@ -221,6 +226,7 @@
        font-size: 18px;
        margin-bottom: 15px;
        font-weight: 500;
+       color: #1a1a1a;
    }
    
    h3 {
@@ -244,7 +250,7 @@
    
    .filter-group label {
        font-size: 14px;
-       color: #666;
+       color: #505050;
    }
    
    .filter-select {
@@ -341,11 +347,11 @@
    }
    
    .legend-color.before {
-       background-color: #ff5869;
+       background-color: #e64458;
    }
    
    .legend-color.after {
-       background-color: #4ecdc4;
+       background-color: #39b3aa;
    }
    
    /* ==============================================
@@ -370,24 +376,24 @@
        font-size: 32px;
        font-weight: 700;
        margin: 10px 0;
-       color: #ffba00; /* Palautuminen */
+       color: #e5a500/* Palautuminen */
    }
    
    .metric-value.stress {
-       color: #4ecdc4; /* Stressi */
+       color: #39b3aa; /* Stressi */
    }
    
    .metric-value.heart-rate {
-       color: #4ecdc4; /* Keskisyke */
+       color: #39b3aa; /* Keskisyke */
    }
    
    .metric-value.age {
-       color: #ba68c8; /* Fysiologinen ikä */
+       color: #a94db9; /* Fysiologinen ikä */
    }
    
    .metric-label {
        font-size: 12px;
-       color: #777;
+       color: #606060;
    }
    
    /* ==============================================
@@ -401,14 +407,14 @@
     background: transparent;
     border: none;
     font-size: 16px;
-    color: #4b6cb7;
+    color: #3d5aa1;
     cursor: pointer;
     z-index: 5;
     transition: all 0.2s ease;
    }
 
    .info-button:hover {
-       color: #3a5a9b;
+       color: #2d487e;
        transform: scale(1.1);
    }
 
@@ -562,7 +568,7 @@
    }
    
    .btn-primary {
-       background-color: #1cb0f6;
+       background-color: #0a96db;
        color: white;
        border: none;
        padding: 8px 15px;
@@ -571,7 +577,7 @@
    }
    
    .btn-danger {
-       background-color: #ff5869;
+       background-color: #e64458;
        color: white;
        border: none;
        padding: 8px 15px;
