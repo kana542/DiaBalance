@@ -50,7 +50,7 @@ async function handleRegister(event) {
     errorMessage.style.display = 'none';
 
     // Perusvalidointi
-    if (!username || !email || !password) {
+    if (!username || !password) {
         showError(errorMessage, 'Täytä kaikki pakolliset kentät');
         return;
     }

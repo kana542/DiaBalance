@@ -1,30 +1,14 @@
-/**
- * api-client.js
- * API-pyyntöjen käsittelijä, joka huolehtii autentikoinnista ja virhekäsittelystä
- */
-
 const API_BASE_URL = 'http://localhost:3000/api';
 
-/**
- * Tarkistaa onko käyttäjällä voimassaoleva token
- * @returns {string|null} - Token tai null jos ei kirjautunut
- */
 export function getAuthToken() {
     return localStorage.getItem('token');
 }
 
-/**
- * Poistaa autentikaatiotiedot localStoragesta
- */
 export function clearAuthToken() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 }
 
-/**
- * Hakee kirjautuneen käyttäjän tiedot
- * @returns {Object|null} - Käyttäjän tiedot tai null
- */
 export function getLoggedInUser() {
     try {
         const userString = localStorage.getItem('user');
@@ -37,13 +21,6 @@ export function getLoggedInUser() {
     return null;
 }
 
-/**
- * Tekee autentikoidun API-kutsun
- * @param {string} endpoint - API-endpoint (ilman base URL:ia)
- * @param {Object} options - Fetch options
- * @returns {Promise<Response>} - Promise joka resolvautuu vastauksen kanssa
- * @throws {Error} - Virhe jos autentikaatiota ei ole tai pyyntö epäonnistuu
- */
 export async function fetchWithAuth(endpoint, options = {}) {
     const token = getAuthToken();
 
@@ -80,22 +57,11 @@ export async function fetchWithAuth(endpoint, options = {}) {
     }
 }
 
-/**
- * Hakee tietoa API:sta
- * @param {string} endpoint - API-endpoint
- * @returns {Promise<any>} - Promise joka resolvautuu vastauksella
- */
 export async function apiGet(endpoint) {
     const response = await fetchWithAuth(endpoint);
     return response.json();
 }
 
-/**
- * Lähettää tietoa API:in
- * @param {string} endpoint - API-endpoint
- * @param {Object} data - Lähetettävä data
- * @returns {Promise<any>} - Promise joka resolvautuu vastauksella
- */
 export async function apiPost(endpoint, data) {
     const response = await fetchWithAuth(endpoint, {
         method: 'POST',
@@ -107,12 +73,6 @@ export async function apiPost(endpoint, data) {
     return response.json();
 }
 
-/**
- * Päivittää tietoa API:ssa
- * @param {string} endpoint - API-endpoint
- * @param {Object} data - Päivitettävä data
- * @returns {Promise<any>} - Promise joka resolvautuu vastauksella
- */
 export async function apiPut(endpoint, data) {
     const response = await fetchWithAuth(endpoint, {
         method: 'PUT',
@@ -124,11 +84,6 @@ export async function apiPut(endpoint, data) {
     return response.json();
 }
 
-/**
- * Poistaa tietoa API:sta
- * @param {string} endpoint - API-endpoint
- * @returns {Promise<any>} - Promise joka resolvautuu vastauksella
- */
 export async function apiDelete(endpoint) {
     const response = await fetchWithAuth(endpoint, {
         method: 'DELETE'
@@ -136,12 +91,6 @@ export async function apiDelete(endpoint) {
     return response.json();
 }
 
-/**
- * Kirjaa käyttäjän sisään
- * @param {string} username - Käyttäjänimi
- * @param {string} password - Salasana
- * @returns {Promise<Object>} - Kirjautumistiedot
- */
 export async function login(username, password) {
     try {
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -169,6 +118,14 @@ export async function login(username, password) {
             role: data.user.kayttajarooli
         }));
 
+        // Log Kubios login status
+        if (data.kubios) {
+            console.log('Kubios login status:', data.kubios.success ? 'Success' : 'Failed');
+            if (data.kubios.message) {
+                console.log('Kubios message:', data.kubios.message);
+            }
+        }
+
         return data;
     } catch (error) {
         console.error('Login error:', error);
@@ -176,23 +133,69 @@ export async function login(username, password) {
     }
 }
 
+export async function logout() {
+    try {
+        const token = getAuthToken();
+
+        if (!token) {
+            console.log('No authentication token found, already logged out');
+            clearAuthToken();
+            return { message: 'Uloskirjautuminen onnistui' };
+        }
+
+        console.log('Sending logout request to server with token');
+
+        // Poista token ja käyttäjätiedot localStoragesta
+        const savedToken = token; // Tallenna token muuttujaan ennen poistoa
+        clearAuthToken();
+
+        // Lähetä uloskirjautumispyyntö palvelimelle käyttäen tallennettua tokenia
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${savedToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Server-side logout successful:', data);
+                return data;
+            } else {
+                console.warn('Server-side logout failed:', response.status);
+                return { message: 'Uloskirjautuminen onnistui (paikallisesti)' };
+            }
+        } catch (fetchError) {
+            console.error('Error during server logout request:', fetchError);
+            return { message: 'Uloskirjautuminen onnistui (paikallisesti)' };
+        }
+    } catch (error) {
+        console.error('Overall logout error:', error);
+        // Varmista että token poistetaan virhetilanteessakin
+        clearAuthToken();
+        return { message: 'Uloskirjautuminen onnistui (paikallisesti)' };
+    }
+}
+
 /**
  * Rekisteröi uuden käyttäjän
  * @param {string} username - Käyttäjänimi
  * @param {string} password - Salasana
- * @param {string} email - Sähköposti (valinnainen)
+ * @param {string} email - Sähköposti
  * @returns {Promise<Object>} - Rekisteröintitiedot
  */
-export async function register(username, password, email = null) {
+export async function register(username, password, email) {
     try {
+        // Varmista että email on aina mukana, käytä tyhjää stringiä jos puuttuu
         const userData = {
             kayttajanimi: username,
-            salasana: password
+            salasana: password,
+            email: email || "" // Varmista että email on aina määritelty
         };
 
-        if (email) {
-            userData.email = email;
-        }
+        console.log('Lähetetään rekisteröintitiedot:', userData);
 
         const response = await fetch(`${API_BASE_URL}/auth/register`, {
             method: 'POST',

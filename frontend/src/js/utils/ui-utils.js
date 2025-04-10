@@ -1,13 +1,3 @@
-/**
- * ui-utils.js
- * UI-komponenttien luomiseen ja hallintaan tarkoitetut apufunktiot
- */
-
-/**
- * Näyttää virheviestin käyttäjälle
- * @param {HTMLElement|string} element - Elementti tai elementin id, johon virheilmoitus näytetään
- * @param {string} message - Virheilmoituksen teksti
- */
 export function showError(element, message) {
    const errorElement = typeof element === 'string' ? document.getElementById(element) : element;
 
@@ -15,20 +5,12 @@ export function showError(element, message) {
        errorElement.textContent = message;
        errorElement.style.display = 'block';
 
-       // Vieritetään viesti näkyviin
        errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
    } else {
-       // Fallback: käytä alerttia jos elementtiä ei löydy
        alert('Virhe: ' + message);
    }
 }
 
-/**
-* Asettaa input-kentän arvon
-* @param {string} id - Input-kentän id
-* @param {any} value - Kentän arvo
-* @returns {boolean} - true jos arvo asetettiin onnistuneesti
-*/
 export function setInputValue(id, value) {
    const input = document.getElementById(id);
    if (input && value !== null && value !== undefined) {
@@ -38,10 +20,6 @@ export function setInputValue(id, value) {
    return false;
 }
 
-/**
-* Nollaa lomakkeen kentät
-* @param {HTMLFormElement|string} form - Lomake-elementti tai lomakkeen id
-*/
 export function resetForm(form) {
    const formElement = typeof form === 'string' ? document.getElementById(form) : form;
    if (formElement && formElement.tagName === 'FORM') {
@@ -49,11 +27,6 @@ export function resetForm(form) {
    }
 }
 
-/**
-* Asettaa elementin näkyvyyden
-* @param {HTMLElement|string} element - Elementti tai elementin id
-* @param {boolean} visible - true = näkyvissä, false = piilotettu
-*/
 export function setElementVisibility(element, visible) {
    const el = typeof element === 'string' ? document.getElementById(element) : element;
    if (el) {
@@ -61,17 +34,9 @@ export function setElementVisibility(element, visible) {
    }
 }
 
-/**
-* Luo HTML-elementti annetuilla ominaisuuksilla ja lapsielementeillä
-* @param {string} tag - HTML-tagin nimi
-* @param {Object} attributes - Elementin attribuutit
-* @param {Array|string} children - Lapsielementit tai tekstisisältö
-* @returns {HTMLElement} - Luotu elementti
-*/
 export function createElement(tag, attributes = {}, children = []) {
    const element = document.createElement(tag);
 
-   // Aseta attribuutit
    Object.entries(attributes).forEach(([key, value]) => {
        if (key === 'style' && typeof value === 'object') {
            Object.entries(value).forEach(([prop, val]) => {
@@ -86,7 +51,6 @@ export function createElement(tag, attributes = {}, children = []) {
        }
    });
 
-   // Lisää lapsielementit tai tekstisisältö
    if (typeof children === 'string') {
        element.textContent = children;
    } else if (Array.isArray(children)) {
@@ -102,13 +66,6 @@ export function createElement(tag, attributes = {}, children = []) {
    return element;
 }
 
-/**
-* Luo vahvistusikkuna
-* @param {string} message - Vahvistusviesti
-* @param {string} confirmText - Vahvistusnapin teksti
-* @param {string} cancelText - Peruutusnapin teksti
-* @returns {Promise<boolean>} - True jos käyttäjä vahvisti, false jos peruutti
-*/
 export function showConfirmDialog(message, confirmText = 'Kyllä', cancelText = 'Peruuta') {
    return new Promise((resolve) => {
        // Käytä natiivi-confirmiä jos oma toteutus ei ole mahdollinen
@@ -117,12 +74,6 @@ export function showConfirmDialog(message, confirmText = 'Kyllä', cancelText = 
    });
 }
 
-/**
-* Näyttää toast-ilmoituksen (väliaikainen popup)
-* @param {string} message - Ilmoituksen teksti
-* @param {string} type - Ilmoituksen tyyppi ('success', 'error', 'info')
-* @param {number} duration - Ilmoituksen kesto millisekunneissa
-*/
 export function showToast(message, type = 'info', duration = 3000) {
    // Tarkistetaan onko toast-container jo luotu
    let toastContainer = document.getElementById('toast-container');

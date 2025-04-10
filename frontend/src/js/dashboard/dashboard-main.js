@@ -1,9 +1,4 @@
-/**
- * dashboard-main.js
- * Dashboard-sovelluksen päämoduuli, joka alustaa kaikki komponentit
- */
-
-import { getAuthToken, clearAuthToken, getLoggedInUser } from '../utils/api-client.js';
+import { getAuthToken, clearAuthToken, logout, getLoggedInUser } from '../utils/api-client.js';
 import { showToast } from '../utils/ui-utils.js';
 import { initializeCalendar } from './calendar-module.js';
 import { initializeEntryModule } from './entry-module.js';
@@ -12,7 +7,6 @@ import { initializeHRVModule } from './hrv-module.js';
 import { initializeModalModule } from './modal-module.js';
 import { setupInfoButtons } from './info-module.js';
 
-// Globaali nimiavaruus
 window.DiaBalance = {
     calendar: {},
     entries: {
@@ -23,19 +17,13 @@ window.DiaBalance = {
     modal: {}
 };
 
-/**
- * Sovelluksen alustus
- */
 document.addEventListener('DOMContentLoaded', () => {
-    // Tarkista onko käyttäjä kirjautunut
     const token = getAuthToken();
     if (!token) {
         window.location.href = 'login.html';
         return;
     }
 
-    // Kiinnitä modulit globaaliin nimiavaruuteen
-    // Tämä on vain yhteensopivuutta varten, uuden koodin pitäisi käyttää importteja
     import('./calendar-module.js').then(module => {
         window.DiaBalance.calendar = module;
     });
@@ -56,40 +44,28 @@ document.addEventListener('DOMContentLoaded', () => {
         window.DiaBalance.modal = module;
     });
 
-    // Alusta käyttöliittymä
     initializeUI();
 });
 
-/**
- * Alusta käyttöliittymä
- */
 function initializeUI() {
-    // Päivitä käyttäjätiedot
     updateUserInfo();
 
-    // Aseta uloskirjautumisnappi
     setupLogoutButton();
 
-    // Alusta moduulit
     initializeEntryModule();
     initializeCalendar();
     initializeChartView();
     initializeHRVModule();
     initializeModalModule();
 
-    // Aseta info-napit
     setupInfoButtons();
 
-    // Näytä tervetuloviesti
     const user = getLoggedInUser();
     if (user && user.username) {
         showToast(`Tervetuloa, ${user.username}!`, 'info');
     }
 }
 
-/**
- * Päivitä käyttäjätiedot näkymässä
- */
 function updateUserInfo() {
     try {
         const user = getLoggedInUser();
@@ -104,9 +80,6 @@ function updateUserInfo() {
     }
 }
 
-/**
- * Aseta uloskirjautumisnapin tapahtumankäsittelijä
- */
 function setupLogoutButton() {
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
@@ -114,16 +87,36 @@ function setupLogoutButton() {
     }
 }
 
-/**
- * Käsittele uloskirjautuminen
- */
-function handleLogout() {
-    clearAuthToken();
-    showToast('Kirjauduttu ulos onnistuneesti', 'success');
-    window.location.href = '../../index.html';
+async function handleLogout() {
+    console.log('Logout button clicked in dashboard');
+
+    try {
+        console.log('Sending logout request to server...');
+        const response = await fetch('http://localhost:3000/api/auth/logout', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        console.log('Server logout response:', data);
+
+        clearAuthToken();
+
+        showToast('Kirjauduttu ulos onnistuneesti', 'success');
+
+        window.location.href = '../../index.html';
+    } catch (error) {
+        console.error('Logout error:', error);
+
+        clearAuthToken();
+        showToast('Kirjauduttu ulos (paikallisesti)', 'warning');
+        window.location.href = '../../index.html';
+    }
 }
 
-// Vie funktiot, jotta niitä voidaan käyttää globaalisti
 export {
     updateUserInfo,
     handleLogout

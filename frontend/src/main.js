@@ -3,7 +3,7 @@
  * Etusivun toiminnallisuus
  */
 
-import { getAuthToken } from './js/utils/api-client.js';
+import { getAuthToken, clearAuthToken, logout } from './js/utils/api-client.js';
 
 /**
  * Alustus kun DOM on latautunut
@@ -53,9 +53,10 @@ function setupEventListeners() {
  * Käsittelee uloskirjautumisen
  */
 function handleLogout() {
-    // Poista token localStorage:sta
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    console.log('Logout button clicked');
+
+    // Poista token ja käyttäjätiedot localStoragesta välittömästi
+    clearAuthToken();
 
     // Päivitä nappi ja sen toiminto ilman että sivu päivittyy kokonaan
     const authButton = document.getElementById('authButton');
@@ -69,6 +70,12 @@ function handleLogout() {
 
     // Näytä viesti
     alert('You have been logged out successfully.');
+
+    // Lähetä logout-pyyntö palvelimelle taustalla
+    logout().catch(error => {
+        console.error('Server-side logout error:', error);
+        // Käyttäjä on jo kirjautunut ulos, joten ei tarvita toimenpiteitä
+    });
 }
 
 // Vie funktiot, jotta niitä voidaan käyttää globaalisti

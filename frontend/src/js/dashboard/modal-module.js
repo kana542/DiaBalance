@@ -1,28 +1,17 @@
-/**
- * modal-module.js
- * Modaali-ikkunoiden hallinta
- */
-
 import { formatLocalizedDate } from '../utils/date-utils.js';
-import { setInputValue, showConfirmDialog } from '../utils/ui-utils.js';
+import { setInputValue, showConfirmDialog, showToast } from '../utils/ui-utils.js';
 import { getMonthEntries, updateCalendarView } from './calendar-module.js';
 import { saveEntryData, deleteEntryData } from './entry-module.js';
+import { fetchAndSaveHrvDataForDay } from './hrv-module.js';
 
 // Moduulin sisäiset muuttujat
 let currentModalDate = null;
 
-/**
- * Alustaa modaali-ikkunoiden toiminnallisuuden
- */
 export function initializeModalModule() {
     setupModalEvents();
     console.log('Modal module initialized');
 }
 
-/**
- * Avaa merkinnän muokkausikkuna
- * @param {string} dateStr - Päivämäärä YYYY-MM-DD-muodossa
- */
 export function openEntryModal(dateStr) {
     console.log("Opening entry modal for date:", dateStr);
 
@@ -67,14 +56,13 @@ export function openEntryModal(dateStr) {
         populateEntryForm(entry);
     }
 
+    // Resetoi HRV-napin tila
+    resetHrvButton();
+
     // Näytä modaali
     modal.style.display = 'block';
 }
 
-/**
- * Täyttää lomakkeen tiedot merkinnän perusteella
- * @param {Object} entry - Merkinnän tiedot
- */
 function populateEntryForm(entry) {
     if (!entry) return;
 
@@ -124,6 +112,17 @@ export function closeEntryModal() {
 }
 
 /**
+ * Resetoi HRV-napin tila
+ */
+function resetHrvButton() {
+    const fetchHrvBtn = document.getElementById('fetchHrvButton');
+    if (fetchHrvBtn) {
+        fetchHrvBtn.textContent = 'Hae HRV-data';
+        fetchHrvBtn.disabled = false;
+    }
+}
+
+/**
  * Asettaa modaalin tapahtumien käsittelijät
  */
 function setupModalEvents() {
@@ -134,6 +133,7 @@ function setupModalEvents() {
     const cancelBtn = document.getElementById('cancelButton');
     const saveBtn = document.getElementById('saveButton');
     const deleteBtn = document.getElementById('deleteButton');
+    const fetchHrvBtn = document.getElementById('fetchHrvButton');
 
     // Sulje-napin toiminta
     if (closeBtn) closeBtn.onclick = closeEntryModal;
@@ -166,6 +166,34 @@ function setupModalEvents() {
                 });
         };
     }
+
+    // HRV-napin toiminta (tyhjä toteutus)
+    if (fetchHrvBtn) {
+        fetchHrvBtn.onclick = async () => {
+          const dateStr = modal.getAttribute('data-date');
+
+          // Näytä latauksen tila
+          fetchHrvBtn.textContent = 'Haetaan...';
+          fetchHrvBtn.disabled = true;
+
+          try {
+            // Kutsu HRV-moduulin toteutusta
+            const result = await fetchAndSaveHrvDataForDay(dateStr);
+
+            // Näytä ilmoitus
+            showToast(result.message || 'HRV-data haettu', result.success ? 'success' : 'warning');
+
+            // Palauta napin tila
+            fetchHrvBtn.textContent = 'Hae HRV-data';
+            fetchHrvBtn.disabled = false;
+          } catch (error) {
+            console.error('Virhe HRV-toiminnossa:', error);
+            fetchHrvBtn.textContent = 'Virhe';
+            fetchHrvBtn.disabled = false;
+            showToast('Virhe HRV-datan hakemisessa', 'error');
+          }
+        };
+      }
 }
 
 /**
