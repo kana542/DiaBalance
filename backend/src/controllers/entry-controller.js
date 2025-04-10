@@ -1,9 +1,10 @@
+import promisePool from '../utils/database.js';
+
 import { insertKirjaus, getKirjauksetByMonth, updateKirjaus, deleteKirjaus } from "../models/entry-models.js";
 import { customError } from '../middlewares/error-handler.js';
+import { getHrvData } from '../models/hrv-model.js';
 
-/**
- * Luo uusi kirjaus
- */
+
 const createEntry = async (req, res, next) => {
     const kayttajaId = req.user.kayttaja_id;
     const kirjausData = req.body;
@@ -29,32 +30,46 @@ const getEntriesByMonth = async (req, res, next) => {
     console.log(`Request for entries: year=${year}, month=${month}, user=${kayttajaId}`);
 
     if (!year || !month) {
-        return next(customError('Vuosi (year) ja kuukausi (month) parametrit vaaditaan', 400));
+      return next(customError('Vuosi (year) ja kuukausi (month) parametrit vaaditaan', 400));
     }
 
     try {
-        const entries = await getKirjauksetByMonth(kayttajaId, parseInt(year), parseInt(month));
+      // Hae kirjaukset
+      const entries = await getKirjauksetByMonth(kayttajaId, parseInt(year), parseInt(month));
 
-        // Tässä voimme varmistaa, että päivämäärä on oikeassa muodossa
-        const formattedEntries = entries.map(entry => {
-            // Jos meillä on formatted_date kentästä, käytä sitä
-            if (entry.formatted_date) {
-                entry.pvm = entry.formatted_date;
-            }
-            return entry;
-        });
+      // Hae myös HRV-tiedot ja liitä ne kirjauksiin
+      const formattedEntries = await Promise.all(entries.map(async entry => {
+        try {
+          // Jos meillä on formatted_date kentästä, käytä sitä
+          if (entry.formatted_date) {
+            entry.pvm = entry.formatted_date;
+          }
 
-        console.log(`Returning ${formattedEntries.length} entries`);
-        res.json(formattedEntries);
+          // Hae HRV-data tälle päivälle
+          const [hrvRows] = await promisePool.query(
+            'SELECT * FROM hrv_kirjaus WHERE kayttaja_id = ? AND pvm = ?',
+            [kayttajaId, entry.pvm]
+          );
+
+          if (hrvRows && hrvRows.length > 0) {
+            entry.hrv_data = hrvRows[0];
+          }
+
+          return entry;
+        } catch (e) {
+          console.error(`Error processing entry for ${entry.pvm}:`, e);
+          return entry;
+        }
+      }));
+
+      console.log(`Returning ${formattedEntries.length} entries`);
+      res.json(formattedEntries);
     } catch (error) {
-        console.error("Error in getEntriesByMonth:", error);
-        next(customError(error.message, 400));
+      console.error("Error in getEntriesByMonth:", error);
+      next(customError(error.message, 400));
     }
-};
+  };
 
-/**
- * Päivitä olemassa oleva kirjaus tai luo uusi
- */
 const updateEntry = async (req, res, next) => {
     const kayttajaId = req.user.kayttaja_id;
     const kirjausData = req.body;
@@ -66,11 +81,6 @@ const updateEntry = async (req, res, next) => {
     }
 
     try {
-        // Tässä on tärkeää käsitellä myös null-arvot oikein
-        // Validaattori voi epäonnistua, jos arvo on null ja kenttä on määritelty float-tyyppiseksi
-        // Sen vuoksi numeeriset arvot pitää käsitellä erikseen
-
-        // Varmista että numeeriset kentät ovat null tai numeroita
         const numericFields = [
             'vs_aamu', 'vs_ilta',
             'vs_aamupala_ennen', 'vs_aamupala_jalkeen',

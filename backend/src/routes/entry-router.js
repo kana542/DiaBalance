@@ -19,7 +19,6 @@ entryRouter.post(
   '/',
   authenticateToken,
   body('pvm').isISO8601(),
-  body('hrv_data').optional(),
   // Kaikki nämä kentät sallivat null-arvon
   body('vs_aamu').optional({ nullable: true }).isFloat({min: 0, max: 30}),
   body('vs_ilta').optional({ nullable: true }).isFloat({min: 0, max: 30}),
@@ -44,7 +43,6 @@ entryRouter.put(
   '/',
   authenticateToken,
   body('pvm').isISO8601(),
-  body('hrv_data').optional(),
   // Kaikki nämä kentät sallivat null-arvon
   body('vs_aamu').optional({ nullable: true }).isFloat({min: 0, max: 30}),
   body('vs_ilta').optional({ nullable: true }).isFloat({min: 0, max: 30}),

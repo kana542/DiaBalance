@@ -1,6 +1,7 @@
 import express from 'express';
-import userRouter from './routes/user-router.js';
-import entryRouter from './routes/entry-router.js'; 
+import authRouter from './routes/auth-router.js';  // Import the auth router
+import entryRouter from './routes/entry-router.js';
+import kubiosRouter from './routes/kubios-router.js';
 import cors from 'cors';
 import { errorHandler, notFoundHandler } from './middlewares/error-handler.js';
 
@@ -11,20 +12,21 @@ const hostname = 'localhost';
 app.use(cors());
 app.use(express.json());
 
-// Testireitti
+// test route
 app.get('/', (req, res) => {
-  res.send('Tervetuloa DiaBalance backendiin!');
+  res.send('Diabalance BE (dev)');
 });
 
-// Käyttäjäreitit käyttöön (nyt osoitteessa /api/auth)
-app.use('/api/auth', userRouter);
+// route handlers
+app.use('/api/auth', authRouter);  // Use auth router for authentication routes
 app.use('/api/entries', entryRouter);
+app.use('/api/kubios', kubiosRouter);
 
-// Virhekäsittelyt
+// error handling
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Palvelimen käynnistys
+// start server
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}`);
 });

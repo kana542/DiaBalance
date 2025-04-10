@@ -1,20 +1,14 @@
 import promisePool from '../utils/database.js';
 
-/**
- * Lisää uusi kirjaus tietokantaan
- * @param {number} kayttajaId
- * @param {Object} data
- */
 const insertKirjaus = async (kayttajaId, data) => {
   try {
     const [result] = await promisePool.query(
       `INSERT INTO kirjaus
-        (kayttaja_id, pvm, hrv_data, vs_aamu, vs_ilta, vs_aamupala_ennen, vs_aamupala_jalkeen, vs_lounas_ennen, vs_lounas_jalkeen, vs_valipala_ennen, vs_valipala_jalkeen, vs_paivallinen_ennen, vs_paivallinen_jalkeen, vs_iltapala_ennen, vs_iltapala_jalkeen, oireet, kommentti)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (kayttaja_id, pvm, vs_aamu, vs_ilta, vs_aamupala_ennen, vs_aamupala_jalkeen, vs_lounas_ennen, vs_lounas_jalkeen, vs_valipala_ennen, vs_valipala_jalkeen, vs_paivallinen_ennen, vs_paivallinen_jalkeen, vs_iltapala_ennen, vs_iltapala_jalkeen, oireet, kommentti)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         kayttajaId,
         data.pvm,
-        data.hrv_data,
         data.vs_aamu,
         data.vs_ilta,
         data.vs_aamupala_ennen,
@@ -38,13 +32,6 @@ const insertKirjaus = async (kayttajaId, data) => {
   }
 };
 
-/**
- * Hae kirjaukset tietyltä kuukaudelta
- * @param {number} kayttajaId - Käyttäjän ID
- * @param {number} year - Vuosi (YYYY)
- * @param {number} month - Kuukausi (1-12)
- * @returns {Array} - Kirjaukset
- */
 const getKirjauksetByMonth = async (kayttajaId, year, month) => {
   try {
     console.log(`Running query for user ${kayttajaId}, year ${year}, month ${month}`);
@@ -76,12 +63,6 @@ const getKirjauksetByMonth = async (kayttajaId, year, month) => {
   }
 };
 
-/**
- * Päivitä olemassa oleva kirjaus
- * @param {number} kayttajaId - Käyttäjän ID
- * @param {Object} data - Kirjauksen tiedot
- * @returns {Object} - Tulos
- */
 const updateKirjaus = async (kayttajaId, data) => {
   try {
     console.log(`Updating entry for date ${data.pvm}`);
@@ -102,8 +83,7 @@ const updateKirjaus = async (kayttajaId, data) => {
     console.log("Entry exists, updating");
     const [result] = await promisePool.query(
       `UPDATE kirjaus
-       SET hrv_data = ?,
-           vs_aamu = ?,
+       SET vs_aamu = ?,
            vs_ilta = ?,
            vs_aamupala_ennen = ?,
            vs_aamupala_jalkeen = ?,
@@ -119,7 +99,6 @@ const updateKirjaus = async (kayttajaId, data) => {
            kommentti = ?
        WHERE kayttaja_id = ? AND pvm = ?`,
       [
-        data.hrv_data,
         data.vs_aamu,
         data.vs_ilta,
         data.vs_aamupala_ennen,
@@ -145,12 +124,6 @@ const updateKirjaus = async (kayttajaId, data) => {
   }
 };
 
-/**
- * Poista kirjaus
- * @param {number} kayttajaId - Käyttäjän ID
- * @param {string} pvm - Päivämäärä muodossa YYYY-MM-DD
- * @returns {Object} - Tulos
- */
 const deleteKirjaus = async (kayttajaId, pvm) => {
   try {
     console.log(`Deleting entry for date ${pvm}`);
