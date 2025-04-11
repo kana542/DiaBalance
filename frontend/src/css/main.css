@@ -6,15 +6,20 @@
 }
 
 body {
-   font-family: Arial, sans-serif;
+   font-family: 'Poppins', sans-serif;
    line-height: 1.6;
-   background-color: #f4f4f4;
-   color: #333;
+   background-color: #f0f0f0;
+   color: #1a1a1a;
    min-height: 100vh;
    display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: center;
+}
+
+:focus {
+  outline: 3px solid #0a96db;
+  outline-offset: 2px;
 }
 
 .container {
@@ -26,7 +31,7 @@ body {
 
 h1 {
    margin-bottom: 30px;
-   color: #333;
+   color: #1a1a1a;
 }
 
 .button-container {
@@ -35,7 +40,7 @@ h1 {
 
 .btn {
    display: inline-block;
-   background: #4b6cb7;
+   background: #3d5aa1;
    color: #fff;
    border: none;
    padding: 10px 20px;
@@ -49,15 +54,15 @@ h1 {
 }
 
 .btn:hover {
-   background: #3a5a9b;
+   background: #2d487e;
 }
 
 .btn-secondary {
-   background: #6c757d;
+   background: #5a6268;
 }
 
 .btn-secondary:hover {
-   background: #5a6268;
+   background: #4a5258;
 }
 
 .logo-container {
@@ -66,4 +71,11 @@ h1 {
 .logo {
    width: 300px;
    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  button, .btn, select, input[type="checkbox"] + label {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

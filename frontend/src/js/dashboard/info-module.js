@@ -1,11 +1,11 @@
 const infoContent = {
     calendar: {
         title: "Kalenterin käyttö",
-        content: "Kalenteri näyttää kaikki kuukauden päivät. Punaisella merkityt päivät sisältävät valmiit merkinnät, oranssilla merkityt osittaiset merkinnät. Klikkaa päivämäärää nähdäksesi sen päivän tiedot. Tuplaklikkaa päivämäärää lisätäksesi tai muokataksesi merkintää."
+        content: "Kalenteri näyttää kaikki kuukauden päivät. Punaisella merkityt päivät sisältävät valmiit merkinnät, oranssilla merkityt osittaiset merkinnät. Klikkaa päivämäärää nähdäksesi sen HRV-tiedot. Tuplaklikkaa päivämäärää lisätäksesi tai muokataksesi merkintää."
     },
     bloodSugar: {
         title: "Verensokeriseuranta",
-        content: "Tämä osio näyttää verensokeriarvosi valitulta päivältä. Voit tarkastella perusseurannan arvoja (aamu- ja ilta-arvot) tai ateriakohtaisia arvoja (ennen ja jälkeen)."
+        content: "Tämä osio näyttää verensokeriarvosi valitulta kuukaudelta. Voit tarkastella perusseurannan arvoja (aamu- ja ilta-arvot) tai ateriakohtaisia arvoja (ennen ja jälkeen)."
     },
     chart: {
         title: "Kaaviotieto",
@@ -13,7 +13,7 @@ const infoContent = {
     },
     hrv: {
         title: "HRV-analyysi",
-        content: "Tämä osio näyttäisi HRV-datan analyysin tulokset, mutta toiminnallisuus ei ole tällä hetkellä käytössä. Näet tässä palautumisen, stressin, keskisykkeen ja fysiologisen iän arvot, kun HRV-data on saatavilla."
+        content: "Tämä osio näyttää HRV-datan analyysin tulokset."
     }
  };
 

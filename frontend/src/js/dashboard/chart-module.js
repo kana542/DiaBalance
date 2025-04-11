@@ -89,8 +89,8 @@ function initializeChart() {
                 {
                     label: 'Ennen',
                     data: [],
-                    borderColor: '#ff5869',
-                    backgroundColor: '#ff5869',
+                    borderColor: '#e64458',
+                    backgroundColor: '#e64458',
                     tension: 0.4,
                     fill: false,
                     pointRadius: 5,
@@ -99,8 +99,8 @@ function initializeChart() {
                 {
                     label: 'Jälkeen',
                     data: [],
-                    borderColor: '#4ecdc4',
-                    backgroundColor: '#4ecdc4',
+                    borderColor: '#39b3aa',
+                    backgroundColor: '#39b3aa',
                     tension: 0.4,
                     fill: false,
                     pointRadius: 5,

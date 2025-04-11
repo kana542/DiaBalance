@@ -28,13 +28,13 @@
 
 .auth-header h1 {
   font-size: 28px;
-  color: #4b6cb7;
+  color: #3d5aa1;
   margin-bottom: 10px;
   font-weight: 600;
 }
 
 .auth-header p {
-  color: #666;
+  color: #505050;
   font-size: 15px;
 }
 
@@ -47,7 +47,7 @@
   margin-bottom: 8px;
   font-weight: 500;
   font-size: 14px;
-  color: #444;
+  color: #1a1a1a;
 }
 
 .form-group input {
@@ -60,22 +60,22 @@
 }
 
 .form-group input:focus {
-  border-color: #4b6cb7;
-  outline: none;
+  border-color: #3d5aa1;
+  outline: 3px solid #0a96db;
   box-shadow: 0 0 0 2px rgba(75, 108, 183, 0.1);
 }
 
 .password-requirements {
   margin-top: 5px;
   font-size: 12px;
-  color: #777;
+  color: #505050;
   text-align: left;
 }
 
 .error-message {
   background-color: #fff2f2;
-  border-left: 3px solid #e74c3c;
-  color: #e74c3c;
+  border-left: 3px solid #e64458;
+  color: #e64458;
   padding: 12px;
   margin-bottom: 20px;
   font-size: 14px;
@@ -88,14 +88,14 @@
   padding: 12px;
   font-size: 16px;
   font-weight: 500;
-  background: #4b6cb7;
+  background: #3d5aa1;
   border-radius: 6px;
   margin-top: 10px;
   transition: background 0.3s;
 }
 
 .btn:hover {
-  background: #3a5a9b;
+  background: #2d487e;
 }
 
 .alt-links {
@@ -105,13 +105,14 @@
 }
 
 .alt-links a {
-  color: #4b6cb7;
+  color: #3d5aa1;
   text-decoration: none;
   margin: 0 5px;
 }
 
 .alt-links a:hover {
   text-decoration: underline;
+  color: #2d487e;
 }
 
 .logo-small {
@@ -120,13 +121,12 @@
   display: block;
 }
 
-/* Improved buttons and interactions */
 .btn {
   width: 100%;
   padding: 14px;
   font-size: 16px;
   font-weight: 500;
-  background: #4b6cb7;
+  background: #3d5aa1;
   color: white;
   border: none;
   border-radius: 6px;
@@ -136,7 +136,7 @@
 }
 
 .btn:hover {
-  background: #3a5a9b;
+  background: #2d487e;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -155,15 +155,15 @@
 }
 
 .alt-links a {
-  color: #4b6cb7;
+  color: #3d5aa1;
   text-decoration: none;
 }
 
 .alt-links a:hover {
   text-decoration: underline;
+  color: #2d487e;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
