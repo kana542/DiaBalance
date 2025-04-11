@@ -7,7 +7,7 @@ CREATE TABLE kayttaja (
 	kayttajanimi VARCHAR(40) NOT NULL,
 	email VARCHAR(255) NOT NULL,
 	salasana VARCHAR(60) NOT NULL,
-	kubios_token VARCHAR(255),
+	kubios_token TEXT,
 	kubios_expiration DATETIME,
 	kayttajarooli INT NOT NULL DEFAULT 0,
 	CONSTRAINT pk_kayttaja PRIMARY KEY (kayttaja_id),
