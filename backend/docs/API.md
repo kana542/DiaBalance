@@ -1,4 +1,4 @@
-# DiaBaLance API-dokumentaatio (backend)
+# DiaBalance API-dokumentaatio (backend)
 
 ## Sisällysluettelo
 1. [Johdanto](#johdanto)
