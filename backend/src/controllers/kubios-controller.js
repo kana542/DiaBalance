@@ -1,12 +1,18 @@
 import promisePool from '../utils/database.js';
-
 import 'dotenv/config';
 import fetch from 'node-fetch';
 import { storeHrvData } from '../models/hrv-model.js';
-import { customError } from '../middlewares/error-handler.js';
 import { getKubiosToken } from '../models/user-model.js';
 
-// Kubios API base URL should be set in .env
+import {
+  createExternalApiError,
+  createAuthenticationError,
+  createValidationError,
+  createDatabaseError,
+  createResponse,
+  Severity
+} from '../middlewares/error-handler.js';
+
 const baseUrl = process.env.KUBIOS_API_URI;
 
 const getUserData = async (req, res, next) => {
@@ -25,7 +31,7 @@ const getUserData = async (req, res, next) => {
     );
 
     if (!response.ok) {
-      throw customError(`Kubios API error: ${response.status} ${response.statusText}`, 500);
+      throw createExternalApiError(`Kubios API error: ${response.status} ${response.statusText}`);
     }
 
     const results = await response.json();
@@ -34,7 +40,7 @@ const getUserData = async (req, res, next) => {
     console.log('Kubios API raw response:');
     console.log(JSON.stringify(results, null, 2));
 
-    return res.json(results);
+    return res.json(createResponse(results, "Kubios-tiedot haettu onnistuneesti", Severity.SUCCESS));
   } catch (error) {
     console.error('Error fetching Kubios data:', error);
     next(error);
@@ -55,7 +61,7 @@ const getUserInfo = async (req, res, next) => {
     });
 
     if (!response.ok) {
-      throw customError(`Kubios API error: ${response.status} ${response.statusText}`, 500);
+      throw createExternalApiError(`Kubios API error: ${response.status} ${response.statusText}`);
     }
 
     const userInfo = await response.json();
@@ -64,7 +70,7 @@ const getUserInfo = async (req, res, next) => {
     console.log('Kubios API user info:');
     console.log(JSON.stringify(userInfo, null, 2));
 
-    return res.json(userInfo);
+    return res.json(createResponse(userInfo, "Kubios-käyttäjätiedot haettu", Severity.SUCCESS));
   } catch (error) {
     console.error('Error fetching Kubios user info:', error);
     next(error);
@@ -83,7 +89,7 @@ const getUserDataByDate = async (req, res, next) => {
     const kubiosToken = await getKubiosToken(userId);
 
     if (!kubiosToken) {
-      return next(customError('Kubios-tokenia ei löydy tai se on vanhentunut. Kirjaudu uudelleen.', 401));
+      return next(createAuthenticationError('Kubios-tokenia ei löydy tai se on vanhentunut. Kirjaudu uudelleen.'));
     }
 
     console.log('Got valid Kubios token from database');
@@ -102,7 +108,7 @@ const getUserDataByDate = async (req, res, next) => {
     );
 
     if (!response.ok) {
-      throw customError(`Kubios API error: ${response.status} ${response.statusText}`, 500);
+      throw createExternalApiError(`Kubios API error: ${response.status} ${response.statusText}`);
     }
 
     const results = await response.json();
@@ -149,7 +155,13 @@ const getUserDataByDate = async (req, res, next) => {
       console.log('No HRV data found for date:', date);
     }
 
-    res.json(simplifiedResults);
+    res.json(createResponse(
+      simplifiedResults,
+      simplifiedResults.length > 0
+        ? "HRV-tiedot haettu onnistuneesti"
+        : "HRV-tietoja ei löytynyt annetulle päivälle",
+      Severity.SUCCESS
+    ));
   } catch (error) {
     console.error('Error fetching Kubios data by date:', error);
     next(error);
@@ -165,7 +177,7 @@ const saveHrvData = async (req, res, next) => {
 
   try {
     if (!hrvData) {
-      return next(customError('HRV-data puuttuu', 400));
+      return next(createValidationError('HRV-data puuttuu'));
     }
 
     // Varmista että perusmerkintä on olemassa
@@ -183,21 +195,19 @@ const saveHrvData = async (req, res, next) => {
         );
       } catch (insertError) {
         console.error('Error creating placeholder entry:', insertError);
-        return next(customError('Failed to create required entry for HRV data', 500));
+        return next(createDatabaseError('Failed to create required entry for HRV data', insertError));
       }
     }
 
     // Tallenna HRV-data
     const result = await storeHrvData(userId, date, hrvData);
 
-    res.json({
-      success: true,
-      message: 'HRV-data tallennettu onnistuneesti',
+    res.json(createResponse({
       result
-    });
+    }, 'HRV-data tallennettu onnistuneesti', Severity.SUCCESS));
   } catch (error) {
     console.error('Error saving HRV data:', error);
-    next(error);
+    next(createDatabaseError('HRV-datan tallennus epäonnistui', error));
   }
 };
 

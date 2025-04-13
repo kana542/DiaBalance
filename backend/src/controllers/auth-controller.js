@@ -1,7 +1,14 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { loginUser, getMyProfile, updateKubiosToken, removeKubiosToken } from "../models/user-model.js";
-import { customError } from "../middlewares/error-handler.js";
+import {
+  createResponse,
+  createAuthenticationError,
+  createValidationError,
+  createNotFoundError,
+  createDatabaseError,
+  Severity
+} from "../middlewares/error-handler.js";
 import { kubiosLogin } from "../controllers/kubios-auth-controller.js";
 
 const login = async (req, res, next) => {
@@ -9,19 +16,19 @@ const login = async (req, res, next) => {
     const { kayttajanimi, salasana } = req.body;
 
     if (!kayttajanimi || !salasana) {
-      return next(customError("Käyttäjänimi ja salasana vaaditaan", 400));
+      return next(createValidationError("Käyttäjänimi ja salasana vaaditaan"));
     }
 
     const user = await loginUser(kayttajanimi);
 
     if (!user) {
-      return next(customError("Virheellinen käyttäjätunnus", 401));
+      return next(createAuthenticationError("Virheellinen käyttäjätunnus"));
     }
 
     const match = await bcrypt.compare(salasana, user.salasana);
 
     if (!match) {
-      return next(customError("Virheellinen salasana", 401));
+      return next(createAuthenticationError("Virheellinen salasana"));
     }
 
     const token = jwt.sign(
@@ -70,14 +77,13 @@ const login = async (req, res, next) => {
       };
     }
 
-    res.json({
-      message: "Kirjautuminen onnistui",
+    res.json(createResponse({
       token,
       user,
       kubios: kubiosStatus
-    });
+    }, "Kirjautuminen onnistui", Severity.SUCCESS));
   } catch (error) {
-    next(customError(error.message, 400));
+    next(createDatabaseError("Kirjautuminen epäonnistui", error));
   }
 };
 
@@ -87,7 +93,7 @@ const logout = async (req, res, next) => {
     const userId = req.user?.kayttaja_id;
 
     if (!userId) {
-      return next(customError("Käyttäjän ID puuttuu", 400));
+      return next(createValidationError("Käyttäjän ID puuttuu"));
     }
 
     console.log(`Logging out user ID: ${userId}, removing Kubios token`);
@@ -97,13 +103,12 @@ const logout = async (req, res, next) => {
 
     console.log(`Logout result for user ${userId}:`, result);
 
-    res.json({
-      message: "Uloskirjautuminen onnistui",
+    res.json(createResponse({
       tokenRemoved: result
-    });
+    }, "Uloskirjautuminen onnistui", Severity.SUCCESS));
   } catch (error) {
     console.error("Logout error:", error);
-    next(customError(error.message || "Uloskirjautuminen epäonnistui", 400));
+    next(createDatabaseError("Uloskirjautuminen epäonnistui", error));
   }
 };
 
@@ -112,12 +117,12 @@ const getMe = async (req, res, next) => {
     const user = await getMyProfile(req.user.kayttaja_id);
 
     if (!user) {
-      return next(customError("Käyttäjää ei löytynyt", 404));
+      return next(createNotFoundError("Käyttäjää ei löytynyt"));
     }
 
-    res.json(user);
+    res.json(createResponse(user, "Käyttäjätiedot haettu", Severity.SUCCESS));
   } catch (error) {
-    next(customError(error.message, 400));
+    next(createDatabaseError("Käyttäjätietojen hakeminen epäonnistui", error));
   }
 };
 
@@ -126,15 +131,15 @@ const validateToken = async (req, res, next) => {
     const user = await getMyProfile(req.user.kayttaja_id);
 
     if (!user) {
-      return next(customError("Käyttäjää ei löytynyt", 404));
+      return next(createNotFoundError("Käyttäjää ei löytynyt"));
     }
 
-    res.json({
+    res.json(createResponse({
       valid: true,
-      user,
-    });
+      user
+    }, "Token on voimassa", Severity.SUCCESS));
   } catch (error) {
-    next(customError(error.message, 400));
+    next(createDatabaseError("Tokenin validointi epäonnistui", error));
   }
 };
 

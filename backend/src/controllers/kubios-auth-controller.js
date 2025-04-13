@@ -2,8 +2,15 @@ import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import { v4 } from 'uuid';
-import { customError } from '../middlewares/error-handler.js';
 import promisePool from '../utils/database.js';
+
+import {
+  createAuthenticationError,
+  createNotFoundError,
+  createExternalApiError,
+  createResponse,
+  Severity
+} from '../middlewares/error-handler.js';
 
 const baseUrl = process.env.KUBIOS_API_URI;
 
@@ -14,8 +21,7 @@ const findUserByEmailOrUsername = async (emailOrUsername) => {
 
     const [rows] = await promisePool.query(
       isEmail
-        ? 'SELECT kayttaja_id, kayttajanimi, email, salasana, kayttajarooli FROM kayttaja WHERE email = ?'
-        : 'SELECT kayttaja_id, kayttajanimi, email, salasana, kayttajarooli FROM kayttaja WHERE kayttajanimi = ?',
+        ? 'SELECT kayttaja_id, kayttajanimi, email, salasana, kayttajarooli FROM kayttaja WHERE email = ?' : 'SELECT kayttaja_id, kayttajanimi, email, salasana, kayttajarooli FROM kayttaja WHERE kayttajanimi = ?',
       [emailOrUsername]
     );
 
@@ -74,7 +80,7 @@ const kubiosLogin = async (username, password) => {
 
     if (!response.ok && !response.headers.has('location')) {
       console.error('Kubios login failed with status:', response.status);
-      throw customError('Virheellinen käyttäjänimi tai salasana (Kubios)', 401);
+      throw createAuthenticationError('Virheellinen käyttäjänimi tai salasana (Kubios)');
     }
 
     const location = response.headers.get('location');
@@ -82,7 +88,7 @@ const kubiosLogin = async (username, password) => {
 
     if (location.includes('login?null')) {
       console.error('Kubios login failed - login?null in location');
-      throw customError('Virheellinen käyttäjänimi tai salasana (Kubios)', 401);
+      throw createAuthenticationError('Virheellinen käyttäjänimi tai salasana (Kubios)');
     }
 
     const regex = /id_token=(.*)&access_token=(.*)&expires_in=(.*)/;
@@ -90,7 +96,7 @@ const kubiosLogin = async (username, password) => {
 
     if (!match || !match[1]) {
       console.error('Could not extract token from location:', location);
-      throw customError('Virhe Kubios-kirjautumisessa: tokenia ei löytynyt', 500);
+      throw createExternalApiError('Virhe Kubios-kirjautumisessa: tokenia ei löytynyt');
     }
 
     const idToken = match[1];
@@ -101,7 +107,7 @@ const kubiosLogin = async (username, password) => {
   } catch (error) {
     console.error('Kubios login error:', error);
     if (error.status) throw error;
-    throw customError('Virhe Kubios-kirjautumisessa', 500);
+    throw createExternalApiError('Virhe Kubios-kirjautumisessa');
   }
 };
 
@@ -119,7 +125,7 @@ const kubiosUserInfo = async (idToken) => {
 
     if (!response.ok) {
       console.error('Kubios user info request failed with status:', response.status);
-      throw customError('Kubios-käyttäjätietojen haku epäonnistui', 500);
+      throw createExternalApiError('Kubios-käyttäjätietojen haku epäonnistui');
     }
 
     const responseJson = await response.json();
@@ -129,12 +135,12 @@ const kubiosUserInfo = async (idToken) => {
       return responseJson.user;
     } else {
       console.error('Kubios API returned error:', responseJson);
-      throw customError('Kubios-käyttäjätietojen haku epäonnistui', 500);
+      throw createExternalApiError('Kubios-käyttäjätietojen haku epäonnistui');
     }
   } catch (error) {
     console.error('Error fetching Kubios user info:', error);
     if (error.status) throw error;
-    throw customError('Virhe Kubios-käyttäjätietojen haussa', 500);
+    throw createExternalApiError('Virhe Kubios-käyttäjätietojen haussa');
   }
 };
 
@@ -149,7 +155,7 @@ const postLogin = async (req, res, next) => {
     const localUser = await findUserByEmailOrUsername(kayttajanimi);
 
     if (!localUser) {
-      return next(customError(`Käyttäjää ei löydy järjestelmästä. Varmista, että sähköpostiosoite tai käyttäjänimi on oikein.`, 401));
+      return next(createNotFoundError(`Käyttäjää ei löydy järjestelmästä. Varmista, että sähköpostiosoite tai käyttäjänimi on oikein.`));
     }
 
     console.log(`Found local user with ID ${localUser.kayttaja_id} and username ${localUser.kayttajanimi}`);
@@ -176,11 +182,10 @@ const postLogin = async (req, res, next) => {
 
     delete localUser.salasana;
 
-    res.json({
-      message: 'Kirjautuminen onnistui (Kubios)',
+    res.json(createResponse({
       token,
       user: localUser
-    });
+    }, 'Kirjautuminen onnistui (Kubios)', Severity.SUCCESS));
   } catch (err) {
     console.error('Error in Kubios login process:', err);
     next(err);
@@ -195,12 +200,15 @@ const getKubiosMe = async (req, res, next) => {
     );
 
     if (rows.length === 0) {
-      return next(customError('Käyttäjää ei löytynyt', 404));
+      return next(createNotFoundError('Käyttäjää ei löytynyt'));
     }
 
-    res.json({ user: rows[0], kubios_token: req.user.kubiosIdToken });
+    res.json(createResponse({
+      user: rows[0],
+      kubios_token: req.user.kubiosIdToken
+    }, 'Käyttäjätiedot haettu', Severity.SUCCESS));
   } catch (err) {
-    next(err);
+    next(createDatabaseError("Käyttäjätietojen hakeminen epäonnistui", err));
   }
 };
 

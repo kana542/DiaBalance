@@ -1,13 +1,19 @@
 import bcrypt from "bcryptjs";
 import { registerUser, updateMyProfile } from "../models/user-model.js";
-import { customError } from "../middlewares/error-handler.js";
+
+import {
+  createValidationError,
+  createDatabaseError,
+  createResponse,
+  Severity
+} from "../middlewares/error-handler.js";
 
 const register = async (req, res, next) => {
   try {
     const { kayttajanimi, salasana, email, kayttajarooli } = req.body;
 
     if (!kayttajanimi || !salasana) {
-      return next(customError("Käyttäjänimi ja salasana vaaditaan", 400));
+      return next(createValidationError("Käyttäjänimi ja salasana vaaditaan"));
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -21,9 +27,13 @@ const register = async (req, res, next) => {
     };
 
     const userId = await registerUser(newUser);
-    res.status(201).json({ message: `Käyttäjä luotu, id: ${userId}` });
+    res.status(201).json(createResponse(
+      { id: userId },
+      `Käyttäjä luotu, id: ${userId}`,
+      Severity.SUCCESS
+    ));
   } catch (error) {
-    next(customError(error.message, 400));
+    next(createDatabaseError("Käyttäjän rekisteröinti epäonnistui", error));
   }
 };
 
@@ -42,12 +52,16 @@ const updateMe = async (req, res, next) => {
     const result = await updateMyProfile(req.user.kayttaja_id, data);
 
     if (result.error) {
-      return next(customError(result.error, 400));
+      return next(createValidationError(result.error));
     }
 
-    res.json({ message: result.message });
+    res.json(createResponse(
+      { affectedRows: result.affectedRows || 1 },
+      result.message || "Tiedot päivitetty onnistuneesti",
+      Severity.SUCCESS
+    ));
   } catch (error) {
-    next(customError(error.message, 400));
+    next(createDatabaseError("Tietojen päivittäminen epäonnistui", error));
   }
 };
 
