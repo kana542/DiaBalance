@@ -1,5 +1,18 @@
+// entry-models.js - diabeteskirjausten tallennus ja haku
+// -------------------
+// Sisältää kaikki tietokantatoiminnot, jotka liittyvät käyttäjän kirjaamiin verensokeri- ja oiremerkintöihin.
+// Käytetään entry-controller.js-tiedostossa merkintöjen hallintaan.
+
 import promisePool from '../utils/database.js';
 
+
+/**
+ * Lisää uusi kirjaus tietokantaan tauluun kirjaus
+ * Tallennetaan kättäjän ID:n  ja yksittäisen päivän tiedot kuten verensokeritiedot, oireet ja kommentit
+ * @param {number} kayttajaId 
+ * @param {object} data 
+ * @returns 
+ */
 const insertKirjaus = async (kayttajaId, data) => {
   try {
     const [result] = await promisePool.query(
@@ -32,6 +45,15 @@ const insertKirjaus = async (kayttajaId, data) => {
   }
 };
 
+
+/**
+ * 
+ * @param {number} kayttajaId Käyttäjän ID
+ * @param {number} year Vuosi (esim. 2025)
+ * @param {number} month kuukausi (1-12)
+ * @description Hakee kaikki merkinnät tietylle käyttäjälle tietyltä kuukaudelta ja vuodelta
+ * @returns 
+ */
 const getKirjauksetByMonth = async (kayttajaId, year, month) => {
   try {
     console.log(`Running query for user ${kayttajaId}, year ${year}, month ${month}`);
@@ -63,6 +85,12 @@ const getKirjauksetByMonth = async (kayttajaId, year, month) => {
   }
 };
 
+/**
+ * 
+ * @param {number} kayttajaId 
+ * @param {object} data Kirjaustiedot
+ * @returns 
+ */
 const updateKirjaus = async (kayttajaId, data) => {
   try {
     console.log(`Updating entry for date ${data.pvm}`);
@@ -124,6 +152,13 @@ const updateKirjaus = async (kayttajaId, data) => {
   }
 };
 
+/**
+ * 
+ * @param {number} kayttajaId 
+ * @param {string} pvm - päivämäärä muodossa YYYY-MM-DD
+ * @description Poistaa merkinnän tietokannasta käyttäjän ID:n ja päivämäärän perusteella
+ * @returns 
+ */
 const deleteKirjaus = async (kayttajaId, pvm) => {
   try {
     console.log(`Deleting entry for date ${pvm}`);

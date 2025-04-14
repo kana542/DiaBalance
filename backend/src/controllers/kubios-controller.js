@@ -1,3 +1,7 @@
+// kubios-auth-controller.js - autentikointi ja tokenin hallinta Kubios-järjestelmän kanssa
+// -------------------
+// Käsittelee kirjautumisen Kubios API:in ja tokenien käsittelyn (idToken), sekä käyttäjätietojen yhdistämisen paikalliseen käyttäjään.
+
 import promisePool from '../utils/database.js';
 import 'dotenv/config';
 import fetch from 'node-fetch';
@@ -15,6 +19,15 @@ import {
 
 const baseUrl = process.env.KUBIOS_API_URI;
 
+/**
+ * 
+ * Hakee käyttäjän Kubios-tiedot API:sta.
+ * Käyttäjän on oltava kirjautuneena ja hänellä on oltava voimassa oleva Kubios-token.
+* @async
+* @param {Request} req Request objekti sisältää kubiosIdTokenin
+* @param {Response} res
+* @param {NextFunction} next
+ */
 const getUserData = async (req, res, next) => {
   const {kubiosIdToken} = req.user;
   const headers = new Headers();
@@ -36,7 +49,7 @@ const getUserData = async (req, res, next) => {
 
     const results = await response.json();
 
-    // Log the entire response for debugging
+    // logataan Kubios API:n vastaus debuggausta varten
     console.log('Kubios API raw response:');
     console.log(JSON.stringify(results, null, 2));
 
@@ -48,6 +61,14 @@ const getUserData = async (req, res, next) => {
 };
 
 
+/**
+ * 
+ * @param {Request} req request objekti, joka sisältää käyttäjätiedot
+ * @param {Response} res response objekti, joka palauttaa käyttäjätiedot 
+ * @param {Function} next seuraava middleware-funktio virheenkäsittelyyn
+ * @description Hakee käyttäjätiedot Kubios API:sta käyttäen idTokenia
+ * @returns 
+ */
 const getUserInfo = async (req, res, next) => {
   const {kubiosIdToken} = req.user;
   const headers = new Headers();
@@ -66,7 +87,7 @@ const getUserInfo = async (req, res, next) => {
 
     const userInfo = await response.json();
 
-    // Log user info for debugging
+    // logataan Kubios API:n käyttäjätiedot debuggausta varten
     console.log('Kubios API user info:');
     console.log(JSON.stringify(userInfo, null, 2));
 
@@ -77,6 +98,15 @@ const getUserInfo = async (req, res, next) => {
   }
 };
 
+/**
+ * 
+ * @param {Request} req request objekti, joka sisältää käyttäjätiedot
+ * @param {Response} res response objekti, joka palauttaa käyttäjätiedot
+ * @param {Function} next seuraava middleware-funktio virheenkäsittelyyn
+ * @description Hakee käyttäjätiedot Kubios API:sta käyttäen idTokenia ja päivämäärää 
+ * @returns {object} JSON-vastaus tallennuksen onnistumisesta
+ * @route POST /api/kubios/user-data/:date
+ */
 const getUserDataByDate = async (req, res, next) => {
   const userId = req.user.kayttaja_id;
   const { date } = req.params;
@@ -114,7 +144,7 @@ const getUserDataByDate = async (req, res, next) => {
     const results = await response.json();
     console.log('Got response from Kubios API');
 
-    // Filter results for the requested date
+    // Filtteröi tulokset annetun päivämäärän mukaan
     const filtered = results.results?.filter((result) => {
       const resultDate = result.daily_result || result.measured_timestamp?.split('T')[0];
       return resultDate === date;
@@ -122,7 +152,8 @@ const getUserDataByDate = async (req, res, next) => {
 
     console.log(`Found ${filtered?.length || 0} results for date ${date}`);
 
-    // Extract the relevant values
+    
+    // Muutetaan tulokset yksinkertaisemmaksi objektiksi
     const simplifiedResults = filtered.map((result) => {
       const data = result.result || {};
 
@@ -147,7 +178,7 @@ const getUserDataByDate = async (req, res, next) => {
         console.log('HRV data storage result:', dbResult);
       } catch (dbError) {
         console.error('Error storing HRV data:', dbError);
-        // Continue anyway to return the data to the client
+        
       }
     } else if (simplifiedResults.length > 0) {
       console.log('HRV data found but not stored due to noSave=true');
@@ -168,6 +199,14 @@ const getUserDataByDate = async (req, res, next) => {
   }
 };
 
+/**
+ * 
+ * @param {Request} req - HTTP-pyyntö, bodyssä HRV-data ja URL-parametrina :date
+ * @param {Response} res - HTTP-vastaus tallennuksen onnistumisesta
+ * @param {Function} next - Seuraava middleware virheenkäsittelyyn
+ * @returns {object} JSON-vastaus tallennuksen onnistumisesta
+ * @route POST /api/kubios/user-data/:date
+ */
 const saveHrvData = async (req, res, next) => {
   const userId = req.user.kayttaja_id;
   const { date } = req.params;

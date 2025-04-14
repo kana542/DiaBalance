@@ -1,9 +1,17 @@
+// user-model.js - käyttäjätietojen hallinta ja autentikointiin liittyvät toiminnot
+// --------------
+// Sisältää toiminnot käyttäjän luontiin, kirjautumiseen, tietojen päivittämiseen sekä Kubios-tokenin käsittelyyn.
+// Käytetään auth-controller.js, user-controller.js ja kubios-controller.js -tiedostoissa.
+
 import promisePool from '../utils/database.js';
 import { cacheToken, getTokenFromCache, removeTokenFromCache } from '../utils/token-cache.js';
 
 
 /**
  * Rekisteröi uusi käyttäjä
+ * Lisää uuden käyttäjän tietokantaan tauluun kayttaja
+ * Tallettaa käyttäjätiedot (kayttajanimi, email, salasana, kayttajarooli)
+ * Palauttaa uuden käyttäjän ID:n
  * @param {Object} user käyttäjätiedot (kayttajanimi, email, salasana, kayttajarooli)
  * @returns {number} lisätyn käyttäjän ID
  */
@@ -23,6 +31,8 @@ const registerUser = async (user) => {
 
 /**
  * Hae käyttäjä kirjautumista varten käyttäjänimen perusteella
+ * käytetään auth-controllerissa ja kirjautumisessa POST /api/auth/login
+ * Hakee käyttäjän tiedot (kayttaja_id, kayttajanimi, email, salasana, kayttajarooli) tietokannasta
  * @param {string} kayttajanimi
  * @returns {Object|null} käyttäjän tiedot salasanoineen tai null
  */
@@ -61,6 +71,7 @@ const getMyProfile = async (kayttajaId) => {
 
 /**
  * Päivitä käyttäjän omat tiedot
+ * Tukee käyttäjätunnuksen, sähköpostin ja salasanan päivitystä
  * @param {number} kayttajaId
  * @param {Object} data - päivitettävät tiedot (kayttajanimi, email, salasana)
  * @returns {Object} tulosviesti
@@ -108,6 +119,9 @@ const updateMyProfile = async (kayttajaId, data) => {
 
 /**
  * Päivitä Kubios token ja vanhentumisaika käyttäjälle
+ * tallentaa kubiokselta saadun tokenin käyttäjän tietoihin tietokantaan
+ * Laskee milloin token vanhenee
+ * Tallentaa saman tokenin myös välimuistiin nopeampaa käyttöä varten
  * @param {number} userId - Käyttäjän ID
  * @param {string} token - Kubios token
  * @param {number} expiresIn - Vanhentumisaika sekunneissa
@@ -136,6 +150,7 @@ const updateKubiosToken = async (userId, token, expiresIn) => {
 
 /**
  * Hae Kubios token käyttäjälle
+ * Palattaa tokenin jos voimassa, muuten null
  * @param {number} userId - Käyttäjän ID
  * @returns {string|null} Kubios token tai null jos vanhentunut/ei löydy
  */
@@ -177,13 +192,9 @@ const getKubiosToken = async (userId) => {
   }
 };
 
+
 /**
- * Poista Kubios token käyttäjältä
- * @param {number} userId - Käyttäjän ID
- * @returns {boolean} Onnistuiko poisto
- */
-/**
- * Poista Kubios token käyttäjältä
+ * Poista Kubios token käyttäjältä esim logoutumisen yhteydessä
  * @param {number} userId - Käyttäjän ID
  * @returns {boolean} Onnistuiko poisto
  */

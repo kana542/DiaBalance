@@ -1,3 +1,8 @@
+// auth-controller.js - kirjautuminen ja käyttäjän autentikointi
+// -------------------
+// Käsittelee käyttäjän sisään- ja uloskirjautumisen, tokenin validoinnin sekä oman profiilin haun.
+// Käytetään auth-router.js -tiedoston kautta.
+
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { loginUser, getMyProfile, updateKubiosToken, removeKubiosToken } from "../models/user-model.js";
@@ -11,6 +16,17 @@ import {
 } from "../middlewares/error-handler.js";
 import { kubiosLogin } from "../controllers/kubios-auth-controller.js";
 
+/**
+ * 
+ * Kirjautuu sisään käyttäjänimellä ja salasanalla.
+ * Jos onnistuu, palauttaa JWT-tokenin ja käyttäjätiedot (ilman salasanaa).
+ * Lisäksi yrittää kirjautua myös Kubios-palveluun, jos käyttäjällä on sähköposti.
+ * @param {Request} req - HTTP-pyyntö, bodyssä käyttäjätunnus ja salasana
+ * @param {Response} res - HTTP-vastaus JSON-muodossa (token, user, kubios)
+ * @param {Function} next - Seuraava middleware virheenkäsittelyyn
+ * @returns {object} JSON-vastaus jossa token ja käyttäjätiedot
+ * @route POST /api/auth/login
+ */
 const login = async (req, res, next) => {
   try {
     const { kayttajanimi, salasana } = req.body;
@@ -87,6 +103,16 @@ const login = async (req, res, next) => {
   }
 };
 
+
+/**
+ * 
+ * Kirjaa käyttäjän ulos ja poistaa Kubios-tokenin tietokannasta.
+ * @param {Request} req - HTTP-pyyntö, token mukana
+ * @param {Response} res - HTTP-vastaus JSON-muodossa (tokenRemoved)
+ * @param {Function} next - Seuraava middleware virheenkäsittelyyn
+ * @returns {object} JSON-vastaus jossa poistamisen tila
+ * @route POST /api/auth/logout
+ */
 const logout = async (req, res, next) => {
   try {
     // Tarkista että kayttaja_id on olemassa
@@ -112,6 +138,16 @@ const logout = async (req, res, next) => {
   }
 };
 
+
+/**
+ * 
+ * Hakee kirjautuneen käyttäjän profiilin (tokenin perusteella).
+ * @param {Request} req - HTTP-pyyntö, token mukana
+ * @param {Response} res - HTTP-vastaus JSON-muodossa (user-tiedot)
+ * @param {Function} next - Seuraava middleware virheenkäsittelyyn
+ * @returns {object} JSON-profiilidata
+ * @route GET /api/auth/me 
+ */
 const getMe = async (req, res, next) => {
   try {
     const user = await getMyProfile(req.user.kayttaja_id);
@@ -126,6 +162,15 @@ const getMe = async (req, res, next) => {
   }
 };
 
+/**
+ * 
+ * Tarkistaa onko token vielä voimassa ja palauttaa käyttäjän tiedot.
+ * @param {Request} req - HTTP-pyyntö, token mukana
+ * @param {Response} res - HTTP-vastaus JSON-muodossa
+ * @param {Function} next - Seuraava middleware virheenkäsittelyyn
+ * @returns {object} JSON-tarkistusvastaus
+ * @route GET /api/auth/validate
+ */
 const validateToken = async (req, res, next) => {
   try {
     const user = await getMyProfile(req.user.kayttaja_id);

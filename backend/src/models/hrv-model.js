@@ -1,18 +1,37 @@
+// hrv-model.js - HRV (Heart Rate Variability) -datan tallennus ja haku
+// -------------
+// Käsittelee käyttäjän HRV-tietojen tallennuksen ja haun tietokannasta.
+
 import promisePool from "../utils/database.js";
 import { createDatabaseError } from "../middlewares/error-handler.js";
 
+/**
+ * Tallentaa HRV-datan tietokantaan käyttäjän ID:n ja päivämäärän perusteella.
+ * Jos kirjauspäivälle ei ole olemassa olevaa tietuetta kirjaus-taulussa, se luodaan automaattisesti ns. placeholder-rivinä.
+ * Tämä tarkoittaa, että HRV-data voidaan tallentaa ilman että käyttäjä on lisännyt muita päiväkirjamerkintöjä.
+ * @param {number} userId Käyttäjän ID
+ * @param {string} date Päivämäärä muodossa YYYY-MM-DD
+ * @description Tallettaa HRV-datan tietokantaan käyttäjän ID:n ja päivämäärän perusteella.
+ * @param {object} hrvData HRV-data, joka sisältää seuraavat kentät:
+ * - readiness: valmiusindeksi (float)
+ * - stress: stressitaso (float)
+ * - bpm: syke (int)
+ * - sdnn_ms: SDNN (standard deviation of NN intervals) (float)
+ * @returns {object} Tulosviesti tallennuksesta (onnistuiko)
+ */
 const storeHrvData = async (userId, date, hrvData) => {
    try {
       console.log(`Storing HRV data for user ${userId} on date ${date}`);
 
-      // First check if an entry exists for this date
+      // Ensin tarkistetaan onko jo kirjauksia olemassa kyseiselle päivälle
       const [entries] = await promisePool.query(
          "SELECT 1 FROM kirjaus WHERE kayttaja_id = ? AND pvm = ?",
          [userId, date]
       );
 
       if (entries.length === 0) {
-         // We need an entry for this date first - create a placeholder entry
+         // Jos ei löydy merkintää, luodaan perusmerkintä
+         // Tämä on tarpeen, jotta HRV-data voidaan tallentaa
          console.log(
             `Creating basic entry for date ${date} because HRV data requires it`
          );
@@ -27,7 +46,8 @@ const storeHrvData = async (userId, date, hrvData) => {
          }
       }
 
-      // Check if HRV data already exists
+      //tarkistaa löytyy hrv_kirjaus-taulusta jo merkintä tälle päivälle
+      // Jos löytyy, päivittää sen, muuten luo uuden merkinnän
       const [existing] = await promisePool.query(
          "SELECT 1 FROM hrv_kirjaus WHERE kayttaja_id = ? AND pvm = ?",
          [userId, date]
@@ -57,7 +77,7 @@ const storeHrvData = async (userId, date, hrvData) => {
 
       let result;
       if (existing.length > 0) {
-         // Update existing HRV data
+         // Päivitetään olemassa oleva HRV-data
          [result] = await promisePool.query(
             "UPDATE hrv_kirjaus SET readiness = ?, stress = ?, bpm = ?, sdnn_ms = ? WHERE kayttaja_id = ? AND pvm = ?",
             [readiness, stress, bpm, sdnnMs, userId, date]
@@ -68,7 +88,7 @@ const storeHrvData = async (userId, date, hrvData) => {
             affectedRows: result.affectedRows,
          };
       } else {
-         // Insert new HRV data
+         // Luodaan uusi HRV-data
          [result] = await promisePool.query(
             "INSERT INTO hrv_kirjaus (kayttaja_id, pvm, readiness, stress, bpm, sdnn_ms) VALUES (?, ?, ?, ?, ?, ?)",
             [userId, date, readiness, stress, bpm, sdnnMs]
@@ -85,6 +105,13 @@ const storeHrvData = async (userId, date, hrvData) => {
    }
 };
 
+
+/**
+ * 
+ * @param {number} userId käyttäjän ID
+ * @param {string} date päivämäärä muodossa YYYY-MM-DD
+ * @returns {object | null} HRV-data tai null, jos ei löydy
+ */
 const getHrvData = async (userId, date) => {
    try {
       const [rows] = await promisePool.query(

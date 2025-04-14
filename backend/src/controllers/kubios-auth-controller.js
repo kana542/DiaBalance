@@ -1,3 +1,7 @@
+// kubios-auth-controller.js - autentikointi ja tokenin hallinta Kubios-järjestelmän kanssa
+// -------------------
+// Käsittelee kirjautumisen Kubios API:in ja tokenien käsittelyn (idToken), sekä käyttäjätietojen yhdistämisen paikalliseen käyttäjään.
+
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
@@ -14,6 +18,12 @@ import {
 
 const baseUrl = process.env.KUBIOS_API_URI;
 
+/**
+ * * Etsii käyttäjän tietokannasta joko sähköpostin tai käyttäjätunnuksen perusteella.
+ * * Jos sähköpostia ei löydy, yrittää käyttäjätunnusta.
+ * @param {string} emailOrUsername 
+ * @returns {object|null} käyttäjän tiedot tai null jos ei löydy
+ */
 const findUserByEmailOrUsername = async (emailOrUsername) => {
   try {
     // Check if this looks like an email
@@ -52,6 +62,12 @@ const findUserByEmailOrUsername = async (emailOrUsername) => {
   }
 };
 
+/**
+ * 
+ * @param {string} username Käyttäjätunnus tai sähköposti
+ * @param {string} password salasana
+ * @returns idToken ja expiresIn
+ */
 const kubiosLogin = async (username, password) => {
   console.log(`Attempting Kubios login for user: ${username}`);
   const csrf = v4();
@@ -100,7 +116,7 @@ const kubiosLogin = async (username, password) => {
     }
 
     const idToken = match[1];
-    const expiresIn = match[3] || 3600; // Default to 1 hour if not found
+    const expiresIn = match[3] || 3600;
 
     console.log(`Kubios login successful. Token expires in ${expiresIn} seconds`);
     return { idToken, expiresIn };
@@ -111,6 +127,12 @@ const kubiosLogin = async (username, password) => {
   }
 };
 
+/**
+ * Hakee käyttäjän tiedot Kubios API:sta
+ * @description Hakee käyttäjän tiedot Kubios API:sta käyttäen idTokenia
+ * @param {string} idToken Kubios idToken
+ * @returns {object} Kubios käyttäjätiedot
+ */
 const kubiosUserInfo = async (idToken) => {
   console.log('Getting user info from Kubios API');
   const headers = new Headers();
@@ -144,6 +166,14 @@ const kubiosUserInfo = async (idToken) => {
   }
 };
 
+/**
+ * Käsittelee Kubios-kirjautumisen ja luo JWT-tokenin
+ * @param {Request} req HTTP-pyyntö, joka sisältää käyttäjätunnuksen ja salasanan
+ * @param {Response} res HTTP-vastaus, joka palautetaan asiakkaalle
+ * @param {Function} next seuraava middlevare virheenkäsittelyyn
+ * @description Kirjautuu käyttäjän Kubios API:in ja luo JWT-tokenin
+ * @returns 
+ */
 const postLogin = async (req, res, next) => {
   const { kayttajanimi, salasana } = req.body;
 
@@ -192,6 +222,14 @@ const postLogin = async (req, res, next) => {
   }
 };
 
+/**
+ * Palauttaa kirjautuneen käyttäjän tiedot ja mahdollisen Kubios-tokenin
+ * @param {Request} req - HTTP-pyyntö tokenin kera
+ * @param {Response} res - JSON-vastaus käyttäjätiedoilla ja Kubios-tokenilla
+ * @param {Function} next - Seuraava middleware virheenkäsittelyyn
+ * @returns {object} JSON-vastaus (user ja kubios_token)
+ * @route GET /api/auth/kubios-me
+ */
 const getKubiosMe = async (req, res, next) => {
   try {
     const [rows] = await promisePool.query(

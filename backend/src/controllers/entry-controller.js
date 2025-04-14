@@ -1,3 +1,8 @@
+// entry-controller.js - käyttäjän kirjaamien merkintöjen hallinta (CRUD)
+// -------------------
+// Käsittelee merkintöjen luomisen, haun, muokkauksen ja poistamisen tietokannasta.
+
+
 import promisePool from '../utils/database.js';
 import { insertKirjaus, getKirjauksetByMonth, updateKirjaus, deleteKirjaus } from "../models/entry-models.js";
 import { getHrvData } from '../models/hrv-model.js';
@@ -10,6 +15,15 @@ import {
   Severity
 } from '../middlewares/error-handler.js';
 
+/**
+ * 
+ * Luo uuden päiväkirjamerkinnän käyttäjälle.
+ * @param {Request} req - HTTP-pyyntö, bodyssä kaikki merkinnän kentät
+ * @param {Response} res - HTTP-vastaus JSON-muodossa
+ * @param {Function} next - Seuraava middleware virheenkäsittelyyn
+ * @returns {object} JSON-vastaus, jossa luodun merkinnän ID
+ * @route POST /api/entries
+ */
 const createEntry = async (req, res, next) => {
   const kayttajaId = req.user.kayttaja_id;
   const kirjausData = req.body;
@@ -24,6 +38,14 @@ const createEntry = async (req, res, next) => {
   }
 };
 
+/**
+ * Hakee kaikki merkinnät tietylle kuukaudelle
+ * HRV-data haetaan päiväkohtaisesti ja lisätään merkinnän yhteyteen
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns 
+ */
 const getEntriesByMonth = async (req, res, next) => {
   const kayttajaId = req.user.kayttaja_id;
   const { year, month } = req.query;
@@ -38,7 +60,6 @@ const getEntriesByMonth = async (req, res, next) => {
     // Hae kirjaukset
     const entries = await getKirjauksetByMonth(kayttajaId, parseInt(year), parseInt(month));
 
-    // Hae myös HRV-tiedot ja liitä ne kirjauksiin
     const formattedEntries = await Promise.all(entries.map(async entry => {
       try {
         if (entry.formatted_date) {
@@ -69,6 +90,16 @@ const getEntriesByMonth = async (req, res, next) => {
   }
 };
 
+/**
+ * Päivittää olemassa olevan merkinnän käyttäjälle tietylle päivälle.
+ * Jos kenttäarvo on tyhjä tai puuttuu, se asetetaan nulliksi.
+ * Käytetään PUT /api/entries -reitillä.
+ * @param {Request} req HTTP-pyyntö, joka sisältää päivitetyt tiedot
+ * @param {Response} res HTTP-vastaus, joka palautetaan asiakkaalle
+ * @param {Function} next seuraava middleware-funktio virheenkäsittelyyn
+ * @description Päivittää käyttäjän merkintätiedot tietokannassa
+ * @returns {Object} JSON-vastaus, joka sisältää päivitetyt tiedot ja onnistumisviestin
+ */
 const updateEntry = async (req, res, next) => {
   const kayttajaId = req.user.kayttaja_id;
   const kirjausData = req.body;

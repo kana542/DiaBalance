@@ -1,7 +1,26 @@
+/**
+ * authentication.js - JWT-tokenin tarkistusmiddleware
+ * 
+ * Varmistaa, että pyyntö sisältää voimassa olevan JWT-tokenin.
+ * Lisää `req.user`-kenttään tokenista puretun käyttäjätiedon,
+ * jota käytetään mm. käyttöoikeuksien ja käyttäjäkohtaisen datan tarkistamiseen.
+ *
+ * Käyttö:
+ * - käytetään suojaamaan reittejä kuten GET /me, POST /entries jne.
+ * - reitti ei jatku jos token puuttuu tai on virheellinen
+ */
+
+
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { createAuthenticationError } from './error-handler.js';
 
+
+/**
+ * Tarkistaa Authorization-headerista löytyvän JWT-tokenin.
+ * Jos token puuttuu tai on virheellinen, palautetaan 403-virhe.
+ * Jos token on validi, asetetaan req.user-tokenin datalla ja siirrytään seuraavaan.
+ */
 const authenticateToken = (req, res, next) => {
   console.log('authenticateToken', req.headers);
   const authHeader = req.headers['authorization'];

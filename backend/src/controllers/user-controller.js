@@ -1,3 +1,8 @@
+// user-controller.js - käyttäjätietojen hallintaan liittyvät controller-toiminnot
+// -------------------
+// Sisältää rekisteröinti- ja profiilin päivitystoiminnot.
+// Käytetään auth-router.js ja user-router.js -tiedostoissa.
+
 import bcrypt from "bcryptjs";
 import { registerUser, updateMyProfile } from "../models/user-model.js";
 
@@ -8,6 +13,15 @@ import {
   Severity
 } from "../middlewares/error-handler.js";
 
+
+/**
+ * 
+ * @param {Request} req HTTP-pyyntö, joka sisältää käyttäjätiedot bodyssa
+ * @param {Response} res HTTP-vastaus, joka palautetaan asiakkaalle
+ * @param {function} next seurantaava middleware-funktio, jota kutsutaan seuraavaksi
+ * @description Rekisteröi uuden käyttäjän tietokantaan
+ * @returns {JSON} JSON-vastaus, joka sisältää uuden käyttäjän ID:n ja onnistumisviestin
+ */
 const register = async (req, res, next) => {
   try {
     const { kayttajanimi, salasana, email, kayttajarooli } = req.body;
@@ -21,7 +35,7 @@ const register = async (req, res, next) => {
 
     const newUser = {
       kayttajanimi,
-      email,  // Sähköpostiosoite
+      email,  
       salasana: hashedPassword,
       kayttajarooli: kayttajarooli || 0,
     };
@@ -37,6 +51,15 @@ const register = async (req, res, next) => {
   }
 };
 
+
+/**
+ * 
+ * @param {Request} req HTTP-pyyntö, joka sisältää muutettavat tiedot
+ * @param {Response} res HTTP-vastaus, joka palautetaan asiakkaalle
+ * @param {Function} next seuraava middleware-funktio, jota kutsutaan seuraavaksi
+ * @description Päivittää käyttäjän tietoja tietokannassa
+ * @returns {JSON} JSON-vastaus, joka sisältää päivitetyt tiedot ja onnistumisviestin
+ */
 const updateMe = async (req, res, next) => {
   try {
     const { kayttajanimi, salasana, email } = req.body;
