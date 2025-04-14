@@ -1,14 +1,6 @@
-/**
- * auth.js
- * Kirjautumisen käsittely ES moduuleina
- */
-
 import { login, getAuthToken } from '../utils/api-client.js';
-import { showError } from '../utils/ui-utils.js';
+import { showError, NotificationSeverity, showToast } from '../utils/ui-utils.js';
 
-/**
- * Alustus kun DOM on latautunut
- */
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Auth module loaded');
 
@@ -29,10 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/**
- * Käsittelee kirjautumislomakkeen lähettämisen
- * @param {Event} event - Lomakkeen lähetystapahtuma
- */
 async function handleLogin(event) {
     event.preventDefault();
 
@@ -56,31 +44,20 @@ async function handleLogin(event) {
         // Login using API client
         await login(email, password);
 
-        // Show success message
-        alert('Kirjautuminen onnistui!');
-
         // Redirect to dashboard
         window.location.href = 'dashboard.html';
-
     } catch (error) {
         console.error('Login error:', error);
-        alert('Yhteysvirhe palvelimeen tai väärät kirjautumistiedot. Yritä myöhemmin uudelleen.');
         showError(errorMessage, error.message || 'Kirjautuminen epäonnistui. Tarkista tunnukset.');
         resetButton(submitButton, originalButtonText);
     }
 }
 
-/**
- * Palauttaa napin alkuperäiseen tilaan
- * @param {HTMLElement} button - Nappi-elementti
- * @param {string} text - Alkuperäinen teksti
- */
 function resetButton(button, text) {
     button.textContent = text;
     button.disabled = false;
 }
 
-// Vie funktiot, jotta niitä voidaan käyttää globaalisti
 export {
     handleLogin
 };

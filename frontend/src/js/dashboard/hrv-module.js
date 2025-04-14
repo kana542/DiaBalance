@@ -145,15 +145,25 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
       };
     }
 
-    const apiResponse = data[0];
+    const hrvData = data.data || [];
 
-    const hrvDisplay = {
-      readiness: apiResponse.readiness,
-      stress: apiResponse.stress_index,
-      bpm: apiResponse.mean_hr_bpm,
-      sdnn_ms: apiResponse.sdnn_ms,
-      _rawData: apiResponse
-    };
+// Check if we actually have HRV data
+if (hrvData.length === 0) {
+  return {
+    success: false,
+    message: 'HRV-dataa ei löytynyt valitulle päivälle'
+  };
+}
+
+const apiResponse = hrvData[0];
+
+const hrvDisplay = {
+  readiness: apiResponse.readiness,
+  stress: apiResponse.stress_index,
+  bpm: apiResponse.mean_hr_bpm,
+  sdnn_ms: apiResponse.sdnn_ms,
+  _rawData: apiResponse
+};
 
     console.log('Transformed HRV data for UI:', hrvDisplay);
 
@@ -277,12 +287,11 @@ export async function saveHrvDataToDatabase(dateStr, hrvData) {
 }
 
 function resetHRVValues() {
-  // Käytetään tarkkoja valitsimia
   const elements = {
-    readiness: document.querySelector('.metrics-container .metric-card:nth-child(1) .metric-value'),
-    stress: document.querySelector('.metrics-container .metric-card:nth-child(2) .metric-value'),
-    heartRate: document.querySelector('.metrics-container .metric-card:nth-child(3) .metric-value'),
-    sdnn: document.querySelector('.metrics-container .metric-card:nth-child(4) .metric-value')
+    readiness: document.querySelector('.metrics-container .metric-value:not(.stress):not(.heart-rate):not(.sdnn)'),
+    stress: document.querySelector('.metrics-container .metric-value.stress'),
+    heartRate: document.querySelector('.metrics-container .metric-value.heart-rate'),
+    sdnn: document.querySelector('.metrics-container .metric-value.sdnn')
   };
 
   // Debug: tarkista että elementit löytyvät

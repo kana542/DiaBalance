@@ -1,6 +1,6 @@
 import { apiGet, apiPut, apiDelete } from '../utils/api-client.js';
 import { formatDateYYYYMMDD, formatDateISOString } from '../utils/date-utils.js';
-import { showToast } from '../utils/ui-utils.js';
+import { showToast, NotificationSeverity } from '../utils/ui-utils.js';
 import { updateCalendarView } from './calendar-module.js';
 import { showDayData, showEmptyView } from './chart-module.js';
 
@@ -16,7 +16,7 @@ export async function loadMonthEntries(year, month) {
     try {
       const entries = await apiGet(`/entries?year=${year}&month=${month}`);
 
-      console.log("Raw entries from server:", entries);
+      console.log("Entries from server:", entries);
 
       monthEntries = {};
 
@@ -55,10 +55,11 @@ export async function loadMonthEntries(year, month) {
       return monthEntries;
     } catch (error) {
       console.error('Virhe haettaessa merkintöjä:', error);
-      showToast('Merkintöjen hakeminen epäonnistui', 'error');
+      showToast('Merkintöjen hakeminen epäonnistui', NotificationSeverity.ERROR);
       return {};
     }
   }
+
 
 function convertHrvDataToBackend(dateStr, hrvData) {
   return {
@@ -121,6 +122,7 @@ export async function saveEntryData(dateStr) {
 
         console.log("Saving entry to backend with date:", dateStr, backendData);
 
+        // Käytetään päivitettyä API-kutsua
         const response = await apiPut('/entries', backendData);
         console.log("Entry save response:", response);
 
@@ -136,26 +138,13 @@ export async function saveEntryData(dateStr) {
                     sdnn_ms: existingHrvData.sdnn_ms || existingHrvData.sdnnMs
                 };
 
-                const token = localStorage.getItem('token');
-                const hrvResponse = await fetch(`http://localhost:3000/api/kubios/user-data/${dateStr}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(hrvDataToSave)
-                });
-
-                if (!hrvResponse.ok) {
-                    throw new Error(`API error: ${hrvResponse.status}`);
-                }
-
-                const hrvResult = await hrvResponse.json();
-                console.log("HRV data save result:", hrvResult);
+                const { apiPost } = await import('../utils/api-client.js');
+                const hrvResponse = await apiPost(`/kubios/user-data/${dateStr}`, hrvDataToSave);
+                console.log("HRV data save result:", hrvResponse);
                 hrvSaveSuccess = true;
             } catch (hrvError) {
                 console.error("Failed to save HRV data:", hrvError);
-                showToast('HRV-tietojen tallennus epäonnistui', 'warning');
+                showToast('HRV-tietojen tallennus epäonnistui', NotificationSeverity.WARNING);
             }
         }
 
@@ -169,8 +158,6 @@ export async function saveEntryData(dateStr) {
             console.error("Error reloading entries:", reloadError);
         }
 
-        showToast('Merkintä tallennettu onnistuneesti', 'success');
-
         document.getElementById('entryModal').style.display = 'none';
         updateCalendarView();
         showDayData(dateStr);
@@ -178,34 +165,25 @@ export async function saveEntryData(dateStr) {
         return true;
     } catch (error) {
         console.error('Virhe tallennettaessa merkintää:', error);
-        showToast('Merkinnän tallennus epäonnistui', 'error');
         return false;
     }
 }
 
 export async function deleteEntryData(dateStr) {
     if (!dateStr || !monthEntries[dateStr]) {
-        showToast('Ei merkintää poistettavaksi', 'error');
-        return false;
-    }
-
-    if (!confirm('Haluatko varmasti poistaa tämän merkinnän?')) {
+        showToast('Ei merkintää poistettavaksi', NotificationSeverity.ERROR);
         return false;
     }
 
     try {
         console.log("Deleting entry for date:", dateStr);
 
-        // Lähetä DELETE pyyntö palvelimelle
+        // Käytetään päivitettyä API-kutsua
         const response = await apiDelete(`/entries/${dateStr}`);
-
         console.log("Delete response:", response);
 
         // Poista merkintä muistista
         delete monthEntries[dateStr];
-
-        // Ilmoita onnistuneesta poistosta
-        showToast('Merkintä poistettu onnistuneesti', 'success');
 
         // Päivitä UI
         document.getElementById('entryModal').style.display = 'none';
@@ -216,7 +194,6 @@ export async function deleteEntryData(dateStr) {
         return true;
     } catch (error) {
         console.error('Virhe poistettaessa merkintää:', error);
-        showToast('Merkinnän poisto epäonnistui', 'error');
         return false;
     }
 }

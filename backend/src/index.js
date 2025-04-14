@@ -35,7 +35,7 @@ app.use(cors()); // sallii cross-origin pyynnöt frontend-sovelluksesta
 app.use(express.json()); // parsii JSON-pyynnöt
 
 // testipolku palvelimen toiminnan tarkistamiseen
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
    res.send("Diabalance BE (dev)");
 });
 
