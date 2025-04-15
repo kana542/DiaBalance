@@ -33,7 +33,6 @@ const userRouter = express.Router();
 userRouter
   .post(
     "/register",
-    // validointi käyttäjänimelle - vaaditaan 3-40 merkkiä
     body("kayttajanimi")
       .trim()
       .escape()
@@ -45,15 +44,13 @@ userRouter
       .trim()
       .isEmail()
       .withMessage("Sähköpostiosoitteen tulee olla kelvollinen"),
-    // validointi salasanalle - vaaditaan vähintään 8 merkkiä
     body("salasana")
       .trim()
       .escape()
       .isLength({ min: 8 })
-      .withMessage("Salasanan tulee olla vähintään 8 merkkiä pitkä"),
-    // validointivirheiden käsittely ennen kontrollerin kutsumista
+      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)
+      .withMessage("Salasanan tulee olla vähintään 8 merkkiä pitkä, sisältää vähintään yksi pieni kirjain, yksi iso kirjain ja yksi numero"),
     validationErrorHandler,
-    // rekisteröinnin käsittelevä kontrolleri
     register
   );
 
@@ -62,7 +59,6 @@ userRouter.put(
   "/me",
   // vaaditaan token kirjautumisen varmistamiseksi
   authenticateToken,
-  // validointi käyttäjänimelle - valinnainen, mutta jos annetaan, 3-40 merkkiä
   body("kayttajanimi")
     .optional()
     .trim()
@@ -75,16 +71,13 @@ userRouter.put(
     .trim()
     .isEmail()
     .withMessage("Sähköpostiosoitteen tulee olla kelvollinen"),
-  // validointi salasanalle - valinnainen, mutta jos annetaan, vähintään 8 merkkiä
   body("salasana")
-    .optional()
-    .trim()
-    .escape()
-    .isLength({ min: 8 })
-    .withMessage("Salasanan tulee olla vähintään 8 merkkiä pitkä"),
-  // validointivirheiden käsittely ennen kontrollerin kutsumista
+  .trim()
+  .escape()
+  .isLength({ min: 8 })
+  .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)
+  .withMessage("Salasanan tulee olla vähintään 8 merkkiä pitkä, sisältää vähintään yksi pieni kirjain, yksi iso kirjain ja yksi numero"),
   validationErrorHandler,
-  // tietojen päivityksen käsittelevä kontrolleri
   updateMe
 );
 

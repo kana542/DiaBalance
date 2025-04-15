@@ -29,10 +29,21 @@ const createEntry = async (req, res, next) => {
   const kirjausData = req.body;
 
   try {
-      const result = await insertKirjaus(kayttajaId, kirjausData);
-      res.status(201).json(createResponse({
-          id: result.insertId
-      }, 'Kirjaus lisätty onnistuneesti', Severity.SUCCESS));
+    // Tarkistetaan äärimmäiset arvot lokitusta varten (ei estä tallennusta)
+    for (const [kentta, arvo] of Object.entries(kirjausData)) {
+      if (kentta.startsWith('vs_') && arvo !== null) {
+        if (arvo < 3) {
+          console.log(`Huomio: Matala verensokeriarvo (${arvo}) kentässä ${kentta}`);
+        } else if (arvo > 20) {
+          console.log(`Huomio: Korkea verensokeriarvo (${arvo}) kentässä ${kentta}`);
+        }
+      }
+    }
+
+    const result = await insertKirjaus(kayttajaId, kirjausData);
+    res.status(201).json(createResponse({
+        id: result.insertId
+    }, 'Kirjaus lisätty onnistuneesti', Severity.SUCCESS));
   } catch (error) {
       next(createDatabaseError("Kirjauksen lisääminen epäonnistui", error));
   }

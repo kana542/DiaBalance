@@ -48,6 +48,9 @@ const getUserData = async (req, res, next) => {
     }
 
     const results = await response.json();
+    if (!results) {
+      throw createExternalApiError('Virheellinen vastaus Kubios API:sta: vastaus puuttuu');
+    }
 
     // logataan Kubios API:n vastaus debuggausta varten
     console.log('Kubios API raw response:');
@@ -56,7 +59,7 @@ const getUserData = async (req, res, next) => {
     return res.json(createResponse(results, "Kubios-tiedot haettu onnistuneesti", Severity.SUCCESS));
   } catch (error) {
     console.error('Error fetching Kubios data:', error);
-    next(error);
+    next(createExternalApiError('Virhe Kubios API:n haussa', error));
   }
 };
 
@@ -87,6 +90,16 @@ const getUserInfo = async (req, res, next) => {
 
     const userInfo = await response.json();
 
+    // Perusvalidointi: tarkista että vastaus on olemassa ja siinä on odotettu rakenne
+    if (!userInfo || !userInfo.status) {
+      throw createExternalApiError('Virheellinen vastaus Kubios API:sta: käyttäjätiedot puuttuvat');
+    }
+
+    // Tarkista status
+    if (userInfo.status !== 'ok') {
+      throw createExternalApiError(`Kubios API virhe: ${userInfo.message || 'Tuntematon virhe'}`);
+    }
+
     // logataan Kubios API:n käyttäjätiedot debuggausta varten
     console.log('Kubios API user info:');
     console.log(JSON.stringify(userInfo, null, 2));
@@ -94,7 +107,7 @@ const getUserInfo = async (req, res, next) => {
     return res.json(createResponse(userInfo, "Kubios-käyttäjätiedot haettu", Severity.SUCCESS));
   } catch (error) {
     console.error('Error fetching Kubios user info:', error);
-    next(error);
+    next(createExternalApiError('Virhe Kubios-käyttäjätietojen haussa', error));
   }
 };
 
@@ -195,7 +208,7 @@ const getUserDataByDate = async (req, res, next) => {
     ));
   } catch (error) {
     console.error('Error fetching Kubios data by date:', error);
-    next(error);
+    next(createExternalApiError('Virhe Kubios-tietojen haussa annetulle päivälle', error));
   }
 };
 
