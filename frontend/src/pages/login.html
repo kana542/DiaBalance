@@ -1,31 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>DiaBalance - Kirjaudu</title>
     <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
     <div class="container">
-        <h1>login</h1>
+        <h1>Kirjaudu sisään</h1>
         <form id="loginForm" class="auth-form">
             <div class="form-group">
-                <label for="email">email or username</label>
+                <label for="email">Sähköposti tai käyttäjänimi</label>
                 <input type="text" id="email" name="email" required>
             </div>
             <div class="form-group">
-                <label for="password">password</label>
+                <label for="password">Salasana</label>
                 <input type="password" id="password" name="password" required>
             </div>
             <div class="error-message" id="errorMessage"></div>
-            <button type="submit" class="btn">Login</button>
+            <button type="submit" class="btn">Kirjaudu</button>
         </form>
-        <p>don't have an account? <a href="register.html">register</a></p>
-        <p><a href="../../index.html">home page</a></p>
+        <p>Eikö sinulla ole vielä tiliä? <a href="register.html">Rekisteröidy</a></p>
+        <p><a href="../../index.html">Etusivu</a></p>
     </div>
 
-    <!-- Käytetään moduulia vanhan script-tagin sijaan -->
     <script type="module" src="../js/auth/auth.js"></script>
 </body>
 </html>

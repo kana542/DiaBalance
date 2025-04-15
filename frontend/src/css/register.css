@@ -172,3 +172,95 @@
 .auth-form {
   animation: fadeIn 0.5s ease-out;
 }
+
+.form-group input.valid {
+  border-color: #2ecc71;
+  background-color: #f0fff4;
+}
+
+.form-group input.invalid {
+  border-color: #e74c3c;
+  background-color: #fff5f5;
+}
+
+.validation-message {
+  font-size: 12px;
+  margin-top: 5px;
+  transition: all 0.3s ease;
+}
+
+.validation-message.valid {
+  color: #2ecc71;
+}
+
+.validation-message.invalid {
+  color: #e74c3c;
+}
+
+.username-requirements,
+.email-requirements,
+.password-requirements {
+  font-size: 12px;
+  margin-top: 5px;
+  transition: color 0.3s ease;
+}
+
+.error-message {
+  background-color: #fff2f2;
+  border-left: 3px solid #e64458;
+  color: #e64458;
+  padding: 12px;
+  margin: 10px 0 20px 0;
+  font-size: 14px;
+  border-radius: 3px;
+  text-align: left;
+  display: none;
+}
+
+/* Add a subtle shake animation for validation errors */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Password Strength Meter Styles */
+
+.password-strength-container {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.password-strength-meter {
+  height: 5px;
+  width: 0;
+  background-color: #e74c3c;
+  border-radius: 5px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  margin-bottom: 5px;
+}
+
+.password-strength-text {
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 5px;
+}
+
+.password-feedback {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #777;
+}
+
+.feedback-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.feedback-list li {
+  margin-bottom: 3px;
+}

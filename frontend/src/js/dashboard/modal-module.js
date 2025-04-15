@@ -3,13 +3,16 @@ import { setInputValue, showConfirmDialog, showToast } from '../utils/ui-utils.j
 import { getMonthEntries, updateCalendarView } from './calendar-module.js';
 import { saveEntryData, deleteEntryData } from './entry-module.js';
 import { fetchAndSaveHrvDataForDay } from './hrv-module.js';
+import { setupEntryModalBloodSugarValidation } from '../utils/blood-sugar-validation.js';
 
 // Moduulin sisäiset muuttujat
 let currentModalDate = null;
 
 export function initializeModalModule() {
     setupModalEvents();
-    console.log('Modal module initialized');
+    // Liitä verensokeriarvojen validointi
+    setupEntryModalBloodSugarValidation();
+    console.log('Modal module initialized with blood sugar validation');
 }
 
 export function openEntryModal(dateStr) {
@@ -61,6 +64,9 @@ export function openEntryModal(dateStr) {
 
     // Näytä modaali
     modal.style.display = 'block';
+    
+    // Varmista että validointi on aktiivinen myös avattaessa
+    setupEntryModalBloodSugarValidation();
 }
 
 function populateEntryForm(entry) {
@@ -99,6 +105,55 @@ function populateEntryForm(entry) {
 
     // Kommentti
     setInputValue('comment', entry.comment);
+}
+
+/**
+ * Validoi kaikki verensokeriarvot ennen lomakkeen lähetystä
+ * @param {FormData} formData - Lomakkeen data
+ * @returns {boolean} Onko lomake validi
+ */
+function validateAllBloodSugarValues(formData) {
+    const bloodSugarFields = [
+        'morningValue', 'eveningValue',
+        'breakfastBefore', 'breakfastAfter',
+        'lunchBefore', 'lunchAfter',
+        'snackBefore', 'snackAfter',
+        'dinnerBefore', 'dinnerAfter',
+        'eveningSnackBefore', 'eveningSnackAfter'
+    ];
+    
+    let isValid = true;
+    const invalidFields = [];
+
+    // Tarkista jokainen kenttä
+    bloodSugarFields.forEach(field => {
+        const value = formData.get(field);
+        
+        // Tyhjät arvot ovat sallittuja
+        if (value === null || value === undefined || value === '') {
+            return;
+        }
+        
+        // Tarkista arvoalue ja muotoilu
+        const numValue = parseFloat(value);
+        if (isNaN(numValue) || numValue < 0 || numValue > 30) {
+            isValid = false;
+            invalidFields.push(field);
+            
+            // Korosta virheellinen kenttä
+            const input = document.getElementById(field);
+            if (input) {
+                input.style.borderColor = '#e74c3c';
+            }
+        }
+    });
+    
+    // Jos virheellisiä kenttiä löytyy, näytä ilmoitus
+    if (invalidFields.length > 0) {
+        showToast(`Tarkista verensokeriarvojen syöttö. Arvojen tulee olla välillä 0-30 mmol/l.`, 'error');
+    }
+    
+    return isValid;
 }
 
 /**
@@ -150,7 +205,18 @@ function setupModalEvents() {
     if (saveBtn) {
         saveBtn.onclick = () => {
             const dateStr = modal.getAttribute('data-date');
-            saveEntryData(dateStr);
+            const form = document.getElementById('entryForm');
+            
+            if (form) {
+                const formData = new FormData(form);
+                
+                // Validoi arvot ennen tallennusta
+                if (!validateAllBloodSugarValues(formData)) {
+                    return; // Pysäytä tallennus jos arvot eivät ole kelvollisia
+                }
+                
+                saveEntryData(dateStr);
+            }
         };
     }
 
@@ -167,7 +233,7 @@ function setupModalEvents() {
         };
     }
 
-    // HRV-napin toiminta (tyhjä toteutus)
+    // HRV-napin toiminta
     if (fetchHrvBtn) {
         fetchHrvBtn.onclick = async () => {
           const dateStr = modal.getAttribute('data-date');

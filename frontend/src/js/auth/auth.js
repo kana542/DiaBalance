@@ -4,18 +4,18 @@ import { showError, NotificationSeverity, showToast } from '../utils/ui-utils.js
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Auth module loaded');
 
-    // Get the login form
+    // Hae kirjautumislomake
     const loginForm = document.getElementById('loginForm');
 
-    // Check if user is already logged in
+    // Tarkista onko käyttäjä jo kirjautunut
     const token = getAuthToken();
     if (token) {
-        console.log('User already logged in, redirecting to dashboard');
+        console.log('Käyttäjä on jo kirjautunut, uudelleenohjataan dashboardiin');
         window.location.href = 'dashboard.html';
         return;
     }
 
-    // Add event listener for form submission
+    // Lisää tapahtumankäsittelijä lomakkeen lähetykseen
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
     }
@@ -28,26 +28,32 @@ async function handleLogin(event) {
     const password = document.getElementById('password').value;
     const errorMessage = document.getElementById('errorMessage');
 
-    // Basic validation
+    // Perusvalidointi
     if (!email || !password) {
-        showError(errorMessage, 'Please enter both email/username and password');
+        showError(errorMessage, 'Syötä sekä käyttäjätunnus/sähköposti että salasana');
         return;
     }
 
-    // Show loading state
+    // Näytä latauksen tila
     const submitButton = document.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
-    submitButton.textContent = 'Logging in...';
+    submitButton.textContent = 'Kirjaudutaan...';
     submitButton.disabled = true;
 
     try {
-        // Login using API client
+        // Kirjaudu API-clientin avulla
         await login(email, password);
-
-        // Redirect to dashboard
-        window.location.href = 'dashboard.html';
+        
+        // Näytä onnistumisilmoitus ennen uudelleenohjausta
+        showToast('Kirjautuminen onnistui!', 'success');
+        
+        // Pieni viive jotta ilmoitus ehtii näkyä
+        setTimeout(() => {
+            // Uudelleenohjaa dashboardiin
+            window.location.href = 'dashboard.html';
+        }, 1000);
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('Kirjautumisvirhe:', error);
         showError(errorMessage, error.message || 'Kirjautuminen epäonnistui. Tarkista tunnukset.');
         resetButton(submitButton, originalButtonText);
     }
