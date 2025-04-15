@@ -21,32 +21,32 @@
 
         body {
             color: white;
-            background-color: #0066b3; /* The blue background color from the mockup */
+            background-color: #0066b3;
             line-height: 1.6;
             overflow-x: hidden;
         }
 
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 80px; /* Add scroll padding for navigation */
-
+            scroll-padding-top: 70px;
         }
+        
         /* Navigation */
         nav {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 20px 60px;
+            padding: 18px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            background-color: rgba(0, 102, 179, 0.9); /* Semi-transparent navigation bar */
+            background-color: rgba(0, 102, 179, 0.95);
         }
 
         .logo {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             font-weight: 300;
             letter-spacing: 1px;
             text-decoration: none;
@@ -55,7 +55,7 @@
 
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 25px;
         }
 
         .nav-links a {
@@ -71,24 +71,23 @@
             opacity: 0.8;
         }
 
-        /* Sections - Each section takes up the full viewport */
+        /* Sections */
         section {
-            height: 100vh; /* Each section fills the entire viewport height */
+            min-height: 95vh; /* Increased from 90vh */
             width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0 60px;
-            overflow: hidden; /* Prevent content from overflowing */
-            position: relative; /* For positioning content */
+            padding: 50px 40px; /* Increased padding */
+            position: relative;
         }
 
         .section-content {
-            max-width: 1200px;
+            max-width: 1100px; /* Increased from 1000px */
             margin: 0 auto;
             display: flex;
             align-items: center;
-            gap: 80px;
+            gap: 50px; /* Increased from 40px */
             width: 100%;
         }
 
@@ -104,25 +103,26 @@
 
         /* Hero section */
         #hero {
-            padding-top: 80px; /* Account for the navigation bar */
+            padding-top: 90px; /* Increased padding */
+            padding-bottom: 40px;
         }
 
         #hero h1 {
-            font-size: 3.5rem;
+            font-size: 3.2rem; /* Increased from 2.8rem */
             font-weight: 500;
-            margin-bottom: 20px;
+            margin-bottom: 20px; /* Increased from 15px */
         }
 
         #hero p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            max-width: 80%;
+            font-size: 1.25rem; /* Increased from 1.1rem */
+            margin-bottom: 25px;
+            max-width: 90%;
         }
 
         .cta-button {
             display: inline-block;
             padding: 12px 24px;
-            background-color: #004c8c; /* Darker blue */
+            background-color: #004c8c;
             color: white;
             text-decoration: none;
             border-radius: 30px;
@@ -136,17 +136,19 @@
 
         /* Info section */
         #info {
-            background-color: #0066b3; /* Ensure all sections have same background */
+            background-color: #0066b3;
+            padding-top: 50px;
+            padding-bottom: 50px;
         }
 
         #info h2 {
-            font-size: 2.5rem;
-            margin-bottom: 40px;
+            font-size: 2.4rem; /* Increased from 2.2rem */
+            margin-bottom: 35px; /* Increased from 30px */
             text-align: center;
         }
 
         #info p {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             margin-bottom: 20px;
             text-align: center;
             max-width: 800px;
@@ -157,53 +159,48 @@
         /* Usage section */
         #usage {
             background-color: #0066b3;
-            padding-top: 80px
+            padding-top: 50px;
+            padding-bottom: 150px; /* Extra bottom padding for the last section */
         }
     
-
         #usage h2 {
-            font-size: 2.5rem;
-            margin-bottom: 40px;
+            font-size: 2.4rem;
+            margin-bottom: 35px;
             text-align: center;
-            margin-top: 2.5rem;
+            margin-top: 0;
         }
 
         .usage-steps {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
         .step {
-            margin-bottom: 40px;
+            margin-bottom: 40px; /* Increased from 30px */
         }
 
         .step h3 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+            font-size: 1.8rem; /* Increased from 1.6rem */
+            margin-bottom: 15px;
         }
 
         .step p {
-            font-size: 1.2rem;
+            font-size: 1.2rem; /* Increased from 1.1rem */
             margin-bottom: 20px;
         }
 
-        /* Placeholder for images */
-        .placeholder-image {
-            width: 300px;
-            height: 300px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Active navigation link style */
+        .nav-links a.active {
+            font-weight: 500;
+            text-decoration: underline;
         }
 
         /* Responsive adjustments */
         @media (max-width: 992px) {
             .section-content {
                 flex-direction: column;
-                gap: 40px;
+                gap: 30px;
             }
 
             #hero .section-content {
@@ -211,11 +208,11 @@
             }
 
             nav {
-                padding: 20px 30px;
+                padding: 15px 20px;
             }
 
             .logo {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .nav-links {
@@ -227,24 +224,66 @@
             }
 
             section {
-                padding: 0 30px;
-                height: auto;
-                min-height: 100vh;
+                padding: 40px 30px;
+                min-height: auto;
             }
 
             #hero {
                 padding-top: 80px;
             }
+            
+            /* Last section needs extra padding */
+            #usage {
+                padding-bottom: 120px;
+            }
+            
+            .step .section-content {
+                margin-bottom: 0;
+            }
+            
+            /* Make images smaller on mobile */
+            .image-content img {
+                width: 70% !important;
+            }
         }
 
         @media (max-width: 768px) {
             #hero h1 {
-                font-size: 2.8rem;
+                font-size: 2.4rem;
             }
+            
+            h2 {
+                font-size: 2.2rem !important;
+            }
+            
+            h3 {
+                font-size: 1.6rem !important;
+            }
+            
+            p {
+                font-size: 1.1rem !important;
+            }
+            
+            /* More compact in mobile view */
+            .step {
+                margin-bottom: 30px;
+            }
+            
+            /* Even smaller images on small screens */
+            .image-content img {
+                width: 65% !important;
+            }
+        }
 
-            .placeholder-image {
-                width: 250px;
-                height: 250px;
+        /* Fix for mobile view - ensure content is properly spaced */
+        @media (max-height: 800px) {
+            section {
+                min-height: auto;
+                padding: 40px 30px;
+            }
+            
+            #usage {
+                padding-bottom: 120px;
             }
         }
     </style>
@@ -256,35 +295,34 @@
         <div class="nav-links">
             <a href="#info">Tietoa sovelluksesta</a>
             <a href="#usage">Käyttöohjeet</a>
-            <a href="login.html">Kirjaudu / Rekisteröidy</a>
+            <a href="./src/pages/login.html">Kirjaudu / Rekisteröidy</a>
         </div>
     </nav>
 
-    <!-- Hero Section (First red rectangle in the mockup) -->
+    <!-- Hero Section -->
     <section id="hero">
         <div class="section-content">
             <div class="text-content">
                 <h1>Hallitse terveyttäsi helposti</h1>
-                <p>DiaBalance on yksinkertainen sovellus, joka yhdistää verensokeriseurannan ja HRV-datan analysoinnin. Seuraa helposti ateria-arvoja, tunnista trendejä ja hyödynnä kehosi palautumistietoja paremman hyvinvoinnin saavuttamiseksi.</p>
+                <p>DiaBalance on yksinkertainen sovellus, joka yhdistää verensokeriseurannan ja HRV-datan analysoinnin. Seuraa helposti ateria-arvoja, tunnista trendejä ja hyödynnä kehosi palautumistietoja.</p>
                 <a href="#info" class="cta-button">Aloita seuranta</a>
             </div>
             <div class="image-content">
-                <img src="/etusivu-pikkukuva.png" alt="verensokerimittari" style="width: 75%; height: auto;" />
-            </div>
+                <img src="/etusivu-pikkukuva.png" alt="verensokerimittari" style="width: 70%; height: auto;" />
             </div>
         </div>
     </section>
 
-    <!-- Info Section (Second red rectangle in the mockup) -->
+    <!-- Info Section -->
     <section id="info">
         <div class="section-content" style="flex-direction: column;">
             <h2>Tietoa sovelluksesta</h2>
-            <p>DiaBalance on selaimessa toimiva sovellus, johon käyttäjät voivat tallentaa verensokeriarvojaan päiväkirjatyyppisesti. Sovellus yhdistää verensokerin seurannan ja sydämen sykevälivaihtelun (HRV) analysoinnin, tarjoten kokonaisvaltaisen näkymän käyttäjän terveyteen.</p>
-            <p>Sovelluksessa voit kirjata verensokerin perusarvot sekä tarkemmat ateriakohtaiset mittaukset. Helppokäyttöinen kalenteri ja selkeät kaaviot auttavat seuraamaan arvojen kehitystä kuukauden ajalta. KubiosHRV-integraation ansiosta pääset tarkastelemaan myös kehosi palautumistilaa, stressitasoa ja syketietoja samassa näkymässä.</p>
+            <p>DiaBalance on selaimessa toimiva sovellus, johon käyttäjät voivat tallentaa verensokeriarvojaan päiväkirjatyyppisesti. Sovellus yhdistää verensokerin seurannan ja sydämen sykevälivaihtelun (HRV) analysoinnin.</p>
+            <p>Sovelluksessa voit kirjata verensokerin perusarvot sekä tarkemmat ateriakohtaiset mittaukset. Helppokäyttöinen kalenteri ja selkeät kaaviot auttavat seuraamaan arvojen kehitystä. KubiosHRV-integraation ansiosta pääset tarkastelemaan myös kehosi palautumistilaa, stressitasoa ja syketietoja.</p>
         </div>
     </section>
 
-    <!-- Usage Section (Third red rectangle in the mockup) -->
+    <!-- Usage Section -->
     <section id="usage">
         <div class="section-content" style="flex-direction: column;">
             <h2>Miten sovellusta käytetään?</h2>
@@ -302,11 +340,10 @@
                     <div class="section-content">
                         <div class="text-content">
                             <h3>Verensokerin tallentaminen</h3>
-                            <p>Kirjautumisen jälkeen sinut siirretään yleisnäkymään. Tuplaklikkaamalla yleisnäkymän kalenterista päivämäärää, voit tehdä uuden merkinnän. Merkinnän voit jättää kesken ja palata aina uuden mittauksen jälkeen täyttämään lomakkeen.</p>
+                            <p>Kirjautumisen jälkeen sinut siirretään yleisnäkymään. Tuplaklikkaamalla kalenterista päivämäärää, voit tehdä uuden merkinnän. Merkinnän voit jättää kesken ja palata täyttämään lomakkeen myöhemmin.</p>
                         </div>
                         <div class="image-content">
-                            <img src="/etusivu-calendar.png" alt="kalenterikuva" style="width: 50%; height: auto;" />
-                            </div>
+                            <img src="/etusivu-calendar.png" alt="kalenterikuva" style="width: 45%; height: auto;" />
                         </div>
                     </div>
                 </div>
@@ -318,8 +355,7 @@
                             <p>Samalla kun olet merkitsemässä verensokeriarvoaja, voit painamalla "Hae HRV-data" nappia, hakea kyseisen päivän HRV-analyysit, jos sellaisia on tallennettu KubiosHRV-aplikaatiossa.</p>
                         </div>
                         <div class="image-content">
-                            <img src="etusivu-hae-hrv-dataa.png" alt="hrvdatakuva" style="width: 50%; height: auto;" />
-                            </div>
+                            <img src="/etusivu-hae-hrv-dataa.png" alt="hrvdatakuva" style="width: 45%; height: auto;" />
                         </div>
                     </div>
                 </div>
@@ -328,13 +364,11 @@
     </section>
 
     <script>
-        // You can add JavaScript here if needed
+        // JavaScript for navigation highlighting
         document.addEventListener('DOMContentLoaded', function() {
-            // Add active class to current section
             const sections = document.querySelectorAll('section');
             const navLinks = document.querySelectorAll('.nav-links a');
             
-            // Highlight the active section in the navigation
             window.addEventListener('scroll', () => {
                 let current = '';
                 
@@ -353,6 +387,12 @@
                     }
                 });
             });
+            
+            // Scroll check on page load
+            setTimeout(() => {
+                window.scrollBy(0, 1);
+                window.scrollBy(0, -1);
+            }, 100);
         });
     </script>
 </body>
