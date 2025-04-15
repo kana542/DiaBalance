@@ -1,24 +1,359 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-    <link rel="stylesheet" href="./src/css/main.css">
+    <title>DiaBalance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Oswald", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        body {
+            color: white;
+            background-color: #0066b3; /* The blue background color from the mockup */
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px; /* Add scroll padding for navigation */
+
+        }
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background-color: rgba(0, 102, 179, 0.9); /* Semi-transparent navigation bar */
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Sections - Each section takes up the full viewport */
+        section {
+            height: 100vh; /* Each section fills the entire viewport height */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 60px;
+            overflow: hidden; /* Prevent content from overflowing */
+            position: relative; /* For positioning content */
+        }
+
+        .section-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 80px;
+            width: 100%;
+        }
+
+        .text-content {
+            flex: 1;
+        }
+
+        .image-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Hero section */
+        #hero {
+            padding-top: 80px; /* Account for the navigation bar */
+        }
+
+        #hero h1 {
+            font-size: 3.5rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        #hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 80%;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #004c8c; /* Darker blue */
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #003b6f;
+        }
+
+        /* Info section */
+        #info {
+            background-color: #0066b3; /* Ensure all sections have same background */
+        }
+
+        #info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        #info p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Usage section */
+        #usage {
+            background-color: #0066b3;
+            padding-top: 80px
+        }
+    
+
+        #usage h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+            margin-top: 2.5rem;
+        }
+
+        .usage-steps {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step {
+            margin-bottom: 40px;
+        }
+
+        .step h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .step p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Placeholder for images */
+        .placeholder-image {
+            width: 300px;
+            height: 300px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .section-content {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            #hero .section-content {
+                flex-direction: column-reverse;
+            }
+
+            nav {
+                padding: 20px 30px;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+
+            section {
+                padding: 0 30px;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            #hero {
+                padding-top: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .placeholder-image {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo-container">
-            <img src="./dog.webp" alt="App Logo" class="logo">
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="#hero" class="logo">DiaBalance</a>
+        <div class="nav-links">
+            <a href="#info">Tietoa sovelluksesta</a>
+            <a href="#usage">Käyttöohjeet</a>
+            <a href="login.html">Kirjaudu / Rekisteröidy</a>
         </div>
-        <h1>dev build v0.1</h1>
-        <div class="button-container">
-            <button id="authButton" class="btn">login</button>
-            <!-- Dashboard(dev) nappi poistettu -->
-        </div>
-    </div>
+    </nav>
 
-    <!-- Käytetään moduulia vanhan script-tagin sijaan -->
-    <script type="module" src="./src/main.js"></script>
+    <!-- Hero Section (First red rectangle in the mockup) -->
+    <section id="hero">
+        <div class="section-content">
+            <div class="text-content">
+                <h1>Hallitse terveyttäsi helposti</h1>
+                <p>DiaBalance on yksinkertainen sovellus, joka yhdistää verensokeriseurannan ja HRV-datan analysoinnin. Seuraa helposti ateria-arvoja, tunnista trendejä ja hyödynnä kehosi palautumistietoja paremman hyvinvoinnin saavuttamiseksi.</p>
+                <a href="#info" class="cta-button">Aloita seuranta</a>
+            </div>
+            <div class="image-content">
+                <img src="/etusivu-pikkukuva.png" alt="verensokerimittari" style="width: 75%; height: auto;" />
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section (Second red rectangle in the mockup) -->
+    <section id="info">
+        <div class="section-content" style="flex-direction: column;">
+            <h2>Tietoa sovelluksesta</h2>
+            <p>DiaBalance on selaimessa toimiva sovellus, johon käyttäjät voivat tallentaa verensokeriarvojaan päiväkirjatyyppisesti. Sovellus yhdistää verensokerin seurannan ja sydämen sykevälivaihtelun (HRV) analysoinnin, tarjoten kokonaisvaltaisen näkymän käyttäjän terveyteen.</p>
+            <p>Sovelluksessa voit kirjata verensokerin perusarvot sekä tarkemmat ateriakohtaiset mittaukset. Helppokäyttöinen kalenteri ja selkeät kaaviot auttavat seuraamaan arvojen kehitystä kuukauden ajalta. KubiosHRV-integraation ansiosta pääset tarkastelemaan myös kehosi palautumistilaa, stressitasoa ja syketietoja samassa näkymässä.</p>
+        </div>
+    </section>
+
+    <!-- Usage Section (Third red rectangle in the mockup) -->
+    <section id="usage">
+        <div class="section-content" style="flex-direction: column;">
+            <h2>Miten sovellusta käytetään?</h2>
+            <div class="usage-steps">
+                <div class="step">
+                    <div class="section-content">
+                        <div class="text-content">
+                            <h3>Rekisteröinti</h3>
+                            <p>Aloita painamalla "Aloita seuranta" tai "Kirjaudu / Rekisteröidy". Käytä rekisteröintiin samoja käyttäjätunnuksia mitä KubiosHRV-aplikaatiossa.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="section-content">
+                        <div class="text-content">
+                            <h3>Verensokerin tallentaminen</h3>
+                            <p>Kirjautumisen jälkeen sinut siirretään yleisnäkymään. Tuplaklikkaamalla yleisnäkymän kalenterista päivämäärää, voit tehdä uuden merkinnän. Merkinnän voit jättää kesken ja palata aina uuden mittauksen jälkeen täyttämään lomakkeen.</p>
+                        </div>
+                        <div class="image-content">
+                            <img src="/etusivu-calendar.png" alt="kalenterikuva" style="width: 50%; height: auto;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="section-content">
+                        <div class="text-content">
+                            <h3>HRV-analyysien tallentaminen</h3>
+                            <p>Samalla kun olet merkitsemässä verensokeriarvoaja, voit painamalla "Hae HRV-data" nappia, hakea kyseisen päivän HRV-analyysit, jos sellaisia on tallennettu KubiosHRV-aplikaatiossa.</p>
+                        </div>
+                        <div class="image-content">
+                            <img src="etusivu-hae-hrv-dataa.png" alt="hrvdatakuva" style="width: 50%; height: auto;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // You can add JavaScript here if needed
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add active class to current section
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            // Highlight the active section in the navigation
+            window.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - sectionHeight/3)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
