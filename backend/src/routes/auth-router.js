@@ -13,7 +13,7 @@ authRouter.post(
   "/login",
   body("kayttajanimi")
     .trim()
-    .escape()
+    .escape() //Sanitoi erikoismerkit
     .notEmpty()
     .withMessage("Käyttäjänimi vaaditaan"),
   body("salasana")

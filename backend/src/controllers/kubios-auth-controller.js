@@ -218,7 +218,7 @@ const postLogin = async (req, res, next) => {
     }, 'Kirjautuminen onnistui (Kubios)', Severity.SUCCESS));
   } catch (err) {
     console.error('Error in Kubios login process:', err);
-    next(err);
+    next(createExternalApiError('Kirjautuminen Kubios API:in epäonnistui', err));
   }
 };
 
