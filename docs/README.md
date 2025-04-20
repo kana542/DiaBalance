@@ -61,7 +61,7 @@ robot --pythonpath . --log log_login_success.html --report report_login_success.
 
 ## Testitiedostojen sijainti
 
-- Testit: `tests/frontend/`
-- Resurssit: `resources/`
-- Tulokset ja julkaisu: `docs/`
+- Testit: [`tests/frontend/`](./tests/frontend/)
+- Resurssit: [`resources/`](./resources/)
+- Tulokset ja julkaisu: [`docs/`](./docs/)
 
