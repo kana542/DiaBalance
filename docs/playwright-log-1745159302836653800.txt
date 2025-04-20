@@ -1,0 +1,29 @@
+{"level":30,"time":"2025-04-20T14:28:23.409Z","pid":33188,"hostname":"Supsu","msg":"Listening on 61834"}
+(node:33188) DeprecationWarning: Calling start() is no longer necessary. It can be safely omitted.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{"level":30,"time":"2025-04-20T14:28:23.536Z","pid":33188,"hostname":"Supsu","msg":"Start of node method newBrowser"}
+{"level":30,"time":"2025-04-20T14:28:23.702Z","pid":33188,"hostname":"Supsu","msg":"Adding browser to stack: chromium, version: 134.0.6998.35"}
+{"level":30,"time":"2025-04-20T14:28:23.703Z","pid":33188,"hostname":"Supsu","msg":"End of node method newBrowser"}
+{"level":30,"time":"2025-04-20T14:28:23.703Z","pid":33188,"hostname":"Supsu","msg":"Adding 0 contexts to browser"}
+{"level":30,"time":"2025-04-20T14:28:23.709Z","pid":33188,"hostname":"Supsu","msg":"Start of node method newPage"}
+{"level":30,"time":"2025-04-20T14:28:23.710Z","pid":33188,"hostname":"Supsu","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-20T14:28:23.725Z","pid":33188,"hostname":"Supsu","msg":"Changed active context"}
+{"level":30,"time":"2025-04-20T14:28:23.887Z","pid":33188,"hostname":"Supsu","msg":"Video path: undefined"}
+{"level":30,"time":"2025-04-20T14:28:23.887Z","pid":33188,"hostname":"Supsu","msg":"Changed active page"}
+{"level":30,"time":"2025-04-20T14:28:25.792Z","pid":33188,"hostname":"Supsu","msg":"End of node method newPage"}
+{"level":30,"time":"2025-04-20T14:28:25.797Z","pid":33188,"hostname":"Supsu","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-20T14:28:25.798Z","pid":33188,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=authButton in page."}
+{"level":30,"time":"2025-04-20T14:28:25.878Z","pid":33188,"hostname":"Supsu","msg":"End of node method click"}
+{"level":30,"time":"2025-04-20T14:28:26.891Z","pid":33188,"hostname":"Supsu","msg":"Start of node method typeText"}
+{"level":30,"time":"2025-04-20T14:28:26.892Z","pid":33188,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=email in page."}
+{"level":30,"time":"2025-04-20T14:28:27.822Z","pid":33188,"hostname":"Supsu","msg":"End of node method typeText"}
+{"level":30,"time":"2025-04-20T14:28:27.827Z","pid":33188,"hostname":"Supsu","msg":"Start of node method typeText"}
+{"level":30,"time":"2025-04-20T14:28:27.827Z","pid":33188,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=password in page."}
+{"level":30,"time":"2025-04-20T14:28:29.338Z","pid":33188,"hostname":"Supsu","msg":"End of node method typeText"}
+{"level":30,"time":"2025-04-20T14:28:29.344Z","pid":33188,"hostname":"Supsu","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-20T14:28:29.344Z","pid":33188,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with button:has-text(\"Kirjaudu\") in page."}
+{"level":30,"time":"2025-04-20T14:28:29.386Z","pid":33188,"hostname":"Supsu","msg":"End of node method click"}
+{"level":30,"time":"2025-04-20T14:28:30.397Z","pid":33188,"hostname":"Supsu","msg":"Start of node method waitForElementState"}
+{"level":30,"time":"2025-04-20T14:28:30.398Z","pid":33188,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with text=\"Kirjautuminen onnistui!\" in page."}
+{"level":30,"time":"2025-04-20T14:28:30.407Z","pid":33188,"hostname":"Supsu","msg":"End of node method waitForElementState"}
+{"level":30,"time":"2025-04-20T15:01:15.865Z","pid":33188,"hostname":"Supsu","msg":"Removed page=a0dd38bf-7eed-43aa-a87f-ca3626d1f350 from context=04280817-c05a-4597-8f6f-0a44141bed63 page stack"}

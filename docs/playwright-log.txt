@@ -23,3 +23,4 @@
 {"level":30,"time":"2025-04-20T14:23:49.472Z","pid":31440,"hostname":"Supsu","msg":"Start of node method click"}
 {"level":30,"time":"2025-04-20T14:23:49.472Z","pid":31440,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with button:has-text(\"Kirjaudu\") in page."}
 {"level":30,"time":"2025-04-20T14:23:49.509Z","pid":31440,"hostname":"Supsu","msg":"End of node method click"}
+{"level":30,"time":"2025-04-20T15:01:18.662Z","pid":31440,"hostname":"Supsu","msg":"Removed page=4d4bd46a-1415-4078-ae3e-96f46128bd4d from context=59951a3c-a625-413e-add6-6b91e46a255f page stack"}
