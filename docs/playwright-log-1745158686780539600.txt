@@ -1,0 +1,19 @@
+{"level":30,"time":"2025-04-20T14:18:07.337Z","pid":32444,"hostname":"Supsu","msg":"Listening on 61097"}
+(node:32444) DeprecationWarning: Calling start() is no longer necessary. It can be safely omitted.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{"level":30,"time":"2025-04-20T14:18:07.466Z","pid":32444,"hostname":"Supsu","msg":"Start of node method newBrowser"}
+{"level":30,"time":"2025-04-20T14:18:07.844Z","pid":32444,"hostname":"Supsu","msg":"Adding browser to stack: chromium, version: 134.0.6998.35"}
+{"level":30,"time":"2025-04-20T14:18:07.845Z","pid":32444,"hostname":"Supsu","msg":"End of node method newBrowser"}
+{"level":30,"time":"2025-04-20T14:18:07.844Z","pid":32444,"hostname":"Supsu","msg":"Adding 0 contexts to browser"}
+{"level":30,"time":"2025-04-20T14:18:07.851Z","pid":32444,"hostname":"Supsu","msg":"Start of node method newPage"}
+{"level":30,"time":"2025-04-20T14:18:07.852Z","pid":32444,"hostname":"Supsu","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-20T14:18:07.869Z","pid":32444,"hostname":"Supsu","msg":"Changed active context"}
+{"level":30,"time":"2025-04-20T14:18:08.099Z","pid":32444,"hostname":"Supsu","msg":"Video path: undefined"}
+{"level":30,"time":"2025-04-20T14:18:08.099Z","pid":32444,"hostname":"Supsu","msg":"Changed active page"}
+{"level":30,"time":"2025-04-20T14:18:08.162Z","pid":32444,"hostname":"Supsu","msg":"End of node method newPage"}
+{"level":30,"time":"2025-04-20T14:18:08.169Z","pid":32444,"hostname":"Supsu","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-20T14:18:08.169Z","pid":32444,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=authButton in page."}
+{"level":30,"time":"2025-04-20T14:18:08.305Z","pid":32444,"hostname":"Supsu","msg":"End of node method click"}
+{"level":30,"time":"2025-04-20T14:18:09.314Z","pid":32444,"hostname":"Supsu","msg":"Start of node method typeText"}
+{"level":30,"time":"2025-04-20T14:18:09.314Z","pid":32444,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=email in page."}
+{"level":30,"time":"2025-04-20T14:18:10.244Z","pid":32444,"hostname":"Supsu","msg":"End of node method typeText"}

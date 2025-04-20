@@ -1,0 +1,41 @@
+{"level":30,"time":"2025-04-20T12:24:48.015Z","pid":24024,"hostname":"Supsu","msg":"Listening on 55568"}
+(node:24024) DeprecationWarning: Calling start() is no longer necessary. It can be safely omitted.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{"level":30,"time":"2025-04-20T12:24:48.120Z","pid":24024,"hostname":"Supsu","msg":"Start of node method newBrowser"}
+{"level":30,"time":"2025-04-20T12:24:48.297Z","pid":24024,"hostname":"Supsu","msg":"Adding browser to stack: chromium, version: 134.0.6998.35"}
+{"level":30,"time":"2025-04-20T12:24:48.298Z","pid":24024,"hostname":"Supsu","msg":"End of node method newBrowser"}
+{"level":30,"time":"2025-04-20T12:24:48.298Z","pid":24024,"hostname":"Supsu","msg":"Adding 0 contexts to browser"}
+{"level":30,"time":"2025-04-20T12:24:48.304Z","pid":24024,"hostname":"Supsu","msg":"Start of node method newPage"}
+{"level":30,"time":"2025-04-20T12:24:48.305Z","pid":24024,"hostname":"Supsu","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-20T12:24:48.320Z","pid":24024,"hostname":"Supsu","msg":"Changed active context"}
+{"level":30,"time":"2025-04-20T12:24:48.486Z","pid":24024,"hostname":"Supsu","msg":"Video path: undefined"}
+{"level":30,"time":"2025-04-20T12:24:48.486Z","pid":24024,"hostname":"Supsu","msg":"Changed active page"}
+{"level":30,"time":"2025-04-20T12:24:48.545Z","pid":24024,"hostname":"Supsu","msg":"End of node method newPage"}
+{"level":30,"time":"2025-04-20T12:24:48.550Z","pid":24024,"hostname":"Supsu","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-20T12:24:48.551Z","pid":24024,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=authButton in page."}
+{"level":30,"time":"2025-04-20T12:24:48.675Z","pid":24024,"hostname":"Supsu","msg":"End of node method click"}
+{"level":30,"time":"2025-04-20T12:24:49.682Z","pid":24024,"hostname":"Supsu","msg":"Start of node method typeText"}
+{"level":30,"time":"2025-04-20T12:24:49.682Z","pid":24024,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=email in page."}
+{"level":30,"time":"2025-04-20T12:24:50.607Z","pid":24024,"hostname":"Supsu","msg":"End of node method typeText"}
+{"level":30,"time":"2025-04-20T12:24:50.610Z","pid":24024,"hostname":"Supsu","msg":"Start of node method typeText"}
+{"level":30,"time":"2025-04-20T12:24:50.610Z","pid":24024,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=password in page."}
+{"level":30,"time":"2025-04-20T12:24:51.761Z","pid":24024,"hostname":"Supsu","msg":"End of node method typeText"}
+{"level":30,"time":"2025-04-20T12:24:51.767Z","pid":24024,"hostname":"Supsu","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-20T12:24:51.767Z","pid":24024,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with text=Kirjaudu in page."}
+{"level":30,"time":"2025-04-20T12:24:51.780Z","pid":24024,"hostname":"Supsu","msg":"Error of node method  click"}
+================= Original suppressed error =================
+locator.click: Error: strict mode violation: locator('text=Kirjaudu') resolved to 2 elements:
+    1) <h1>Kirjaudu sisään</h1> aka getByRole('heading', { name: 'Kirjaudu sisään' })
+    2) <button class="btn" type="submit">Kirjaudu</button> aka getByRole('button', { name: 'Kirjaudu' })
+
+Call log:
+[2m  - waiting for locator('text=Kirjaudu')[22m
+
+    at internalClick (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:11890:19)
+    at async click (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:11871:18)
+    at async PlaywrightServer.click (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:13132:28)
+=============================================================
+{"level":30,"time":"2025-04-20T12:24:51.799Z","pid":24024,"hostname":"Supsu","msg":"Start of node method takeScreenshot"}
+{"level":30,"time":"2025-04-20T12:24:51.799Z","pid":24024,"hostname":"Supsu","Take screenshot with options: ":{"path":"C:\\Users\\suviw\\Documents\\developer\\DiaBalance\\docs\\browser\\screenshot\\fail-screenshot-1.png","fileType":"png","fullPage":false,"timeout":10000,"omitBackground":false}}
+{"level":30,"time":"2025-04-20T12:24:51.909Z","pid":24024,"hostname":"Supsu","msg":"End of node method takeScreenshot"}
+{"level":30,"time":"2025-04-20T14:23:20.317Z","pid":24024,"hostname":"Supsu","msg":"Removed page=45efbb08-7465-495e-bf75-654c150a154d from context=21c529f1-2f23-43a0-9698-b48f24e02f34 page stack"}

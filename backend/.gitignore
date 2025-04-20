@@ -61,5 +61,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+.venv
+
 test/
 apidoc/

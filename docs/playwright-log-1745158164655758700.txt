@@ -1,0 +1,43 @@
+{"level":30,"time":"2025-04-20T14:09:25.242Z","pid":30404,"hostname":"Supsu","msg":"Listening on 60546"}
+(node:30404) DeprecationWarning: Calling start() is no longer necessary. It can be safely omitted.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{"level":30,"time":"2025-04-20T14:09:25.314Z","pid":30404,"hostname":"Supsu","msg":"Start of node method newBrowser"}
+{"level":30,"time":"2025-04-20T14:09:25.495Z","pid":30404,"hostname":"Supsu","msg":"Adding browser to stack: chromium, version: 134.0.6998.35"}
+{"level":30,"time":"2025-04-20T14:09:25.496Z","pid":30404,"hostname":"Supsu","msg":"End of node method newBrowser"}
+{"level":30,"time":"2025-04-20T14:09:25.496Z","pid":30404,"hostname":"Supsu","msg":"Adding 0 contexts to browser"}
+{"level":30,"time":"2025-04-20T14:09:25.503Z","pid":30404,"hostname":"Supsu","msg":"Start of node method newPage"}
+{"level":30,"time":"2025-04-20T14:09:25.503Z","pid":30404,"hostname":"Supsu","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-20T14:09:25.519Z","pid":30404,"hostname":"Supsu","msg":"Changed active context"}
+{"level":30,"time":"2025-04-20T14:09:25.724Z","pid":30404,"hostname":"Supsu","msg":"Video path: undefined"}
+{"level":30,"time":"2025-04-20T14:09:25.724Z","pid":30404,"hostname":"Supsu","msg":"Changed active page"}
+{"level":30,"time":"2025-04-20T14:09:25.777Z","pid":30404,"hostname":"Supsu","msg":"End of node method newPage"}
+{"level":30,"time":"2025-04-20T14:09:25.783Z","pid":30404,"hostname":"Supsu","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-20T14:09:25.784Z","pid":30404,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=authButton in page."}
+{"level":30,"time":"2025-04-20T14:09:25.901Z","pid":30404,"hostname":"Supsu","msg":"End of node method click"}
+{"level":30,"time":"2025-04-20T14:09:26.908Z","pid":30404,"hostname":"Supsu","msg":"Start of node method typeText"}
+{"level":30,"time":"2025-04-20T14:09:26.908Z","pid":30404,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=email in page."}
+{"level":30,"time":"2025-04-20T14:09:27.827Z","pid":30404,"hostname":"Supsu","msg":"End of node method typeText"}
+{"level":30,"time":"2025-04-20T14:09:27.830Z","pid":30404,"hostname":"Supsu","msg":"Start of node method typeText"}
+{"level":30,"time":"2025-04-20T14:09:27.830Z","pid":30404,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=password in page."}
+{"level":30,"time":"2025-04-20T14:09:29.670Z","pid":30404,"hostname":"Supsu","msg":"End of node method typeText"}
+{"level":30,"time":"2025-04-20T14:09:29.676Z","pid":30404,"hostname":"Supsu","msg":"Start of node method click"}
+{"level":30,"time":"2025-04-20T14:09:29.677Z","pid":30404,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with button:has-text(\"Kirjaudu\") in page."}
+{"level":30,"time":"2025-04-20T14:09:29.711Z","pid":30404,"hostname":"Supsu","msg":"End of node method click"}
+{"level":30,"time":"2025-04-20T14:09:30.721Z","pid":30404,"hostname":"Supsu","msg":"Start of node method getText"}
+{"level":30,"time":"2025-04-20T14:09:30.722Z","pid":30404,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=error-message in page."}
+{"level":50,"time":"2025-04-20T14:09:40.736Z","pid":30404,"hostname":"Supsu","err":{"type":"TimeoutError","message":"locator.elementHandle: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('id=error-message')\u001b[22m\n","stack":"locator.elementHandle: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('id=error-message')\u001b[22m\n\n    at getTextContent (C:\\Users\\suviw\\Documents\\developer\\DiaBalance\\.venv\\Lib\\site-packages\\Browser\\wrapper\\index.js:11577:33)\n    at getText (C:\\Users\\suviw\\Documents\\developer\\DiaBalance\\.venv\\Lib\\site-packages\\Browser\\wrapper\\index.js:11591:21)\n    at async PlaywrightServer.getText (C:\\Users\\suviw\\Documents\\developer\\DiaBalance\\.venv\\Lib\\site-packages\\Browser\\wrapper\\index.js:13132:28)","name":"TimeoutError"},"msg":"locator.elementHandle: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('id=error-message')\u001b[22m\n"}
+{"level":30,"time":"2025-04-20T14:09:40.736Z","pid":30404,"hostname":"Supsu","msg":"Error of node method  getText"}
+================= Original suppressed error =================
+locator.elementHandle: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('id=error-message')[22m
+
+    at getTextContent (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:11577:33)
+    at getText (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:11591:21)
+    at async PlaywrightServer.getText (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:13132:28) {
+  name: 'TimeoutError'
+}
+=============================================================
+{"level":30,"time":"2025-04-20T14:09:40.760Z","pid":30404,"hostname":"Supsu","msg":"Start of node method takeScreenshot"}
+{"level":30,"time":"2025-04-20T14:09:40.760Z","pid":30404,"hostname":"Supsu","Take screenshot with options: ":{"path":"C:\\Users\\suviw\\Documents\\developer\\DiaBalance\\docs\\browser\\screenshot\\fail-screenshot-1.png","fileType":"png","fullPage":false,"timeout":10000,"omitBackground":false}}
+{"level":30,"time":"2025-04-20T14:09:40.875Z","pid":30404,"hostname":"Supsu","msg":"End of node method takeScreenshot"}
