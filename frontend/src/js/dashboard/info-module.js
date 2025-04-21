@@ -5,11 +5,7 @@ const infoContent = {
     },
     bloodSugar: {
         title: "Verensokeriseuranta",
-        content: "Tämä osio näyttää verensokeriarvosi valitulta kuukaudelta. Voit tarkastella perusseurannan arvoja (aamu- ja ilta-arvot) tai ateriakohtaisia arvoja (ennen ja jälkeen)."
-    },
-    chart: {
-        title: "Kaaviotieto",
-        content: "Kaavio näyttää verensokeriarvojen kehityksen kuukauden ajalta. Voit valita näytettäväksi perusseurannan tai ateriakohtaiset arvot. Punaiset pisteet ovat mittauksia ennen ateriaa, turkoosin väriset mittauksia aterian jälkeen."
+        content: "Tämä osio näyttää verensokeriarvosi valitulta kuukaudelta. Voit tarkastella perusseurannan arvoja (aamu- ja ilta-arvot) tai ateriakohtaisia arvoja (ennen ja jälkeen).\n\nKaavio näyttää verensokeriarvojen kehityksen kuukauden ajalta. Voit valita näytettäväksi perusseurannan tai ateriakohtaiset arvot. Punaiset pisteet ovat mittauksia ennen ateriaa, turkoosin väriset mittauksia aterian jälkeen."
     },
     hrv: {
         title: "HRV-analyysi",

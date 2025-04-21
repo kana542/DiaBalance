@@ -401,42 +401,44 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    background: transparent;
-    border: none;
-    font-size: 16px;
+    background-color: rgba(61, 90, 161, 0.15);
+    border: 2px solid #3d5aa1;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
     color: #3d5aa1;
     cursor: pointer;
     z-index: 5;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow to indicate it's clickable */
+   }
+
+   #calendarInfoBtn {
+    top: 10px;
+    right: 70px;
+    top: 15px;
    }
 
    .info-button:hover {
        color: #2d487e;
+       background-color: rgba(61, 90, 161, 0.25); 
        transform: scale(1.1);
+       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+   }
+   
+   .info-button:focus {
+       outline: 3px solid #0a96db;
+       outline-offset: 2px;
    }
 
    .dashboard-card, .chart-container, .metrics-container {
     position: relative;
 }
-   
-   /* Kalenterin info-nappi 
-   .calendar-info-btn {
-    background: transparent;
-    border: none;
-    font-size: 16px;
-    color: #3d5aa1;
-    cursor: pointer;
-    margin: 0 20px; 
-    padding: 5px;
-    transition: all 0.2s ease;
-}
 
-.calendar-info-btn:hover {
-    color: #2d487e;
-    transform: scale(1.1);
-}
-   
-   /* Ei dataa -viesti */
    .no-data-message {
        text-align: center;
        padding: 20px;
