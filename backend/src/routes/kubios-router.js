@@ -1,25 +1,25 @@
 /**
- * kubios-router.js - Kubios HRV -tietojen API-reitit
- * -----------------
- * määrittelee reitit Kubios HRV (Heart Rate Variability) -tietojen käsittelyyn.
- * vastaa sovelluksen ja Kubios-palvelun välisestä tiedonvaihdosta sekä
- * HRV-tietojen hakemisesta ja tallentamisesta.
+ * kubios-router.js - Kubios HRV-datan API-reitit
+ * -------------
+ * Määrittelee kaikki Kubios-palveluun ja HRV-dataan liittyvät reitit Express-sovellukselle.
+ * Mahdollistaa HRV-datan haun ja tallennuksen autentikoiduille käyttäjille.
  *
  * pääominaisuudet:
- *    1. käyttäjän Kubios-tietojen haku (user-data, user-info)
- *    2. päiväkohtaisten HRV-tietojen käsittely (haku ja tallennus)
- *    3. autentikaatiosuojaus kaikille reiteille
+ *    1. HRV-datan hakureitit Kubios API:sta
+ *    2. käyttäjäkohtaisen HRV-datan hallinnan reitit
+ *    3. reittien suojaus autentikaatiolla ja validoinnilla
+ *    4. päivämääräkohtaisten HRV-tietojen käsittely
  *
- * API-reitit:
- *    - GET /user-data - hakee käyttäjän kaikki Kubios HRV-tiedot
- *    - GET /user-info - hakee käyttäjän perustiedot Kubios-palvelusta
- *    - GET /user-data/:date - hakee käyttäjän HRV-tiedot tietyltä päivämäärältä
- *    - POST /user-data/:date - tallentaa käyttäjän HRV-tiedot tietylle päivämäärälle
+ * keskeiset reitit:
+ *    - GET /api/kubios/user-data - hae kaikki käyttäjän HRV-tiedot
+ *    - GET /api/kubios/user-info - hae käyttäjän perustiedot Kubios-palvelusta
+ *    - GET /api/kubios/user-data/:date - hae tietyn päivän HRV-tiedot
+ *    - POST /api/kubios/user-data/:date - tallenna HRV-data tietylle päivälle
  *
  * käyttö sovelluksessa:
- *    - integroitu diabetesmerkintöihin HRV-mittausten analysointia varten
- *    - keskeinen osa sovelluksen tarjoamaa stressin ja fysiologisen tilan seurantaa
- *    - toimii rajapintana ulkoisen Kubios-pilvipalvelun kanssa
+ *    - liitetään index.js:ssä Express-sovellukseen (/api/kubios -etuliitteellä)
+ *    - integroituu Kubios Cloud API:n kanssa HRV-datan hakemiseksi
+ *    - täydentää verensokerimerkintöjä HRV-datalla kokonaisvaltaisen terveysnäkymän tarjoamiseksi
  */
 
 import express from "express";
@@ -30,6 +30,9 @@ import {
    getUserDataByDate,
    saveHrvData,
 } from "../controllers/kubios-controller.js";
+import { validationErrorHandler } from "../middlewares/error-handler.js";
+import { hrvDataValidation } from "../validation/entry-validation.js";
+import logger from "../utils/logger.js"
 
 // luodaan Express-reititin Kubios HRV -toiminnoille
 const kubiosRouter = express.Router();
@@ -44,6 +47,12 @@ kubiosRouter.get("/user-info", authenticateToken, getUserInfo);
 kubiosRouter.get("/user-data/:date", authenticateToken, getUserDataByDate);
 
 // tallenna käyttäjän HRV-tiedot tietylle päivämäärälle: POST /api/kubios/user-data/:date
-kubiosRouter.post("/user-data/:date", authenticateToken, saveHrvData);
+kubiosRouter.post(
+  "/user-data/:date",
+  authenticateToken,
+  hrvDataValidation,
+  validationErrorHandler,
+  saveHrvData
+);
 
 export default kubiosRouter;

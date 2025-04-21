@@ -1,81 +1,75 @@
+/**
+ * auth-router.js - autentikaatioon liittyvät API-reitit
+ * -------------
+ * Määrittelee kaikki autentikaatioon liittyvät reititykset Express-sovellukselle.
+ * Yhdistää HTTP-pyynnöt vastaaviin controller-funktioihin.
+ *
+ * pääominaisuudet:
+ *    1. kirjautumisen, rekisteröitymisen ja uloskirjautumisen reittien määrittely
+ *    2. Kubios-autentikaation reittien integrointi
+ *    3. tokenin validoinnin ja käyttäjätietojen hakureittien määrittely
+ *    4. reittien suojaus middleware-funktioilla ja validaatioilla
+ *
+ * keskeiset reitit:
+ *    - POST /api/auth/login - käyttäjän kirjautuminen
+ *    - POST /api/auth/logout - käyttäjän uloskirjautuminen
+ *    - POST /api/auth/register - uuden käyttäjän rekisteröinti
+ *    - GET /api/auth/me - kirjautuneen käyttäjän tiedot
+ *    - GET /api/auth/validate - tokenin voimassaolon tarkistus
+ *
+ * käyttö sovelluksessa:
+ *    - liitetään index.js:ssä Express-sovellukseen (/api/auth -etuliitteellä)
+ *    - käsittelee käyttäjien tunnistautumiseen liittyvät pyynnöt
+ *    - ohjaa suojattujen reittien liikenteen autentikaatiotarkistuksen läpi
+ */
+
 import express from "express";
-import { body } from "express-validator";
 import { login, getMe, validateToken, logout } from "../controllers/auth-controller.js";
 import { register } from "../controllers/user-controller.js";
 import { authenticateToken } from "../middlewares/authentication.js";
 import { validationErrorHandler } from "../middlewares/error-handler.js";
 import { postLogin, getKubiosMe } from "../controllers/kubios-auth-controller.js";
+import { loginValidation, registerValidation } from '../validation/auth-validation.js';
+import logger from "../utils/logger.js"
 
 const authRouter = express.Router();
 
-// Kirjautuminen: POST /api/auth/login
+// kirjautuminen: POST /api/auth/login
 authRouter.post(
   "/login",
-  body("kayttajanimi")
-    .trim()
-    .escape() //Sanitoi erikoismerkit
-    .notEmpty()
-    .withMessage("Käyttäjänimi vaaditaan"),
-  body("salasana")
-    .trim()
-    .escape()
-    .notEmpty()
-    .withMessage("Salasana vaaditaan"),
+  loginValidation,
   validationErrorHandler,
   login
 );
 
-// Uloskirjautuminen: POST /api/auth/logout
+// uloskirjautuminen: POST /api/auth/logout
 authRouter.post(
   "/logout",
   authenticateToken,
   logout
 );
 
-// Kubios login: POST /api/auth/kubios-login
+// kubios login: POST /api/auth/kubios-login
 authRouter.post(
   "/kubios-login",
-  body("kayttajanimi")
-    .trim()
-    .escape()
-    .notEmpty()
-    .withMessage("Käyttäjänimi vaaditaan"),
-  body("salasana")
-    .trim()
-    .escape()
-    .notEmpty()
-    .withMessage("Salasana vaaditaan"),
+  loginValidation,
   validationErrorHandler,
   postLogin
 );
 
-// Kubios käyttäjätiedot: GET /api/auth/kubios-me
+// kubios käyttäjätiedot: GET /api/auth/kubios-me
 authRouter.get("/kubios-me", authenticateToken, getKubiosMe);
 
-// Hae kirjautuneen käyttäjän tiedot: GET /api/auth/me
+// hae kirjautuneen käyttäjän tiedot: GET /api/auth/me
 authRouter.get("/me", authenticateToken, getMe);
 
-// Tarkista tokenin voimassaolo: GET /api/auth/validate
+// tarkista tokenin voimassaolo: GET /api/auth/validate
 authRouter.get("/validate", authenticateToken, validateToken);
 
-// Rekisteröityminen: POST /api/auth/register
+// rekisteröityminen: POST /api/auth/register
 authRouter.post(
   "/register",
-  body("kayttajanimi")
-    .trim()
-    .escape()
-    .isLength({ min: 3, max: 40 })
-    .withMessage("Käyttäjänimen tulee olla 3–40 merkkiä pitkä"),
-  body("email")
-    .optional()
-    .trim()
-    .isEmail()
-    .withMessage("Sähköpostiosoitteen tulee olla kelvollinen"),
-  body("salasana")
-    .trim()
-    .escape()
-    .isLength({ min: 8 })
-    .withMessage("Salasanan tulee olla vähintään 8 merkkiä pitkä"),
+  registerValidation,
   validationErrorHandler,
   register
 );

@@ -19,6 +19,8 @@
  *    - optimoi kubios-controller.js:n API-kutsuja vähentämällä tietokantaoperaatioita
  */
 
+import logger from "./logger.js"
+
 // tokenivälimuistin tietorakenne - käytetään Map-tietorakennetta, joka mahdollistaa avain-arvo-parit
 const tokenCache = new Map();
 
@@ -33,7 +35,7 @@ export function cacheToken(userId, token, expiration) {
    if (!userId || !token || !expiration) return;
 
    // lokitetaan toimenpide
-   console.log(`Caching Kubios token for user ${userId}`);
+   logger.debug(`Caching Kubios token for user ${userId}`);
 
    // tallennetaan token välimuistiin käyttäen käyttäjän ID:tä avaimena
    tokenCache.set(userId, token);
@@ -42,7 +44,7 @@ export function cacheToken(userId, token, expiration) {
    const timeUntilExpiry = new Date(expiration).getTime() - Date.now();
    if (timeUntilExpiry > 0) {
       setTimeout(() => {
-         console.log(`Token cache expiring for user ${userId}`);
+         logger.debug(`Token cache expiring for user ${userId}`);
          // poistetaan automaattisesti token välimuistista, kun se vanhenee
          tokenCache.delete(userId);
       }, timeUntilExpiry);
@@ -57,7 +59,7 @@ export function cacheToken(userId, token, expiration) {
 export function getTokenFromCache(userId) {
    // tarkistetaan, onko käyttäjälle olemassa tokenia välimuistissa
    if (tokenCache.has(userId)) {
-      console.log(`Token found in cache for user ${userId}`);
+      logger.debug(`Token found in cache for user ${userId}`);
       // palautetaan löydetty token
       return tokenCache.get(userId);
    }
@@ -70,7 +72,7 @@ export function getTokenFromCache(userId) {
  * @param {number} userId - käyttäjän ID
  */
 export function removeTokenFromCache(userId) {
-   console.log(`Removing token from cache for user ${userId}`);
+   logger.debug(`Removing token from cache for user ${userId}`);
    // poistetaan token välimuistista käyttäjän ID:n perusteella
    tokenCache.delete(userId);
 }

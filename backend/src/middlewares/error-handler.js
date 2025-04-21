@@ -22,6 +22,7 @@
 */
 
 import { validationResult } from "express-validator";
+import logger from "../utils/logger.js"
 
 // virheiden kategoriat
 const ErrorCategory = {
@@ -124,16 +125,10 @@ const validationErrorHandler = (req, res, next) => {
 
 // keskitetty virheidenkäsittelijä
 const errorHandler = (err, req, res, next) => {
-   // konsoli-ilmoitukset kehitystä varten
    if (err.status >= 500) {
-      console.error("Server error:", err);
+      logger.error(`${err.category || 'UNKNOWN'}: ${err.message}`);
    } else {
-      console.log("Client error:", {
-         message: err.message,
-         status: err.status,
-         category: err.category,
-         path: req.originalUrl,
-      });
+      logger.info(`Client error: ${err.category || 'UNKNOWN'} - ${err.message} (${req.originalUrl})`);
    }
 
    // standardoitu vastaus käyttäjälle
@@ -164,13 +159,13 @@ const createNotFoundError = (message) =>
 
 const createDatabaseError = (message, originalError = null) => {
   // log alkuperäinen virhe
-  if (originalError) console.error('Database error details:', originalError);
+  if (originalError) logger.error('Database error details', originalError);
   return customError(message, 500, ErrorCategory.DATABASE, Severity.ERROR);
 };
 
 const createExternalApiError = (message, originalError = null) => {
   // log alkuperäinen virhe
-  if (originalError) console.error('External API error details:', originalError);
+  if (originalError) logger.error('External API error details', originalError);
   return customError(message, 502, ErrorCategory.EXTERNAL_API, Severity.ERROR);
 };
 

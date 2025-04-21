@@ -1,82 +1,48 @@
 /**
- * user-router.js - käyttäjien hallintareitit
- * --------------
- * määrittelee käyttäjien hallintaan liittyvät API-reitit, erityisesti rekisteröitymisen ja käyttäjätietojen päivittämisen toiminnallisuudet.
- * sisältää validoinnin ja suojauksen näille reiteille.
+ * user-router.js - käyttäjätietojen hallinnan API-reitit
+ * -------------
+ * Määrittelee käyttäjätietojen hallintaan liittyvät reitit Express-sovellukselle.
+ * Käsittelee rekisteröinnin ja käyttäjätietojen päivityksen.
  *
  * pääominaisuudet:
- *    1. käyttäjärekisteröinnin reitti ja validointisäännöt (/register)
- *    2. käyttäjätietojen päivitysreitti autentikaatiosuojauksella (/me)
- *    3. syötteen validointi express-validator -kirjastolla
+ *    1. käyttäjätilien rekisteröinnin ja päivityksen reittien määrittely
+ *    2. reittien suojaus autentikaatiolla ja validaatiolla
+ *    3. syötettyjen tietojen validointi ennen controller-funktioiden kutsumista
+ *    4. selkeästi nimetyt, käyttäjäkeskeiset resurssireitit
  *
- * validointisäännöt:
- *    - käyttäjänimi: 3-40 merkkiä, pakollisuus riippuu endpointista
- *    - email: validi sähköpostiosoite, valinnainen
- *    - salasana: vähintään 8 merkkiä, pakollisuus riippuu endpointista
+ * keskeiset reitit:
+ *    - POST /api/users/register - rekisteröi uusi käyttäjä
+ *    - PUT /api/users/me - päivitä kirjautuneen käyttäjän tiedot
  *
  * käyttö sovelluksessa:
- *    - tarjoaa käyttäjähallintaan liittyvät reitit sovelluksen käyttöön
- *    - toimii rinnakkain auth-router.js:n kanssa, täydentäen käyttäjänhallintaa
- *    - ohjaa pyynnöt user-controller.js:n käsittelijöihin
+ *    - liitetään index.js:ssä Express-sovellukseen (/api/users -etuliitteellä)
+ *    - mahdollistaa käyttäjätilien hallinnan erillään autentikaatiotoiminnoista
+ *    - varmistaa turvallisen ja validoidun käyttäjätietojen päivityksen
  */
 
 import express from "express";
-import { body } from "express-validator";
 import { register, updateMe } from "../controllers/user-controller.js";
 import { authenticateToken } from "../middlewares/authentication.js";
 import { validationErrorHandler } from "../middlewares/error-handler.js";
+import { registerValidation, profileUpdateValidation } from "../validation/auth-validation.js";
+import logger from "../utils/logger.js"
 
 // luodaan Express-reititin käyttäjien hallintaan
 const userRouter = express.Router();
 
 // uuden käyttäjän rekisteröinti: POST /api/users/register
-userRouter
-  .post(
-    "/register",
-    body("kayttajanimi")
-      .trim()
-      .escape()
-      .isLength({ min: 3, max: 40 })
-      .withMessage("Käyttäjänimen tulee olla 3–40 merkkiä pitkä"),
-    // validointi sähköpostille - valinnainen, mutta jos annetaan, pitää olla validi
-    body("email")
-      .optional()
-      .trim()
-      .isEmail()
-      .withMessage("Sähköpostiosoitteen tulee olla kelvollinen"),
-    body("salasana")
-      .trim()
-      .escape()
-      .isLength({ min: 8 })
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)
-      .withMessage("Salasanan tulee olla vähintään 8 merkkiä pitkä, sisältää vähintään yksi pieni kirjain, yksi iso kirjain ja yksi numero"),
-    validationErrorHandler,
-    register
-  );
+userRouter.post(
+  "/register",
+  registerValidation,
+  validationErrorHandler,
+  register
+);
 
 // käyttäjän omien tietojen päivitys: PUT /api/users/me
 userRouter.put(
   "/me",
-  // vaaditaan token kirjautumisen varmistamiseksi
   authenticateToken,
-  body("kayttajanimi")
-    .optional()
-    .trim()
-    .escape()
-    .isLength({ min: 3, max: 40 })
-    .withMessage("Käyttäjänimen tulee olla 3–40 merkkiä pitkä"),
-  // validointi sähköpostille - valinnainen, mutta jos annetaan, pitää olla validi
-  body("email")
-    .optional()
-    .trim()
-    .isEmail()
-    .withMessage("Sähköpostiosoitteen tulee olla kelvollinen"),
-  body("salasana")
-  .trim()
-  .escape()
-  .isLength({ min: 8 })
-  .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)
-  .withMessage("Salasanan tulee olla vähintään 8 merkkiä pitkä, sisältää vähintään yksi pieni kirjain, yksi iso kirjain ja yksi numero"),
+  profileUpdateValidation,
   validationErrorHandler,
   updateMe
 );

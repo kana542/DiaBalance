@@ -1,11 +1,34 @@
-// user-model.js - käyttäjätietojen hallinta ja autentikointiin liittyvät toiminnot
-// --------------
-// Sisältää toiminnot käyttäjän luontiin, kirjautumiseen, tietojen päivittämiseen sekä Kubios-tokenin käsittelyyn.
-// Käytetään auth-controller.js, user-controller.js ja kubios-controller.js -tiedostoissa.
+/**
+ * user-model.js - käyttäjätietojen hallinta ja autentikointiin liittyvät toiminnot
+ * --------------
+ * Sisältää toiminnot käyttäjän luontiin, kirjautumiseen, tietojen päivittämiseen sekä Kubios-tokenin käsittelyyn.
+ * Käytetään auth-controller.js, user-controller.js ja kubios-controller.js -tiedostoissa.
+ *
+ * pääominaisuudet:
+ *    1. käyttäjätilien hallinta tietokannassa (rekisteröinti, kirjautuminen, tietojen päivitys)
+ *    2. Kubios-tokenien tallennus, haku ja poisto tietokannasta sekä välimuistista
+ *    3. käyttäjäprofiilin tietojen hallinta ja päivitys
+ *    4. tietokantaoperaatioiden kapselointi ja virheenkäsittely
+ *
+ * keskeiset toiminnot:
+ *    - registerUser() - luo uuden käyttäjän tietokantaan
+ *    - loginUser() - hakee käyttäjän tiedot kirjautumista varten
+ *    - getMyProfile() - hakee kirjautuneen käyttäjän profiilin
+ *    - updateMyProfile() - päivittää käyttäjän tiedot
+ *    - updateKubiosToken() - tallentaa Kubios-tokenin käyttäjälle
+ *    - getKubiosToken() - hakee voimassaolevan Kubios-tokenin
+ *    - removeKubiosToken() - poistaa Kubios-tokenin uloskirjautuessa
+ *
+ * käyttö sovelluksessa:
+ *    - toimii tietokantalayer-tasona autentikaatio- ja käyttäjätietoja käsitteleville kontrollereille
+ *    - mahdollistaa turvallisen käyttäjähallinnan ja autentikaation
+ *    - integroi Kubios-tokenien hallinnan osaksi käyttäjätietojärjestelmää
+ */
 
 import promisePool from '../utils/database.js';
+import { executeQuery } from '../utils/database.js';
 import { cacheToken, getTokenFromCache, removeTokenFromCache } from '../utils/token-cache.js';
-
+import logger from "../utils/logger.js"
 
 /**
  * Rekisteröi uusi käyttäjä
@@ -23,11 +46,10 @@ const registerUser = async (user) => {
     );
     return result.insertId;
   } catch (error) {
-    console.error('Error registerUser:', error);
+    logger.error('Error registerUser', error);
     throw new Error('Database error');
   }
 };
-
 
 /**
  * Hae käyttäjä kirjautumista varten käyttäjänimen perusteella
@@ -38,17 +60,16 @@ const registerUser = async (user) => {
  */
 const loginUser = async (kayttajanimi) => {
     try {
-      const [rows] = await promisePool.query(
+      return await executeQuery(
         'SELECT kayttaja_id, kayttajanimi, email, salasana, kayttajarooli FROM kayttaja WHERE kayttajanimi = ?',
-        [kayttajanimi]
-      );
-      return rows[0] || null;
+        [kayttajanimi],
+        'Error loginUser'
+      ).then(rows => rows[0] || null);
     } catch (error) {
-      console.error('Error loginUser:', error);
+      logger.error('Error loginUser', error);
       throw new Error('Database error');
     }
   };
-
 
 /**
  * Hae käyttäjän omat tiedot ID:n perusteella
@@ -57,17 +78,16 @@ const loginUser = async (kayttajanimi) => {
  */
 const getMyProfile = async (kayttajaId) => {
     try {
-      const [rows] = await promisePool.query(
+      return await executeQuery(
         'SELECT kayttaja_id, kayttajanimi, email, kayttajarooli FROM kayttaja WHERE kayttaja_id = ?',
-        [kayttajaId]
-      );
-      return rows[0] || null;
+        [kayttajaId],
+        'Error getMyProfile'
+      ).then(rows => rows[0] || null);
     } catch (error) {
-      console.error('Error getMyProfile:', error);
+      logger.error('Error getMyProfile', error);
       throw new Error('Database error');
     }
   };
-
 
 /**
  * Päivitä käyttäjän omat tiedot
@@ -112,127 +132,119 @@ const updateMyProfile = async (kayttajaId, data) => {
         affectedRows: result.affectedRows
       };
     } catch (error) {
-      console.error('Error updateMyProfile:', error);
+      logger.error('Error updateMyProfile', error);
       throw new Error('Database error');
     }
   };
 
 /**
+ * Hallitsee Kubios-tokenia (lisäys, poisto, haku)
+ * @param {number} userId - Käyttäjän ID
+ * @param {string} action - Toiminto ('set', 'get', 'remove')
+ * @param {string|null} token - Kubios-token (set-toiminnolle)
+ * @param {number|null} expiresIn - Vanhentumisaika (set-toiminnolle)
+ * @returns {boolean|string|null} Toiminnon tulos
+ */
+const manageKubiosToken = async (userId, action, token = null, expiresIn = null) => {
+  try {
+    switch(action) {
+      case 'set':
+        if (!token || !expiresIn) {
+          throw new Error('Token and expiresIn required for set action');
+        }
+
+        const expirationDate = new Date();
+        expirationDate.setSeconds(expirationDate.getSeconds() + parseInt(expiresIn));
+
+        const [setResult] = await promisePool.query(
+          'UPDATE kayttaja SET kubios_token = ?, kubios_expiration = ? WHERE kayttaja_id = ?',
+          [token, expirationDate, userId]
+        );
+
+        // Tallenna myös välimuistiin
+        cacheToken(userId, token, expirationDate);
+
+        return setResult.affectedRows > 0;
+
+      case 'get':
+        // Tarkista ensin välimuistista
+        const cachedToken = getTokenFromCache(userId);
+        if (cachedToken) return cachedToken;
+
+        // Hae tietokannasta jos ei välimuistissa
+        const [getRows] = await promisePool.query(
+          'SELECT kubios_token, kubios_expiration FROM kayttaja WHERE kayttaja_id = ?',
+          [userId]
+        );
+
+        if (getRows.length === 0) return null;
+
+        const dbToken = getRows[0].kubios_token;
+        const expiration = getRows[0].kubios_expiration;
+
+        if (!dbToken || !expiration) return null;
+
+        const now = new Date();
+        const expirationDate2 = new Date(expiration);
+
+        // Tarkista vanhentuminen
+        if (expirationDate2 <= now || (expirationDate2 - now) < 5 * 60 * 1000) {
+          return null;
+        }
+
+        // Tallenna välimuistiin ja palauta
+        cacheToken(userId, dbToken, expirationDate2);
+        return dbToken;
+
+      case 'remove':
+        // Poista tietokannasta
+        await promisePool.query(
+          'UPDATE kayttaja SET kubios_token = NULL, kubios_expiration = NULL WHERE kayttaja_id = ?',
+          [userId]
+        );
+
+        // Poista välimuistista
+        removeTokenFromCache(userId);
+        return true;
+
+      default:
+        throw new Error(`Unknown action: ${action}`);
+    }
+  } catch (error) {
+    logger.error(`Error in manageKubiosToken (${action})`, error);
+    throw new Error(`Database error in token management: ${error.message}`);
+  }
+};
+
+/**
  * Päivitä Kubios token ja vanhentumisaika käyttäjälle
- * tallentaa kubiokselta saadun tokenin käyttäjän tietoihin tietokantaan
- * Laskee milloin token vanhenee
- * Tallentaa saman tokenin myös välimuistiin nopeampaa käyttöä varten
  * @param {number} userId - Käyttäjän ID
  * @param {string} token - Kubios token
  * @param {number} expiresIn - Vanhentumisaika sekunneissa
  * @returns {boolean} Onnistuiko päivitys
  */
 const updateKubiosToken = async (userId, token, expiresIn) => {
-  try {
-    console.log(`Updating Kubios token for user ${userId}`);
-    const expirationDate = new Date();
-    expirationDate.setSeconds(expirationDate.getSeconds() + parseInt(expiresIn));
-
-    const [result] = await promisePool.query(
-      'UPDATE kayttaja SET kubios_token = ?, kubios_expiration = ? WHERE kayttaja_id = ?',
-      [token, expirationDate, userId]
-    );
-
-    // Tallenna token myös välimuistiin
-    cacheToken(userId, token, expirationDate);
-
-    return result.affectedRows > 0;
-  } catch (error) {
-    console.error('Error updating Kubios token:', error);
-    throw new Error('Database error updating Kubios token');
-  }
+  logger.debug(`Updating Kubios token for user ${userId}`);
+  return await manageKubiosToken(userId, 'set', token, expiresIn);
 };
 
 /**
  * Hae Kubios token käyttäjälle
- * Palattaa tokenin jos voimassa, muuten null
  * @param {number} userId - Käyttäjän ID
  * @returns {string|null} Kubios token tai null jos vanhentunut/ei löydy
  */
 const getKubiosToken = async (userId) => {
-  try {
-    // Tarkista ensin välimuistista
-    const cachedToken = getTokenFromCache(userId);
-    if (cachedToken) return cachedToken;
-
-    // Jos ei löydy välimuistista, hae tietokannasta
-    const [rows] = await promisePool.query(
-      'SELECT kubios_token, kubios_expiration FROM kayttaja WHERE kayttaja_id = ?',
-      [userId]
-    );
-
-    if (rows.length === 0) return null;
-
-    const token = rows[0].kubios_token;
-    const expiration = rows[0].kubios_expiration;
-
-    if (!token || !expiration) return null;
-
-    const now = new Date();
-    const expirationDate = new Date(expiration);
-
-    // Jos token on vanhentunut tai vanhenee seuraavan 5 minuutin aikana
-    if (expirationDate <= now || (expirationDate - now) < 5 * 60 * 1000) {
-      console.log(`Kubios token for user ${userId} has expired or will expire soon`);
-      return null;
-    }
-
-    // Tallenna token välimuistiin jos se on voimassa
-    cacheToken(userId, token, expirationDate);
-
-    return token;
-  } catch (error) {
-    console.error('Error getting Kubios token:', error);
-    throw new Error('Database error getting Kubios token');
-  }
+  return await manageKubiosToken(userId, 'get');
 };
 
-
 /**
- * Poista Kubios token käyttäjältä esim logoutumisen yhteydessä
+ * Poista Kubios token käyttäjältä
  * @param {number} userId - Käyttäjän ID
  * @returns {boolean} Onnistuiko poisto
  */
 const removeKubiosToken = async (userId) => {
-  try {
-    console.log(`Removing Kubios token for user ${userId}`);
-
-    // Tarkistetaan käyttäjän olemassaolo ja tokenin tila
-    const [checkRows] = await promisePool.query(
-      'SELECT kayttaja_id, kubios_token FROM kayttaja WHERE kayttaja_id = ?',
-      [userId]
-    );
-
-    if (checkRows.length === 0) {
-      console.log(`User ${userId} not found`);
-      return false;
-    }
-
-    // Debug-tulostus
-    console.log('Current token status:', checkRows[0].kubios_token ? 'Has token' : 'No token');
-
-    // Korjattu kysely - varmista että NULL arvo syötetään oikein
-    const [result] = await promisePool.query(
-      'UPDATE kayttaja SET kubios_token = NULL, kubios_expiration = NULL WHERE kayttaja_id = ?',
-      [userId]
-    );
-
-    // Debug-tulostus
-    console.log(`Database update result: affectedRows=${result.affectedRows}, changedRows=${result.changedRows}`);
-
-    // Poista token myös välimuistista
-    removeTokenFromCache(userId);
-
-    return true; // Palauta aina true jos käyttäjä löytyy
-  } catch (error) {
-    console.error('Error removing Kubios token:', error);
-    throw new Error(`Database error removing Kubios token: ${error.message}`);
-  }
+  logger.debug(`Removing Kubios token for user ${userId}`);
+  return await manageKubiosToken(userId, 'remove');
 };
 
 export {

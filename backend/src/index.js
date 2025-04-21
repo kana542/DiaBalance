@@ -25,6 +25,7 @@ import entryRouter from "./routes/entry-router.js";
 import kubiosRouter from "./routes/kubios-router.js";
 import cors from "cors";
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler.js";
+import logger from "./utils/logger.js"
 
 const app = express();
 const port = process.env.PORT || 3000;

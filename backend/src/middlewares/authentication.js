@@ -1,19 +1,28 @@
 /**
  * authentication.js - JWT-tokenin tarkistusmiddleware
- * 
- * Varmistaa, että pyyntö sisältää voimassa olevan JWT-tokenin.
- * Lisää `req.user`-kenttään tokenista puretun käyttäjätiedon,
- * jota käytetään mm. käyttöoikeuksien ja käyttäjäkohtaisen datan tarkistamiseen.
+ * -----------------
+ * Varmistaa, että API-pyynnöt sisältävät voimassa olevan JWT-tokenin.
+ * Toimii suojaavana kerroksena, joka estää pääsyn suojattuihin reitteihin ilman autentikointia.
  *
- * Käyttö:
- * - käytetään suojaamaan reittejä kuten GET /me, POST /entries jne.
- * - reitti ei jatku jos token puuttuu tai on virheellinen
+ * pääominaisuudet:
+ *    1. JWT-tokenin dekoodaus ja validointi pyyntöjen yhteydessä
+ *    2. käyttäjätietojen asettaminen request-objektiin jatkokäsittelyä varten
+ *    3. autentikaatiovirheistä ilmoittaminen standardoidussa muodossa
+ *    4. yksinkertainen ja helposti sovellettava autentikaatiokerros
+ *
+ * keskeiset toiminnot:
+ *    - authenticateToken() - tarkistaa Authorization-otsikon ja validoi JWT-tokenin
+ *
+ * käyttö sovelluksessa:
+ *    - liitetään routereihin middleware-funktiona suojaamaan API-reittejä
+ *    - mahdollistaa käyttäjäkohtaisen datan käsittelyn kontrollereissa
+ *    - varmistaa, että vain kirjautuneet käyttäjät pääsevät käsiksi suojattuihin toimintoihin
  */
-
 
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { createAuthenticationError } from './error-handler.js';
+import logger from "../utils/logger.js"
 
 
 /**
@@ -22,10 +31,8 @@ import { createAuthenticationError } from './error-handler.js';
  * Jos token on validi, asetetaan req.user-tokenin datalla ja siirrytään seuraavaan.
  */
 const authenticateToken = (req, res, next) => {
-  console.log('authenticateToken', req.headers);
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  console.log('token', token);
 
   if (token == undefined) {
     return next(createAuthenticationError("Autentikaatiotoken puuttuu"));

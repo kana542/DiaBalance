@@ -17,27 +17,65 @@
 
 import mysql from 'mysql2';
 import 'dotenv/config';
+import logger from "./logger.js"
 
-/**
- * luodaan tietokantayhteyksien pooli suorituskyvyn optimoimiseksi
- * poolatut yhteyksillä mahdollistetaan useamman samanaikaisen tietokantakyselyn ilman jatkuvaa yhteyden avaamista ja sulkemista
- */
+// luodaan tietokantayhteyksien pooli suorituskyvyn optimoimiseksi
 const pool = mysql.createPool({
-  // Tietokanta-asetukset ladataan ympäristömuuttujista (.env)
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  // Yhteyspooliin liittyvät asetukset
-  waitForConnections: true,  // Odottaa vapaata yhteyttä jos kaikki ovat käytössä
-  connectionLimit: 10,       // Maksimi yhteyksien määrä poolissa
-  queueLimit: 0,             // Ei rajoitusta jonossa oleville yhteyspyynnöille
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-/**
- * muunnetaan perinteinen callback-pohjainen pooli Promise-pohjaiseksi, mikä mahdollistaa async/await-syntaksin käytön tietokantaoperaatioissa
- */
+// muutetaan pooli Promise-pohjaiseksi
 const promisePool = pool.promise();
 
-// viedään Promise-pohjainen yhteyspooli muiden moduulien käyttöön
+/**
+ * Suorittaa tietokantakyselyn ja palauttaa tulokset
+ * @param {string} query - SQL-kysely
+ * @param {Array} params - Kyselyparametrit
+ * @param {string} errorMessage - Virheviesti virhetilanteessa
+ * @returns {Promise<Array>} Kyselyn tulokset
+ */
+export const executeQuery = async (query, params = [], errorMessage = 'Tietokantavirhe') => {
+  try {
+    const [rows] = await promisePool.query(query, params);
+    return rows;
+  } catch (error) {
+    logger.error(`Database error: ${errorMessage}`, error);
+    throw new Error(errorMessage);
+  }
+};
+
+/**
+ * Hakee yhden rivin tietokannasta ID:n perusteella
+ * @param {string} table - Taulun nimi
+ * @param {string} idField - ID-kentän nimi
+ * @param {number|string} id - ID-arvo
+ * @returns {Promise<Object|null>} Haettu rivi tai null jos ei löydy
+ */
+export const findById = async (table, idField, id) => {
+  const rows = await executeQuery(
+    `SELECT * FROM ${table} WHERE ${idField} = ?`,
+    [id],
+    `Virhe haettaessa taulusta ${table}`
+  );
+  return rows.length > 0 ? rows[0] : null;
+};
+
+/**
+ * Hakee kaikki rivit tietokannasta hakuehdoilla
+ * @param {string} table - Taulun nimi
+ * @param {string} whereClause - SQL WHERE -ehto (ilman WHERE-sanaa)
+ * @param {Array} params - Kyselyparametrit
+ * @returns {Promise<Array>} Haetut rivit
+ */
+export const findAll = async (table, whereClause = '', params = []) => {
+  const query = `SELECT * FROM ${table} ${whereClause ? 'WHERE ' + whereClause : ''}`;
+  return await executeQuery(query, params, `Virhe haettaessa taulusta ${table}`);
+};
+
 export default promisePool;
