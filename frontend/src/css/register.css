@@ -1,266 +1,267 @@
+/* Perfect register.css with same improvements as login page */
 @import url('./main.css');
 
-/* Registration page styles */
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Base styles */
+body {
+    background-color: #0066b3;
+    color: white;
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200; /* Extra light weight for Oswald font */
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden; /* Prevent scrolling */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation styles */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    background-color: rgba(0, 102, 179, 0.95);
+}
+
+.logo {
+    font-size: 2.3rem;
+    font-weight: 200; /* Extra light weight to match design */
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 200; /* Extra light weight to match design */
+    letter-spacing: 0.5px;
+    transition: opacity 0.3s;
+}
+
+.nav-links a:hover {
+    opacity: 0.8;
+}
+
+/* Content layout */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
+/* Center the form in the middle of the page exactly */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+/* Form styles */
 .auth-form {
-  width: 100%;
-  max-width: 450px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  padding: 30px;
+    width: 100%;
+    max-width: 450px; /* Perfect width - about 3 buttons wide */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.auth-header {
-  text-align: center;
-  margin-bottom: 30px;
+h1 {
+    font-size: 5rem; /* Larger size to match design */
+    margin-bottom: 15px;
+    color: white;
+    font-weight: 200; /* Extra light weight */
+    text-align: center;
 }
 
-.auth-header h1 {
-  font-size: 28px;
-  color: #3d5aa1;
-  margin-bottom: 10px;
-  font-weight: 600;
+.register-text {
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 200; /* Extra light weight */
+    text-align: center;
 }
 
-.auth-header p {
-  color: #505050;
-  font-size: 15px;
+.register-text a {
+    color: white;
+    text-decoration: underline;
 }
 
 .form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  font-size: 14px;
-  color: #1a1a1a;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .form-group input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: border-color 0.3s;
+    width: 100%;
+    height: 55px; /* Taller inputs to match design */
+    padding: 15px 20px; /* More padding */
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-family: "Oswald", sans-serif;
+    font-weight: 300;
+    background-color: #008ed4; /* Light blue color to match the image */
+    color: white; /* White text */
+    opacity: 0.65; /* Adjust for the transparency */
+}
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 1.0); /* Maximum brightness */
+    font-weight: 300;
+    opacity: 0.95; /* Keep high opacity for better visibility */
 }
 
 .form-group input:focus {
-  border-color: #3d5aa1;
-  outline: 3px solid #0a96db;
-  box-shadow: 0 0 0 2px rgba(75, 108, 183, 0.1);
-}
-
-.password-requirements {
-  margin-top: 5px;
-  font-size: 12px;
-  color: #505050;
-  text-align: left;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
 .error-message {
-  background-color: #fff2f2;
-  border-left: 3px solid #e64458;
-  color: #e64458;
-  padding: 12px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  border-radius: 3px;
-  text-align: left;
+    background-color: rgba(230, 68, 88, 0.2);
+    border-left: 3px solid #e64458;
+    color: white;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    border-radius: 3px;
+    text-align: left;
+    display: none; /* Hide until needed */
+    width: 100%;
 }
 
-.btn {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: 500;
-  background: #3d5aa1;
-  border-radius: 6px;
-  margin-top: 10px;
-  transition: background 0.3s;
+button.btn {
+    background-color: #003761; /* Darker blue color to match the image */
+    color: white;
+    border: none;
+    padding: 15px 45px; /* Wider padding */
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 15px;
 }
 
-.btn:hover {
-  background: #2d487e;
+button.btn:hover {
+    background-color: #002a4a; /* Even darker on hover */
 }
 
-.alt-links {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 14px;
-}
-
-.alt-links a {
-  color: #3d5aa1;
-  text-decoration: none;
-  margin: 0 5px;
-}
-
-.alt-links a:hover {
-  text-decoration: underline;
-  color: #2d487e;
-}
-
-.logo-small {
-  width: 80px;
-  margin: 0 auto 20px;
-  display: block;
-}
-
-.btn {
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: 500;
-  background: #3d5aa1;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
-}
-
-.btn:hover {
-  background: #2d487e;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.btn:disabled {
-  background: #a0aec0;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.alt-links {
-  margin-top: 25px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.alt-links a {
-  color: #3d5aa1;
-  text-decoration: none;
-}
-
-.alt-links a:hover {
-  text-decoration: underline;
-  color: #2d487e;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.auth-form {
-  animation: fadeIn 0.5s ease-out;
-}
-
-.form-group input.valid {
-  border-color: #2ecc71;
-  background-color: #f0fff4;
-}
-
-.form-group input.invalid {
-  border-color: #e74c3c;
-  background-color: #fff5f5;
-}
-
+/* Validation styles - initially hidden until errors occur */
 .validation-message {
-  font-size: 12px;
-  margin-top: 5px;
-  transition: all 0.3s ease;
+    font-size: 12px;
+    margin-top: 5px;
+    color: rgba(255, 255, 255, 0.7);
+    display: none; /* Initially hidden */
 }
 
 .validation-message.valid {
-  color: #2ecc71;
+    color: #4ecdc4;
+    display: block; /* Show when valid */
 }
 
 .validation-message.invalid {
-  color: #e74c3c;
+    color: #ff9f43; 
+    display: block; /* Show when invalid */
 }
 
-.username-requirements,
-.email-requirements,
-.password-requirements {
-  font-size: 12px;
-  margin-top: 5px;
-  transition: color 0.3s ease;
-}
-
-.error-message {
-  background-color: #fff2f2;
-  border-left: 3px solid #e64458;
-  color: #e64458;
-  padding: 12px;
-  margin: 10px 0 20px 0;
-  font-size: 14px;
-  border-radius: 3px;
-  text-align: left;
-  display: none;
-}
-
-/* Add a subtle shake animation for validation errors */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-
-.shake {
-  animation: shake 0.4s ease-in-out;
-}
-
-/* Password Strength Meter Styles */
-
+/* Password strength meter - only shown during input */
 .password-strength-container {
-  margin-top: 10px;
-  margin-bottom: 15px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    display: none; /* Initially hidden */
+}
+
+input#password:focus ~ .password-strength-container,
+input#password:not(:placeholder-shown) ~ .password-strength-container {
+    display: block; /* Show when input is focused or has content */
 }
 
 .password-strength-meter {
-  height: 5px;
-  width: 0;
-  background-color: #e74c3c;
-  border-radius: 5px;
-  transition: width 0.3s ease, background-color 0.3s ease;
-  margin-bottom: 5px;
+    height: 5px;
+    border-radius: 5px;
+    background-color: #e74c3c;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    margin-bottom: 5px;
 }
 
 .password-strength-text {
-  font-size: 12px;
-  font-weight: 500;
-  margin-left: 5px;
+    font-size: 12px;
+    font-weight: 300;
+    margin-left: 5px;
+    color: white;
 }
 
 .password-feedback {
-  margin-top: 5px;
-  font-size: 12px;
-  color: #777;
+    margin-top: 5px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    display: none; /* Initially hidden */
 }
 
-.feedback-list {
-  margin: 0;
-  padding-left: 20px;
+input#password:focus ~ .password-feedback,
+input#password:not(:placeholder-shown) ~ .password-feedback {
+    display: block; /* Show when input is focused or has content */
 }
 
-.feedback-list li {
-  margin-bottom: 3px;
+/* Responsive styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    
+    nav {
+        padding: 15px 20px;
+    }
+    
+    .logo {
+        font-size: 1.8rem;
+    }
+    
+    .nav-links {
+        gap: 15px;
+    }
+    
+    .nav-links a {
+        font-size: 0.9rem;
+    }
+    
+    h1 {
+        font-size: 3.5rem;
+    }
+    
+    .auth-form {
+        max-width: 100%;
+    }
 }

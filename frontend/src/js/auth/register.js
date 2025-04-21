@@ -1,6 +1,5 @@
 /**
- * register.js
- * Rekisteröintilogiikka ES moduuleina
+ * Modified version of register.js to only show validation messages when needed
  */
 
 import { register, getAuthToken } from '../utils/api-client.js';
@@ -109,6 +108,7 @@ async function handleRegister(event) {
 
 /**
  * Asettaa lomakkeen kenttien validoinnin
+ * Modified to only show validation messages when needed
  */
 function setupFormValidation() {
     const usernameInput = document.getElementById('username');
@@ -119,12 +119,6 @@ function setupFormValidation() {
 
     // Käyttäjänimen validointi
     if (usernameInput) {
-        // Lisää validointiteksti käyttäjänimikentän alle
-        const usernameRequirements = document.createElement('div');
-        usernameRequirements.className = 'validation-message';
-        usernameRequirements.textContent = 'Käyttäjänimi: 3-20 merkkiä, vain kirjaimia, numeroita, alaviivoja ja väliviivoja.';
-        usernameInput.parentNode.appendChild(usernameRequirements);
-
         // Validoi käyttäjänimi syötettäessä
         usernameInput.addEventListener('input', () => {
             const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
@@ -134,17 +128,30 @@ function setupFormValidation() {
                 if (isValid) {
                     usernameInput.classList.add('valid');
                     usernameInput.classList.remove('invalid');
-                    usernameRequirements.classList.add('valid');
-                    usernameRequirements.classList.remove('invalid');
                 } else {
                     usernameInput.classList.add('invalid');
                     usernameInput.classList.remove('valid');
+                    
+                    // Create validation message if it doesn't exist
+                    let usernameRequirements = usernameInput.parentNode.querySelector('.validation-message');
+                    if (!usernameRequirements) {
+                        usernameRequirements = document.createElement('div');
+                        usernameRequirements.className = 'validation-message';
+                        usernameInput.parentNode.appendChild(usernameRequirements);
+                    }
+                    
+                    usernameRequirements.textContent = 'Käyttäjänimi: 3-20 merkkiä, vain kirjaimia, numeroita, alaviivoja ja väliviivoja.';
                     usernameRequirements.classList.add('invalid');
-                    usernameRequirements.classList.remove('valid');
+                    usernameRequirements.style.display = 'block';
                 }
             } else {
                 usernameInput.classList.remove('valid', 'invalid');
-                usernameRequirements.classList.remove('valid', 'invalid');
+                
+                // Hide any validation message
+                const usernameRequirements = usernameInput.parentNode.querySelector('.validation-message');
+                if (usernameRequirements) {
+                    usernameRequirements.style.display = 'none';
+                }
             }
         });
 
@@ -163,12 +170,6 @@ function setupFormValidation() {
 
     // Sähköpostiosoitteen validointi
     if (emailInput) {
-        // Lisää validointiteksti sähköpostikenttän alle
-        const emailRequirements = document.createElement('div');
-        emailRequirements.className = 'validation-message';
-        emailRequirements.textContent = 'Syötä kelvollinen sähköpostiosoite (esim. esimerkki@domain.fi)';
-        emailInput.parentNode.appendChild(emailRequirements);
-
         // Validoi sähköposti syötettäessä
         emailInput.addEventListener('input', () => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -177,29 +178,41 @@ function setupFormValidation() {
                 if (emailRegex.test(emailInput.value)) {
                     emailInput.classList.add('valid');
                     emailInput.classList.remove('invalid');
-                    emailRequirements.classList.add('valid');
-                    emailRequirements.classList.remove('invalid');
+                    
+                    // Hide any validation message
+                    const emailRequirements = emailInput.parentNode.querySelector('.validation-message');
+                    if (emailRequirements) {
+                        emailRequirements.style.display = 'none';
+                    }
                 } else {
                     emailInput.classList.add('invalid');
                     emailInput.classList.remove('valid');
-                    emailRequirements.classList.add('invalid');
-                    emailRequirements.classList.remove('valid');
+                    
+                    // Create validation message if it doesn't exist
+                    let emailRequirements = emailInput.parentNode.querySelector('.validation-message');
+                    if (!emailRequirements) {
+                        emailRequirements = document.createElement('div');
+                        emailRequirements.className = 'validation-message invalid';
+                        emailInput.parentNode.appendChild(emailRequirements);
+                    }
+                    
+                    emailRequirements.textContent = 'Syötä kelvollinen sähköpostiosoite (esim. esimerkki@domain.fi)';
+                    emailRequirements.style.display = 'block';
                 }
             } else {
                 emailInput.classList.remove('valid', 'invalid');
-                emailRequirements.classList.remove('valid', 'invalid');
+                
+                // Hide any validation message
+                const emailRequirements = emailInput.parentNode.querySelector('.validation-message');
+                if (emailRequirements) {
+                    emailRequirements.style.display = 'none';
+                }
             }
         });
     }
 
     // Salasanan vahvuuden validointi
     if (passwordInput) {
-        // Poista vanha requirements-elementti jos se on jo olemassa
-        const oldPasswordRequirements = passwordInput.parentNode.querySelector('.password-requirements');
-        if (oldPasswordRequirements) {
-            oldPasswordRequirements.remove();
-        }
-
         // Validoi salasanan vahvuus kirjoitettaessa
         passwordInput.addEventListener('input', () => {
             if (passwordInput.value.length > 0) {
@@ -220,30 +233,43 @@ function setupFormValidation() {
                     if (passwordsMatch) {
                         confirmPasswordInput.classList.add('valid');
                         confirmPasswordInput.classList.remove('invalid');
+                        
+                        // Hide any validation message
+                        const confirmRequirements = confirmPasswordInput.parentNode.querySelector('.validation-message');
+                        if (confirmRequirements) {
+                            confirmRequirements.style.display = 'none';
+                        }
                     } else {
                         confirmPasswordInput.classList.add('invalid');
                         confirmPasswordInput.classList.remove('valid');
+                        
+                        // Create validation message if it doesn't exist
+                        let confirmRequirements = confirmPasswordInput.parentNode.querySelector('.validation-message');
+                        if (!confirmRequirements) {
+                            confirmRequirements = document.createElement('div');
+                            confirmRequirements.className = 'validation-message invalid';
+                            confirmPasswordInput.parentNode.appendChild(confirmRequirements);
+                        }
+                        
+                        confirmRequirements.textContent = 'Salasanat eivät täsmää';
+                        confirmRequirements.style.display = 'block';
                     }
                 }
             } else {
+                passwordInput.classList.remove('valid', 'invalid');
+                
+                // Hide strength meter
                 const passwordParent = passwordInput.parentNode;
                 const strengthMeter = passwordParent.querySelector('.password-strength-container');
                 if (strengthMeter) {
-                    strengthMeter.remove();
+                    strengthMeter.style.display = 'none';
                 }
-                passwordInput.classList.remove('valid', 'invalid');
             }
         });
     }
 
     // Salasanan vahvistuksen validointi
     if (confirmPasswordInput && passwordInput) {
-        // Lisää validointiteksti vahvistuskentän alle
-        const confirmRequirements = document.createElement('div');
-        confirmRequirements.className = 'validation-message';
-        confirmRequirements.textContent = 'Salasanojen tulee täsmätä';
-        confirmPasswordInput.parentNode.appendChild(confirmRequirements);
-
         // Validoi vahvistus syötettäessä
         confirmPasswordInput.addEventListener('input', () => {
             if (confirmPasswordInput.value.length > 0) {
@@ -252,20 +278,35 @@ function setupFormValidation() {
                 if (passwordsMatch) {
                     confirmPasswordInput.classList.add('valid');
                     confirmPasswordInput.classList.remove('invalid');
-                    confirmRequirements.classList.add('valid');
-                    confirmRequirements.classList.remove('invalid');
-                    confirmRequirements.textContent = 'Salasanat täsmäävät';
+                    
+                    // Hide any validation message
+                    const confirmRequirements = confirmPasswordInput.parentNode.querySelector('.validation-message');
+                    if (confirmRequirements) {
+                        confirmRequirements.style.display = 'none';
+                    }
                 } else {
                     confirmPasswordInput.classList.add('invalid');
                     confirmPasswordInput.classList.remove('valid');
-                    confirmRequirements.classList.add('invalid');
-                    confirmRequirements.classList.remove('valid');
+                    
+                    // Create validation message if it doesn't exist
+                    let confirmRequirements = confirmPasswordInput.parentNode.querySelector('.validation-message');
+                    if (!confirmRequirements) {
+                        confirmRequirements = document.createElement('div');
+                        confirmRequirements.className = 'validation-message invalid';
+                        confirmPasswordInput.parentNode.appendChild(confirmRequirements);
+                    }
+                    
                     confirmRequirements.textContent = 'Salasanat eivät täsmää';
+                    confirmRequirements.style.display = 'block';
                 }
             } else {
                 confirmPasswordInput.classList.remove('valid', 'invalid');
-                confirmRequirements.classList.remove('valid', 'invalid');
-                confirmRequirements.textContent = 'Salasanojen tulee täsmätä';
+                
+                // Hide any validation message
+                const confirmRequirements = confirmPasswordInput.parentNode.querySelector('.validation-message');
+                if (confirmRequirements) {
+                    confirmRequirements.style.display = 'none';
+                }
             }
         });
     }
