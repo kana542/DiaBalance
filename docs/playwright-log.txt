@@ -1,26 +1,38 @@
-{"level":30,"time":"2025-04-20T14:23:45.348Z","pid":31440,"hostname":"Supsu","msg":"Listening on 61500"}
-(node:31440) DeprecationWarning: Calling start() is no longer necessary. It can be safely omitted.
+{"level":30,"time":"2025-04-22T12:02:29.984Z","pid":22192,"hostname":"Supsu","msg":"Listening on 50084"}
+(node:22192) DeprecationWarning: Calling start() is no longer necessary. It can be safely omitted.
 (Use `node --trace-deprecation ...` to show where the warning was created)
-{"level":30,"time":"2025-04-20T14:23:45.435Z","pid":31440,"hostname":"Supsu","msg":"Start of node method newBrowser"}
-{"level":30,"time":"2025-04-20T14:23:45.622Z","pid":31440,"hostname":"Supsu","msg":"Adding browser to stack: chromium, version: 134.0.6998.35"}
-{"level":30,"time":"2025-04-20T14:23:45.623Z","pid":31440,"hostname":"Supsu","msg":"End of node method newBrowser"}
-{"level":30,"time":"2025-04-20T14:23:45.622Z","pid":31440,"hostname":"Supsu","msg":"Adding 0 contexts to browser"}
-{"level":30,"time":"2025-04-20T14:23:45.630Z","pid":31440,"hostname":"Supsu","msg":"Start of node method newPage"}
-{"level":30,"time":"2025-04-20T14:23:45.630Z","pid":31440,"hostname":"Supsu","msg":"currentBrowser: [object Object]"}
-{"level":30,"time":"2025-04-20T14:23:45.644Z","pid":31440,"hostname":"Supsu","msg":"Changed active context"}
-{"level":30,"time":"2025-04-20T14:23:45.793Z","pid":31440,"hostname":"Supsu","msg":"Video path: undefined"}
-{"level":30,"time":"2025-04-20T14:23:45.794Z","pid":31440,"hostname":"Supsu","msg":"Changed active page"}
-{"level":30,"time":"2025-04-20T14:23:45.857Z","pid":31440,"hostname":"Supsu","msg":"End of node method newPage"}
-{"level":30,"time":"2025-04-20T14:23:45.862Z","pid":31440,"hostname":"Supsu","msg":"Start of node method click"}
-{"level":30,"time":"2025-04-20T14:23:45.862Z","pid":31440,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=authButton in page."}
-{"level":30,"time":"2025-04-20T14:23:45.969Z","pid":31440,"hostname":"Supsu","msg":"End of node method click"}
-{"level":30,"time":"2025-04-20T14:23:46.977Z","pid":31440,"hostname":"Supsu","msg":"Start of node method typeText"}
-{"level":30,"time":"2025-04-20T14:23:46.977Z","pid":31440,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=email in page."}
-{"level":30,"time":"2025-04-20T14:23:47.930Z","pid":31440,"hostname":"Supsu","msg":"End of node method typeText"}
-{"level":30,"time":"2025-04-20T14:23:47.934Z","pid":31440,"hostname":"Supsu","msg":"Start of node method typeText"}
-{"level":30,"time":"2025-04-20T14:23:47.934Z","pid":31440,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with id=password in page."}
-{"level":30,"time":"2025-04-20T14:23:49.466Z","pid":31440,"hostname":"Supsu","msg":"End of node method typeText"}
-{"level":30,"time":"2025-04-20T14:23:49.472Z","pid":31440,"hostname":"Supsu","msg":"Start of node method click"}
-{"level":30,"time":"2025-04-20T14:23:49.472Z","pid":31440,"hostname":"Supsu","msg":"Strict mode is enabled, find Locator with button:has-text(\"Kirjaudu\") in page."}
-{"level":30,"time":"2025-04-20T14:23:49.509Z","pid":31440,"hostname":"Supsu","msg":"End of node method click"}
-{"level":30,"time":"2025-04-20T15:01:18.662Z","pid":31440,"hostname":"Supsu","msg":"Removed page=4d4bd46a-1415-4078-ae3e-96f46128bd4d from context=59951a3c-a625-413e-add6-6b91e46a255f page stack"}
+{"level":30,"time":"2025-04-22T12:02:30.488Z","pid":22192,"hostname":"Supsu","msg":"Start of node method newBrowser"}
+{"level":30,"time":"2025-04-22T12:02:31.003Z","pid":22192,"hostname":"Supsu","msg":"Adding browser to stack: chromium, version: 134.0.6998.35"}
+{"level":30,"time":"2025-04-22T12:02:31.003Z","pid":22192,"hostname":"Supsu","msg":"End of node method newBrowser"}
+{"level":30,"time":"2025-04-22T12:02:31.003Z","pid":22192,"hostname":"Supsu","msg":"Adding 0 contexts to browser"}
+{"level":30,"time":"2025-04-22T12:02:31.011Z","pid":22192,"hostname":"Supsu","msg":"Start of node method newPage"}
+{"level":30,"time":"2025-04-22T12:02:31.012Z","pid":22192,"hostname":"Supsu","msg":"currentBrowser: [object Object]"}
+{"level":30,"time":"2025-04-22T12:02:31.030Z","pid":22192,"hostname":"Supsu","msg":"Changed active context"}
+{"level":30,"time":"2025-04-22T12:02:31.179Z","pid":22192,"hostname":"Supsu","msg":"Video path: undefined"}
+{"level":30,"time":"2025-04-22T12:02:31.180Z","pid":22192,"hostname":"Supsu","msg":"Changed active page"}
+{"level":30,"time":"2025-04-22T12:02:33.538Z","pid":22192,"hostname":"Supsu","msg":"Error of node method  newPage"}
+================= Original suppressed error =================
+page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/
+Call log:
+[2m  - navigating to "http://localhost:3001/", waiting until "load"[22m
+
+    at newPage (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:12567:18)
+    at async PlaywrightServer.newPage (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:13132:28) {
+  name: 'Error'
+}
+=============================================================
+{"level":30,"time":"2025-04-22T12:02:33.565Z","pid":22192,"hostname":"Supsu","msg":"Start of node method takeScreenshot"}
+================= Original suppressed error =================
+Error: Tried to take screenshot, but no page was open.
+    at exists (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:10725:11)
+    at takeScreenshot (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:10769:3)
+    at PlaywrightServer.takeScreenshot (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js:13132:34)
+    at Object.onReceiveHalfClose (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\node_modules\@grpc\grpc-js\build\src\server.js:1461:25)
+    at BaseServerInterceptingCall.maybePushNextMessage (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\node_modules\@grpc\grpc-js\build\src\server-interceptors.js:575:31)
+    at BaseServerInterceptingCall.handleEndEvent (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\node_modules\@grpc\grpc-js\build\src\server-interceptors.js:615:14)
+    at ServerHttp2Stream.<anonymous> (C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\node_modules\@grpc\grpc-js\build\src\server-interceptors.js:382:18)
+    at ServerHttp2Stream.emit (node:events:536:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+=============================================================
+{"level":30,"time":"2025-04-22T12:02:33.566Z","pid":22192,"hostname":"Supsu","msg":"Error of node method  takeScreenshot"}
