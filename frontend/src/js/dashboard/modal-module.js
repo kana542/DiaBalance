@@ -3,7 +3,8 @@ import { setInputValue, showConfirmDialog, showToast } from '../utils/ui-utils.j
 import { getMonthEntries, updateCalendarView } from './calendar-module.js';
 import { saveEntryData, deleteEntryData } from './entry-module.js';
 import { fetchAndSaveHrvDataForDay } from './hrv-module.js';
-import { setupEntryModalBloodSugarValidation } from '../utils/blood-sugar-validation.js';
+import { setupEntryModalBloodSugarValidation, resetBloodSugarValidation } from '../utils/blood-sugar-validation.js';
+
 
 // Moduulin sisäiset muuttujat
 let currentModalDate = null;
@@ -13,6 +14,12 @@ export function initializeModalModule() {
     // Liitä verensokeriarvojen validointi
     setupEntryModalBloodSugarValidation();
     console.log('Modal module initialized with blood sugar validation');
+
+    // Piilota peruuta-nappi
+    const cancelBtn = document.getElementById('cancelButton');
+    if (cancelBtn) {
+        cancelBtn.style.display = 'none';
+    }
 }
 
 export function openEntryModal(dateStr) {
@@ -23,6 +30,8 @@ export function openEntryModal(dateStr) {
         alert('Merkinnän lisäys/muokkaus ei ole käytettävissä.');
         return;
     }
+
+    resetBloodSugarValidation();
 
     // Tallenna päivämäärä
     currentModalDate = dateStr;
@@ -64,9 +73,6 @@ export function openEntryModal(dateStr) {
 
     // Näytä modaali
     modal.style.display = 'block';
-    
-    // Varmista että validointi on aktiivinen myös avattaessa
-    setupEntryModalBloodSugarValidation();
 }
 
 function populateEntryForm(entry) {
@@ -121,25 +127,25 @@ function validateAllBloodSugarValues(formData) {
         'dinnerBefore', 'dinnerAfter',
         'eveningSnackBefore', 'eveningSnackAfter'
     ];
-    
+
     let isValid = true;
     const invalidFields = [];
 
     // Tarkista jokainen kenttä
     bloodSugarFields.forEach(field => {
         const value = formData.get(field);
-        
+
         // Tyhjät arvot ovat sallittuja
         if (value === null || value === undefined || value === '') {
             return;
         }
-        
+
         // Tarkista arvoalue ja muotoilu
         const numValue = parseFloat(value);
         if (isNaN(numValue) || numValue < 0 || numValue > 30) {
             isValid = false;
             invalidFields.push(field);
-            
+
             // Korosta virheellinen kenttä
             const input = document.getElementById(field);
             if (input) {
@@ -147,12 +153,12 @@ function validateAllBloodSugarValues(formData) {
             }
         }
     });
-    
+
     // Jos virheellisiä kenttiä löytyy, näytä ilmoitus
     if (invalidFields.length > 0) {
         showToast(`Tarkista verensokeriarvojen syöttö. Arvojen tulee olla välillä 0-30 mmol/l.`, 'error');
     }
-    
+
     return isValid;
 }
 
@@ -185,7 +191,6 @@ function setupModalEvents() {
     if (!modal) return;
 
     const closeBtn = modal.querySelector('.close-modal');
-    const cancelBtn = document.getElementById('cancelButton');
     const saveBtn = document.getElementById('saveButton');
     const deleteBtn = document.getElementById('deleteButton');
     const fetchHrvBtn = document.getElementById('fetchHrvButton');
@@ -193,28 +198,23 @@ function setupModalEvents() {
     // Sulje-napin toiminta
     if (closeBtn) closeBtn.onclick = closeEntryModal;
 
-    // Peruuta-napin toiminta
-    if (cancelBtn) cancelBtn.onclick = closeEntryModal;
-
-    // Sulje modaali kun klikataan ulkopuolelta
-    window.onclick = event => {
-        if (event.target === modal) closeEntryModal();
-    };
+    // POISTETTU: Peruuta-napin toiminta
+    // POISTETTU: Modaalin sulkeminen taustaa klikatessa
 
     // Tallenna-napin toiminta
     if (saveBtn) {
         saveBtn.onclick = () => {
             const dateStr = modal.getAttribute('data-date');
             const form = document.getElementById('entryForm');
-            
+
             if (form) {
                 const formData = new FormData(form);
-                
+
                 // Validoi arvot ennen tallennusta
                 if (!validateAllBloodSugarValues(formData)) {
                     return; // Pysäytä tallennus jos arvot eivät ole kelvollisia
                 }
-                
+
                 saveEntryData(dateStr);
             }
         };

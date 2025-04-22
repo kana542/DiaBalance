@@ -134,18 +134,17 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
     }
 
     const data = await response.json();
-    console.log('HRV data fetched successfully:');
-    console.log(data);
+    console.log('HRV data fetched successfully:', data);
 
-    // Jos dataa ei löytynyt, ilmoita siitä
-    if (!data || data.length === 0) {
+    const hrvData = data.data || [];
+
+    // Check if we actually have HRV data
+    if (hrvData.length === 0) {
       return {
         success: false,
         message: 'HRV-dataa ei löytynyt valitulle päivälle'
       };
     }
-
-    const hrvData = data.data || [];
 
 // Check if we actually have HRV data
 if (hrvData.length === 0) {
@@ -158,11 +157,11 @@ if (hrvData.length === 0) {
 const apiResponse = hrvData[0];
 
 const hrvDisplay = {
-  readiness: apiResponse.readiness,
-  stress: apiResponse.stress_index,
-  bpm: apiResponse.mean_hr_bpm,
-  sdnn_ms: apiResponse.sdnn_ms,
-  _rawData: apiResponse
+  readiness: parseFloat(apiResponse.readiness) || 50, // Default value if missing
+  stress_index: parseFloat(apiResponse.stress_index) || parseFloat(apiResponse.stress) || 10,
+  mean_hr_bpm: parseInt(apiResponse.mean_hr_bpm) || parseInt(apiResponse.bpm) || 70,
+  sdnn_ms: parseFloat(apiResponse.sdnn_ms) || parseFloat(apiResponse.sdnnMs) || 50,
+  _rawData: apiResponse // Keep original data
 };
 
     console.log('Transformed HRV data for UI:', hrvDisplay);
