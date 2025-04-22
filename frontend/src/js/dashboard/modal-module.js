@@ -169,6 +169,9 @@ export function closeEntryModal() {
     const modal = document.getElementById('entryModal');
     if (modal) {
         modal.style.display = 'none';
+
+        // Resetoi validointivirheet kun modaali suljetaan
+        resetBloodSugarValidation();
     }
 }
 
