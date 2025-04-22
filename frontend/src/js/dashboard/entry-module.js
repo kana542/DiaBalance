@@ -14,7 +14,7 @@ export async function loadMonthEntries(year, month) {
     console.log(`Loading entries for ${year}-${month}`);
 
     try {
-      const entries = await apiGet(`/entries?year=${year}&month=${month}`);
+      const entries = await apiGet(`/entries?year=${year}&month=${month}`, false);
 
       console.log("Entries from server:", entries);
 
