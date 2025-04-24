@@ -113,7 +113,7 @@ pip install -r requirements.txt
 #### Toukokuun vs_aamu arvojen hakeminen
 - [Toukokuun vs_aamu arvot - raportti](report_calendar_vs_aamu.html)
 - [Toukokuun vs_aamu arvot - loki](log_calendar_vs_aamu.html)
-- ![Toukokuun aamu arvojen haku](vs_aamu_monthValues.png)
+- ![Toukokuun aamu arvojen haku](screenshots/vs_aamu_monthValues.png)
 
 #### Aiemman merkinnän muokkaaminen
 - [Muokattu merkintä - raportti](report_update_entry_backend.html)
