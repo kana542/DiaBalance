@@ -535,18 +535,63 @@
        outline: none;
    }
 
-   .checkbox-group {
-       display: flex;
-       flex-wrap: wrap;
-       gap: 10px;
-       margin-top: 5px;
-   }
+   /* Oirevalinta - selkeämpi ja paremmin eroteltu asettelu */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px; /* Kasvatettu väliä checkboxien välillä */
+    margin: 15px 0;
+    padding: 15px;
+    background-color: #f9f9f9; /* Kevyt taustaväri erottamaan osion */
+    border-radius: 8px;
+    border: 1px solid #eaeaea;
+  }
 
-   .checkbox-item {
-       display: flex;
-       align-items: center;
-       gap: 5px;
-   }
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px; /* Lisää sisäistä täytettä */
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+
+  /* Hoverissa korostetaan valintaa */
+  .checkbox-item:hover {
+    background-color: rgba(10, 150, 219, 0.1);
+  }
+
+  /* Isommat ja selkeämmät valintaruudut */
+  .checkbox-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #0a96db; /* Sama kuin sovelluksen pääväri */
+  }
+
+  .checkbox-item label {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  /* Responsiivisuus pienemmillä näytöillä */
+  @media (max-width: 768px) {
+    .checkbox-group {
+      grid-template-columns: repeat(2, 1fr);
+      padding: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .checkbox-group {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 10px;
+    }
+  }
 
    .modal-footer {
        padding-top: 15px;

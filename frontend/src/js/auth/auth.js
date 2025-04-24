@@ -44,9 +44,6 @@ async function handleLogin(event) {
         // Kirjaudu API-clientin avulla
         await login(email, password);
         
-        // Näytä onnistumisilmoitus ennen uudelleenohjausta
-        showToast('Kirjautuminen onnistui!', 'success');
-        
         // Pieni viive jotta ilmoitus ehtii näkyä
         setTimeout(() => {
             // Uudelleenohjaa dashboardiin
