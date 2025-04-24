@@ -96,12 +96,10 @@ export function updateCalendarView() {
 
     console.log("Entries in month:", Object.keys(getMonthEntries()));
 
-    // Tämän kuukauden päivät
     const today = new Date();
     const todayStr = formatDateYYYYMMDD(today);
 
     for (let day = 1; day <= daysInMonth; day++) {
-        // Muodosta päivämääräavain YYYY-MM-DD muodossa
         const dateStr = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const hasEntry = getMonthEntries()[dateStr] !== undefined;
         if (hasEntry) {
@@ -129,12 +127,12 @@ export function updateCalendarView() {
     }
 
     datesElement.innerHTML = datesHTML;
-    setupDateClickHandlers();
-}
-
-function setupDateClickHandlers() {
-    document.querySelectorAll('.date:not(.inactive)').forEach(dateElement => {
-        dateElement.addEventListener('click', (e) => {
+    
+    if (!datesElement._hasEventListeners) {
+        datesElement.addEventListener('click', (e) => {
+            const dateElement = e.target.closest('.date:not(.inactive)');
+            if (!dateElement) return;
+            
             document.querySelectorAll('.date').forEach(el => {
                 el.classList.remove('active');
             });
@@ -143,14 +141,19 @@ function setupDateClickHandlers() {
             selectedDateStr = dateStr;
             showDayData(dateStr);
         });
-
-        dateElement.addEventListener('dblclick', (e) => {
+        
+        datesElement.addEventListener('dblclick', (e) => {
+            const dateElement = e.target.closest('.date:not(.inactive)');
+            if (!dateElement) return;
+            
             e.stopPropagation();
             const dateStr = dateElement.getAttribute('data-date');
             selectedDateStr = dateStr;
             openEntryModal(dateStr);
         });
-    });
+        
+        datesElement._hasEventListeners = true;
+    }
 }
 
 export function getMonthEntries() {

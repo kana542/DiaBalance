@@ -127,24 +127,33 @@ export const NotificationSeverity = {
    * @param {number} duration - Ilmoituksen kesto millisekunteina
    */
   export function showToast(message, severity = NotificationSeverity.INFO, duration = 3000) {
-    // Tarkistetaan onko toast-container jo luotu
+    // Etsi olemassa oleva container
     let toastContainer = document.getElementById('toast-container');
 
-    if (!toastContainer) {
-      // Luodaan container toasteille
-      toastContainer = createElement('div', {
-        id: 'toast-container',
-        style: {
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          zIndex: '1000',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px'
-        }
-      });
-      document.body.appendChild(toastContainer);
+    // Jos container on olemassa, poista ensin kaikki samantyyppiset viestit
+    if (toastContainer) {
+        const existingToasts = toastContainer.querySelectorAll('.toast');
+        existingToasts.forEach(toast => {
+            // Poista samantyyppiset viestit (esim. kaikki verensokeriin liittyvät)
+            if (toast.textContent.includes('välillä 0-30 mmol/l')) {
+                toast.remove();
+            }
+        });
+    } else {
+        // Luo container toasteille jos sitä ei vielä ole
+        toastContainer = createElement('div', {
+            id: 'toast-container',
+            style: {
+                position: 'fixed',
+                bottom: '20px',
+                right: '20px',
+                zIndex: '1000',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px'
+            }
+        });
+        document.body.appendChild(toastContainer);
     }
 
     // Määritetään väri vakavuuden mukaan
