@@ -221,6 +221,37 @@
        background-color: #d98a38; 
    }
    
+   /* Tämän päivän korostus kalenterissa */
+    .date.today {
+    background-color: #0a96db; /* Sovelluksen sininen korostusväri */
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    border: 2px solid #0a96db;
+    position: relative;
+    }
+
+    /* Merkintöjen ja aktiivisen valinnan yhdistäminen tämän päivän korostuksen kanssa */
+    .date.today.active {
+    background-color: #e64458; /* Aktiivisen päivän väri säilyy */
+    border: 2px solid #0a96db; /* Kehys osoittaa että on kyseessä tämä päivä */
+    }
+
+    .date.today.has-complete-entry::after,
+    .date.today.has-partial-entry::after {
+    top: 0px; /* Siirretään indikaattoria hieman, jotta se näkyy paremmin */
+    right: 0px;
+    width: 10px; /* Hieman isompi indikaattori */
+    height: 10px;
+    }
+
+    /* Lisätään hover-efekti tämän päivän korostukselle */
+    .date.today:hover {
+    background-color: #007eb8; /* Tummempi sininen hover-tilassa */
+    transform: scale(1.05);
+    transition: transform 0.2s, background-color 0.2s;
+    }
+
    /* ==============================================
       VERENSOKERI-OSIO
       ============================================== */
