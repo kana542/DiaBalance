@@ -3,13 +3,13 @@ import { setInputValue, showConfirmDialog, showToast } from '../utils/ui-utils.j
 import { getMonthEntries, updateCalendarView } from './calendar-module.js';
 import { saveEntryData, deleteEntryData } from './entry-module.js';
 import { fetchAndSaveHrvDataForDay } from './hrv-module.js';
-import { setupEntryModalBloodSugarValidation } from '../utils/blood-sugar-validation.js';
-
+import { setupBloodSugarValidation } from '../utils/blood-sugar-validation.js';
 
 // Moduulin sisäiset muuttujat
 let currentModalDate = null;
 
 export function initializeModalModule() {
+    console.log('Initializing modal module');
     setupModalEvents();
     // Liitä verensokeriarvojen validointi
     setupEntryModalBloodSugarValidation();
@@ -74,6 +74,9 @@ export function openEntryModal(dateStr) {
 
     // Näytä modaali
     modal.style.display = 'block';
+    
+    // Varmista että validointi on aktiivinen uusille kentille
+    setupEntryModalBloodSugarValidation();
 }
 
 // Uusi funktio vanhojen kuuntelijoiden ja tyylien poistamiseen
@@ -168,7 +171,6 @@ function validateAllBloodSugarValues(formData) {
     ];
 
     let isValid = true;
-    const invalidFields = [];
 
     // Tarkista jokainen kenttä
     bloodSugarFields.forEach(field => {
@@ -181,35 +183,31 @@ function validateAllBloodSugarValues(formData) {
 
         // Tarkista arvoalue ja muotoilu
         const numValue = parseFloat(value);
-        if (isNaN(numValue) || numValue < 0 || numValue > 30) {
+        if (isNaN(numValue) || numValue < 1 || numValue > 30) {
             isValid = false;
-            invalidFields.push(field);
 
             // Korosta virheellinen kenttä
             const input = document.getElementById(field);
             if (input) {
                 input.style.borderColor = '#e74c3c';
+                
+                // Check if feedback element already exists
+                let feedbackElement = input.parentNode.querySelector('.validation-feedback');
+                if (!feedbackElement) {
+                    // Create feedback element if it doesn't exist
+                    feedbackElement = document.createElement('div');
+                    feedbackElement.className = 'validation-feedback';
+                    feedbackElement.style.fontSize = '12px';
+                    feedbackElement.style.marginTop = '5px';
+                    feedbackElement.style.color = '#e74c3c';
+                    input.parentNode.insertBefore(feedbackElement, input.nextSibling);
+                }
+                
+                feedbackElement.textContent = 'Arvon tulee olla välillä 1-30 mmol/l';
+                feedbackElement.style.display = 'block';
             }
         }
     });
-
-    // Näytä vain yksi viesti riippumatta virheiden määrästä
-    if (invalidFields.length > 0) {
-        // Poista ensin aiemmat virheilmoitukset
-        const toastContainer = document.getElementById('toast-container');
-        if (toastContainer) {
-            const existingToasts = toastContainer.querySelectorAll('.toast');
-            existingToasts.forEach(toast => {
-                if (toast.textContent.includes('välillä 0-30 mmol/l')) {
-                    toast.remove();
-                }
-            });
-        }
-
-        // Näytä yksi viesti, joka kertoo virheiden määrän
-        showToast(`Tarkista verensokeriarvojen syöttö. ${invalidFields.length > 1 ?
-            invalidFields.length + ' arvoa on' : 'Yksi arvo on'} virheellisiä. Arvojen tulee olla välillä 0-30 mmol/l.`, 'error');
-    }
 
     return isValid;
 }
@@ -223,7 +221,7 @@ export function closeEntryModal() {
         modal.style.display = 'none';
 
         // Resetoi validointivirheet kun modaali suljetaan
-        resetBloodSugarValidation();
+        resetFormInputs();
     }
 }
 
@@ -252,9 +250,6 @@ function setupModalEvents() {
 
     // Sulje-napin toiminta
     if (closeBtn) closeBtn.onclick = closeEntryModal;
-
-    // POISTETTU: Peruuta-napin toiminta
-    // POISTETTU: Modaalin sulkeminen taustaa klikatessa
 
     // Tallenna-napin toiminta
     if (saveBtn) {
@@ -314,7 +309,36 @@ function setupModalEvents() {
             showToast('Virhe HRV-datan hakemisessa', 'error');
           }
         };
-      }
+    }
+}
+
+/**
+ * Liitä validointi modal-lomakkeen verensokerisyöttökenttiin
+ * Tämä suoritetaan modaalia avattaessa
+ */
+export function setupEntryModalBloodSugarValidation() {
+    console.log('Setting up blood sugar validation for modal fields');
+    
+    // Kaikki verensokerikenttien ID:t
+    const bloodSugarInputIds = [
+        'morningValue', 'eveningValue',
+        'breakfastBefore', 'breakfastAfter',
+        'lunchBefore', 'lunchAfter',
+        'snackBefore', 'snackAfter',
+        'dinnerBefore', 'dinnerAfter',
+        'eveningSnackBefore', 'eveningSnackAfter'
+    ];
+
+    // Liitä validointi jokaiseen kenttään
+    bloodSugarInputIds.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            console.log(`Setting up real-time validation for field: ${id}`);
+            setupBloodSugarValidation(input);
+        } else {
+            console.warn(`Field not found: ${id}`);
+        }
+    });
 }
 
 /**

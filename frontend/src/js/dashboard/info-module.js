@@ -9,23 +9,25 @@ const infoContent = {
     },
     hrv: {
         title: "HRV-analyysi",
-        content: `<p><strong>Palautuminen / Readiness Score</strong></p>
-<p>Kuvaa kehon palautumisen ja valmiuden tasoa. Korkeampi lukema viittaa parempaan palautumistilaan, eli keho on hyvin palautunut ja valmis rasitukseen.</p>
-<p><em>Tyypilliset arvot:</em> 0-100, jossa yli 70 on erinomainen, 50-70 hyvä, 30-50 kohtalainen, alle 30 heikko.</p>
-
-<p><strong>Stressi / Baevskyn stressi-indeksi</strong></p>
-<p>Mittaa sympaattisen hermoston aktiivisuutta. Korkeampi lukema viittaa lisääntyneeseen stressitilaan. Matalampi lukema kertoo rentoutuneemmasta tilasta.</p>
-<p><em>Tyypilliset arvot:</em> 10-50 levossa, jossa alle 20 on erittäin alhainen stressitaso, 20-40 normaali, 40-60 kohonnut, yli 60 korkea stressitaso.</p>
-
-<p><strong>Keskisyke</strong></p>
-<p>Sydämen keskimääräinen lyöntinopeus minuutin aikana. Leposyke on yleensä matalampi hyväkuntoisilla henkilöillä.</p>
-<p><em>Tyypilliset arvot:</em> 40-100 lyöntiä minuutissa. Urheilijoilla jopa 40-60, tavallisesti 60-80, yli 80 voi viitata kohonneeseen stressiin tai huonoon palautumiseen.</p>
-
-<p><strong>SDNN (Standard Deviation of NN intervals)</strong></p>
-<p>Mittaa sykevälivaihtelua millisekunteina. Korkeampi SDNN viittaa yleensä parempaan palautumiseen ja autonomisen hermoston toimintaan.</p>
-<p><em>Tyypilliset arvot:</em> 20-100 ms, jossa yli 70 ms on erinomainen, 50-70 ms hyvä, 30-50 ms kohtalainen, alle 30 ms heikko.</p>`
-    }
- };
+        content: `
+        <p><strong>Palautuminen / Readiness Score</strong></p>
+        <p>Kuvaa kehon palautumisen ja valmiuden tasoa. Korkeampi lukema viittaa parempaan palautumistilaan, eli keho on hyvin palautunut ja valmis rasitukseen.</p>
+        <p><em>Tyypilliset arvot: 0-100, jossa yli 70 on erinomainen, 50-70 hyvä, 30-50 kohtalainen, alle 30 heikko.</em></p>
+    
+        <p><strong>Stressi / Baevskyn stressi-indeksi</strong></p>
+        <p>Mittaa sympaattisen hermoston aktiivisuutta. Korkeampi lukema viittaa lisääntyneeseen stressitilaan. Matalampi lukema kertoo rentoutuneemmasta tilasta.</p>
+        <p><em>Tyypilliset arvot: 10-50 levossa, jossa alle 20 on erittäin alhainen stressitaso, 20-40 normaali, 40-60 kohonnut, yli 60 korkea stressitaso.</em></p>
+    
+        <p><strong>Keskisyke</strong></p>
+        <p>Sydämen keskimääräinen lyöntinopeus minuutin aikana. Leposyke on yleensä matalampi hyväkuntoisilla henkilöillä.</p>
+        <p><em>Tyypilliset arvot: 40-100 lyöntiä minuutissa. Urheilijoilla jopa 40-60, tavallisesti 60-80, yli 80 voi viitata kohonneeseen stressiin tai huonoon palautumiseen.</em></p>
+    
+        <p><strong>SDNN (Standard Deviation of NN intervals)</strong></p>
+        <p>Mittaa sykevälivaihtelua millisekunteina. Korkeampi SDNN viittaa yleensä parempaan palautumiseen ja autonomisen hermoston toimintaan.</p>
+        <p><em>Tyypilliset arvot: 20-100 ms, jossa yli 70 ms on erinomainen, 50-70 ms hyvä, 30-50 ms kohtalainen, alle 30 ms heikko.</em></p>
+        `
+      }
+    };
 
 // Luo modaali HTML-elementti dokumenttiin, jos sitä ei vielä ole
 function createInfoModal() {

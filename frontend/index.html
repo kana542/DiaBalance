@@ -313,6 +313,7 @@
             <div class="text-content">
                 <h1>Hallitse terveyttäsi helposti</h1>
                 <p>DiaBalance on yksinkertainen sovellus, joka yhdistää verensokeriseurannan ja HRV-datan analysoinnin. Seuraa helposti ateria-arvoja, tunnista trendejä ja hyödynnä kehosi palautumistietoja.</p>
+                <a href="./src/pages/login.html" class="cta-button">Kirjaudu</a>
             </div>
             <div class="image-content">
                 <img src="/etusivu-pikkukuva.png" alt="verensokerimittari" style="width: 70%; height: auto;" />
@@ -415,5 +416,42 @@
             }, 100);
         });
     </script>
+
+    <!-- Add this script tag just before the closing </body> tag in your index.html -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in by looking for auth token
+        const token = localStorage.getItem('token');
+        const isLoggedIn = !!token;
+        
+        console.log('Auth check running. User logged in:', isLoggedIn);
+        
+        // 1. Hide/show the main login button based on login status
+        const loginButton = document.querySelector('.text-content .cta-button');
+        if (loginButton) {
+            loginButton.style.display = isLoggedIn ? 'none' : 'inline-block';
+            console.log('Login button visibility set to:', !isLoggedIn);
+        } else {
+            console.warn('Main login button not found');
+        }
+        
+        // 2. Update nav link text
+        const navLink = document.querySelector('.nav-links a[href*="login.html"]');
+        if (navLink) {
+            if (isLoggedIn) {
+                navLink.textContent = 'PALAA YLEISNÄKYMÄÄN';
+                navLink.href = './src/pages/dashboard.html';
+                console.log('Nav link updated to: PALAA YLEISNÄKYMÄÄN');
+            } else {
+                navLink.textContent = 'KIRJAUDU / REKISTERÖIDY';
+                navLink.href = './src/pages/login.html';
+                console.log('Nav link set to: KIRJAUDU / REKISTERÖIDY');
+            }
+        } else {
+            console.warn('Nav auth link not found');
+        }
+    });
+</script>
+
 </body>
 </html>
