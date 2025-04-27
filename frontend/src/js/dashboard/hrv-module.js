@@ -37,17 +37,16 @@ export function updateHRVView(hrvData) {
   }
 
   if (elements.stress) {
-    if (hrvData.stress !== null && hrvData.stress !== undefined) {
-      elements.stress.textContent = typeof hrvData.stress === 'number' ?
-        hrvData.stress.toFixed(1) : hrvData.stress;
-    } else if (hrvData.stress_index !== null && hrvData.stress_index !== undefined) {
-      elements.stress.textContent = typeof hrvData.stress_index === 'number' ?
-        hrvData.stress_index.toFixed(1) : hrvData.stress_index;
-    } else if (hrvData.stressi_indeksi !== null && hrvData.stressi_indeksi !== undefined) {
-      elements.stress.textContent = typeof hrvData.stressi_indeksi === 'number' ?
-        hrvData.stressi_indeksi.toFixed(1) : hrvData.stressi_indeksi;
+    // Käytetään aina stress-kenttää tietokannan mukaisesti
+    const stressValue = hrvData.stress !== undefined ? hrvData.stress :
+                      (hrvData.stress_index !== undefined ? hrvData.stress_index :
+                      hrvData.stressi_indeksi);
+
+    if (stressValue !== null && stressValue !== undefined) {
+      elements.stress.textContent = typeof stressValue === 'number' ?
+        stressValue.toFixed(1) : stressValue;
     }
-  }
+}
 
   if (elements.heartRate) {
     if (hrvData.bpm !== null && hrvData.bpm !== undefined) {
@@ -157,11 +156,11 @@ if (hrvData.length === 0) {
 const apiResponse = hrvData[0];
 
 const hrvDisplay = {
-  readiness: parseFloat(apiResponse.readiness) || 50, // Default value if missing
-  stress_index: parseFloat(apiResponse.stress_index) || parseFloat(apiResponse.stress) || 10,
-  mean_hr_bpm: parseInt(apiResponse.mean_hr_bpm) || parseInt(apiResponse.bpm) || 70,
-  sdnn_ms: parseFloat(apiResponse.sdnn_ms) || parseFloat(apiResponse.sdnnMs) || 50,
-  _rawData: apiResponse // Keep original data
+  readiness: apiResponse.readiness,
+  stress: apiResponse.stress_index || apiResponse.stress, // Muunna stress_index -> stress
+  bpm: apiResponse.mean_hr_bpm || apiResponse.bpm,        // Muunna mean_hr_bpm -> bpm
+  sdnn_ms: apiResponse.sdnn_ms,
+  _rawData: apiResponse
 };
 
     console.log('Transformed HRV data for UI:', hrvDisplay);
@@ -246,10 +245,10 @@ export async function saveHrvDataToDatabase(dateStr, hrvData) {
 
     const rawData = hrvData._rawData || hrvData;
     const hrvToSave = {
-      readiness: rawData.readiness,
-      stress_index: rawData.stress_index,
-      mean_hr_bpm: rawData.mean_hr_bpm,
-      sdnn_ms: rawData.sdnn_ms
+    readiness: rawData.readiness,
+    stress: rawData.stress || rawData.stress_index,      // Varmista että käytetään stress-kenttää
+    bpm: rawData.bpm || rawData.mean_hr_bpm,             // Varmista että käytetään bpm-kenttää
+    sdnn_ms: rawData.sdnn_ms
     };
 
     const response = await fetch(`http://localhost:3000/api/kubios/user-data/${dateStr}`, {

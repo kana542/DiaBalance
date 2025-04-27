@@ -50,6 +50,9 @@ export function openEntryModal(dateStr) {
     const entryForm = document.getElementById('entryForm');
     if (entryForm) entryForm.reset();
 
+    // Resetoi lomakekenttien tyylit ja mahdollisesti olemassa olevat kuuntelijat
+    resetFormInputs();
+
     // Näytä tai piilota poista-nappi sen mukaan, onko tämä uusi vai olemassa oleva merkintä
     const deleteButton = document.getElementById('deleteButton');
     if (deleteButton) {
@@ -73,6 +76,44 @@ export function openEntryModal(dateStr) {
 
     // Näytä modaali
     modal.style.display = 'block';
+}
+
+// Uusi funktio vanhojen kuuntelijoiden ja tyylien poistamiseen
+function resetFormInputs() {
+    const bloodSugarFields = [
+        'morningValue', 'eveningValue',
+        'breakfastBefore', 'breakfastAfter',
+        'lunchBefore', 'lunchAfter',
+        'snackBefore', 'snackAfter',
+        'dinnerBefore', 'dinnerAfter',
+        'eveningSnackBefore', 'eveningSnackAfter'
+    ];
+
+    // Resetoi jokaisen kentän tyylit ja poista mahdolliset virheilmoitukset
+    bloodSugarFields.forEach(fieldId => {
+        const input = document.getElementById(fieldId);
+        if (input) {
+            // Poista tyylimääritykset
+            input.style.borderColor = '';
+
+            // Poista vanhat validointiviestit
+            const feedback = input.parentNode.querySelector('.validation-feedback');
+            if (feedback) {
+                feedback.remove();
+            }
+        }
+    });
+
+    // Poista kaikki verensokeriin liittyvät toast-ilmoitukset
+    const toastContainer = document.getElementById('toast-container');
+    if (toastContainer) {
+        const toasts = toastContainer.querySelectorAll('.toast');
+        toasts.forEach(toast => {
+            if (toast.textContent.includes('välillä 0-30 mmol/l')) {
+                toast.remove();
+            }
+        });
+    }
 }
 
 function populateEntryForm(entry) {
@@ -154,9 +195,22 @@ function validateAllBloodSugarValues(formData) {
         }
     });
 
-    // Jos virheellisiä kenttiä löytyy, näytä ilmoitus
+    // Näytä vain yksi viesti riippumatta virheiden määrästä
     if (invalidFields.length > 0) {
-        showToast(`Tarkista verensokeriarvojen syöttö. Arvojen tulee olla välillä 0-30 mmol/l.`, 'error');
+        // Poista ensin aiemmat virheilmoitukset
+        const toastContainer = document.getElementById('toast-container');
+        if (toastContainer) {
+            const existingToasts = toastContainer.querySelectorAll('.toast');
+            existingToasts.forEach(toast => {
+                if (toast.textContent.includes('välillä 0-30 mmol/l')) {
+                    toast.remove();
+                }
+            });
+        }
+
+        // Näytä yksi viesti, joka kertoo virheiden määrän
+        showToast(`Tarkista verensokeriarvojen syöttö. ${invalidFields.length > 1 ?
+            invalidFields.length + ' arvoa on' : 'Yksi arvo on'} virheellisiä. Arvojen tulee olla välillä 0-30 mmol/l.`, 'error');
     }
 
     return isValid;
