@@ -3,7 +3,7 @@ import { setInputValue, showConfirmDialog, showToast } from '../utils/ui-utils.j
 import { getMonthEntries, updateCalendarView } from './calendar-module.js';
 import { saveEntryData, deleteEntryData } from './entry-module.js';
 import { fetchAndSaveHrvDataForDay } from './hrv-module.js';
-import { setupEntryModalBloodSugarValidation, resetBloodSugarValidation } from '../utils/blood-sugar-validation.js';
+import { setupEntryModalBloodSugarValidation } from '../utils/blood-sugar-validation.js';
 
 
 // Moduulin sisäiset muuttujat
@@ -30,8 +30,6 @@ export function openEntryModal(dateStr) {
         alert('Merkinnän lisäys/muokkaus ei ole käytettävissä.');
         return;
     }
-
-    resetBloodSugarValidation();
 
     // Tallenna päivämäärä
     currentModalDate = dateStr;
