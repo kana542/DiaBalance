@@ -35,6 +35,40 @@ import logger from "../utils/logger.js"
 const authRouter = express.Router();
 
 // kirjautuminen: POST /api/auth/login
+/**
+* @api {post} /api/auth/login Kirjaudu sisään
+* @apiName Login
+* @apiGroup Autentikointi
+* 
+* @apiBody {String} kayttajanimi Käyttäjänimi (pakollinen)
+* @apiBody {String} salasana Salasana (pakollinen)
+*
+* @apiSuccess {Boolean} success Toiminnon tila
+* @apiSuccess {String} message Vastausviesti
+* @apiSuccess {Object} data Käyttäjätiedot ja JWT-token
+*
+* @apiSuccessExample {json} Onnistunut vastaus:
+* HTTP/1.1 200 OK
+* {
+*   "success": true,
+*   "message": "Kirjautuminen onnistui",
+*   "data": {
+*     "token": "jwt.token.here",
+*     "user": {
+*       "kayttaja_id": 1,
+*       "kayttajanimi": "testi",
+*       "email": "sahkoposti@sahkoposti.fi"
+*     }
+*   }
+* }
+*
+* @apiErrorExample {json} Virheellinen kirjautuminen:
+* HTTP/1.1 401 Unauthorized
+* {
+*   "success": false,
+*   "message": "Virheellinen käyttäjänimi tai salasana"
+* }
+*/
 authRouter.post(
   "/login",
   loginValidation,
@@ -43,6 +77,24 @@ authRouter.post(
 );
 
 // uloskirjautuminen: POST /api/auth/logout
+/**
+  * @api {post} /api/auth/logout Kirjaudu ulos
+  * @apiName Logout
+  * @apiGroup Autentikointi
+  * @apiPermission Kirjautunut
+  *
+  * @apiHeader {String} Authorization Bearer-token
+  *
+  * @apiSuccess {Boolean} success Toiminnon tila
+  * @apiSuccess {String} message Uloskirjautumisviesti
+  *
+  * @apiSuccessExample {json} Success:
+  * HTTP/1.1 200 OK
+  * {
+  *   "success": true,
+  *   "message": "Uloskirjautuminen onnistui"
+  * }
+  */
 authRouter.post(
   "/logout",
   authenticateToken,
@@ -58,15 +110,152 @@ authRouter.post(
 );
 
 // kubios käyttäjätiedot: GET /api/auth/kubios-me
+/**
+ * @api {get} /api/auth/kubios-me Hae Kubios-käyttäjän tiedot
+ * @apiName GetKubiosMe
+ * @apiGroup Autentikointi
+ * @apiPermission Kirjautunut
+ *
+ * @apiHeader {String} Authorization Bearer-token
+ *
+ * @apiSuccess {Boolean} success Onnistuiko pyyntö
+ * @apiSuccess {String} message Viesti
+ * @apiSuccess {Object} data Käyttäjän Kubios-tiedot
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *   "success": true,
+ *   "message": "Käyttäjätiedot haettu",
+ *   "data": {
+ *     "user": {
+ *       "kayttaja_id": 1,
+ *       "kayttajanimi": "test@example.com",
+ *       "email": "test@example.com",
+ *       "kayttajarooli": 0
+ *     }
+ *   },
+ * }
+ *
+ * @apiErrorExample {json} Unauthorized:
+ * HTTP/1.1 401 Unauthorized
+ * {
+ *   "success": false,
+ *   "message": "Autentikaatiotoken puuttuu tai on virheellinen"
+ * }
+ */
+
 authRouter.get("/kubios-me", authenticateToken, getKubiosMe);
 
 // hae kirjautuneen käyttäjän tiedot: GET /api/auth/me
+/**
+ * @api {get} /api/auth/me Hae oma profiili
+ * @apiName GetMe
+ * @apiGroup Autentikointi
+ * @apiPermission Kirjautunut
+ *
+ * @apiHeader {String} Authorization Bearer-token
+ *
+ * @apiSuccess {Boolean} success Onnistuiko pyyntö
+ * @apiSuccess {String} message Viesti
+ * @apiSuccess {Object} data Käyttäjätiedot
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *   "success": true,
+ *   "message": "Käyttäjätiedot haettu",
+ *   "data": {
+ *     "kayttaja_id": 1,
+ *     "kayttajanimi": "test@example.com",
+ *     "email": "test@example.com",
+ *     "kayttajarooli": 0
+ *   }
+ * }
+ *
+ * @apiErrorExample {json} Unauthorized:
+ * HTTP/1.1 401 Unauthorized
+ * {
+ *   "success": false,
+ *   "message": "Autentikaatiotoken puuttuu tai on virheellinen"
+ * }
+ */
+
 authRouter.get("/me", authenticateToken, getMe);
 
 // tarkista tokenin voimassaolo: GET /api/auth/validate
+/**
+ * @api {get} /api/auth/validate Tarkista tokenin voimassaolo
+ * @apiName ValidateToken
+ * @apiGroup Autentikointi
+ * @apiPermission Kirjautunut
+ *
+ * @apiHeader {String} Authorization Bearer-token
+ *
+ * @apiSuccess {Boolean} success Onnistuiko pyyntö
+ * @apiSuccess {String} message Viesti
+ * @apiSuccess {Object} data Tietoja tokenista ja käyttäjästä
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *   "success": true,
+ *   "message": "Token on voimassa",
+ *   "data": {
+ *     "valid": true,
+ *     "user": {
+ *       "kayttaja_id": 1,
+ *       "kayttajanimi": "test@example.com",
+ *       "email": "test@example.com",
+ *       "kayttajarooli": 0
+ *     }
+ *   }
+ * }
+ *
+ * @apiErrorExample {json} Unauthorized:
+ * HTTP/1.1 401 Unauthorized
+ * {
+ *   "success": false,
+ *   "message": "Autentikaatiotoken puuttuu tai on virheellinen"
+ * }
+ */
+
 authRouter.get("/validate", authenticateToken, validateToken);
 
 // rekisteröityminen: POST /api/auth/register
+/**
+  * @api {post} /api/auth/register Rekisteröidy
+  * @apiName Register
+  * @apiGroup Autentikointi
+  * 
+  * @apiBody {String{3..40}} kayttajanimi Käyttäjänimi
+  * @apiBody {String} [email] Sähköposti (valinnainen)
+  * @apiBody {String{8..}} salasana Salasana
+  * 
+  * @apiSuccess {Boolean} success Toiminnon tila
+  * @apiSuccess {String} message Viesti
+  * @apiSuccess {Object} data Luodun käyttäjän ID
+  *
+  * @apiSuccessExample {json} Success:
+  * HTTP/1.1 201 Created
+  * {
+  *   "success": true,
+  *   "message": "Käyttäjä luotu, id: 5",
+  *   "data": {
+  *     "id": 5
+  *   }
+  * }
+  *
+  * @apiErrorExample {json} Validointivirhe:
+  * HTTP/1.1 400 Bad Request
+  * {
+  *   "success": false,
+  *   "message": "Rekisteröinti epäonnistui",
+  *   "errors": [
+  *     { "field": "kayttajanimi", "message": "Käyttäjänimi on jo käytössä" }
+  *   ]
+  * }
+  */
 authRouter.post(
   "/register",
   registerValidation,
