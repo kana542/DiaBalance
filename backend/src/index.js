@@ -45,6 +45,8 @@ app.use("/api/auth", authRouter); // autentikaatioon liittyvät reitit
 app.use("/api/entries", entryRouter); // diabetesmerkintöjen hallinta
 app.use("/api/kubios", kubiosRouter); // kubios HRV-tietojen käsittely
 
+app.use('/apidoc', express.static('apidoc'));
+
 // HUOM!!!!!
 //Jos käyttäjän omien tietojen muokkaus (PUT /api/users/me) halutaan käyttöön, uniikkiuden validointi on toteutettu myös updateMe funktiossa user-controller.js tiedostossa.
 // poista kommenttimerkit alla olevista riveistä:

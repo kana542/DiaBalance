@@ -64,4 +64,3 @@ dist
 .venv
 
 test/
-apidoc/

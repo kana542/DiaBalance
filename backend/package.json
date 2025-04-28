@@ -6,12 +6,19 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "apidoc": "apidoc -i src/ -o apidoc/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
+  "apidoc": {
+    "name": "DiaBalance API Docs",
+    "title": "DiaBalance API Documentation",
+    "description": "Dokumentaatio DiaBalance-projektin back-end-API:lle",
+    "url": "https://localhost:3000/api"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -24,6 +31,7 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "apidoc": "^1.2.0",
     "nodemon": "^3.1.9"
   }
 }
