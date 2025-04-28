@@ -113,9 +113,11 @@ export function updateCalendarView() {
         const selectedClass = isSelected ? 'active' : '';
 
         datesHTML += `
-            <div class="date ${todayClass} ${entryClass} ${selectedClass}" data-date="${dateStr}">
-                ${day}
-            </div>
+            <div class="date ${todayClass} ${entryClass} ${selectedClass}" 
+            data-date="${dateStr}"
+            aria-label="Päivä ${day}, ${hasEntry ? 'sisältää merkinnän' : 'ei merkintöjä'}">
+            ${day}
+          </div>
         `;
     }
 
