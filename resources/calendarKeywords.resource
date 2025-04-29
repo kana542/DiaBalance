@@ -9,10 +9,10 @@ Siirry kalenteriin ja valitse päivä
 
 Tee uusi merkintä
     Sleep   2s
-    Type Text       id=morningValue       6.5   delay=0.5s
-    Type Text       id=eveningValue       8.7   delay=0.5s
-    Type Text       id=snackBefore       11.2   delay=0.5s
-    Type Text       id=snackAfter       8.4     delay=0.5s
+    Type Text       id=morningValue       7.7   delay=0.5s
+    Type Text       id=eveningValue       9.7   delay=0.5s
+    Type Text       id=snackBefore       10.2   delay=0.5s
+    Type Text       id=snackAfter       12     delay=0.5s
 
 Tallenna merkintä
     Sleep   0.1s

@@ -19,8 +19,8 @@ Muokkaa olemassa olevaa merkintää ja varmista päivitys
     # Päivitä merkintä (PUT) päivälle 2025-05-01
     ${entry}=    Create Dictionary
     ...    pvm=2025-05-01
-    ...    vs_ilta=7.5
-    ...    kommentti=muokattu kommentti robot testeihin
+    ...    vs_ilta=9
+    ...    kommentti=muokattu kommentti robot testeihin!
 
     ${res}=    PUT    ${BACKEND_URL}/entries    headers=${headers}    json=${entry}
     Should Be Equal As Integers    ${res.status_code}    200
@@ -38,4 +38,4 @@ Muokkaa olemassa olevaa merkintää ja varmista päivitys
         Run Keyword If    '${pvm}' == '2025-05-01'    Set Test Variable    ${kommentti}    ${merkinta['kommentti']}
     END
 
-    Should Be Equal    ${kommentti}    muokattu kommentti robot testeihin
+    Should Be Equal    ${kommentti}    muokattu kommentti robot testeihin!
