@@ -108,9 +108,11 @@ export async function saveEntryData(dateStr) {
     });
 
     try {
+        // Preserve existing HRV data if present
         const existingEntry = monthEntries[dateStr];
         const existingHrvData = existingEntry && existingEntry.hrv_data;
 
+        // If there's only HRV data and no other values, set a default comment
         if (existingHrvData && Object.values(entryData).every(value =>
             value === null ||
             (Array.isArray(value) && value.length === 0) ||
@@ -122,22 +124,28 @@ export async function saveEntryData(dateStr) {
 
         console.log("Saving entry to backend with date:", dateStr, backendData);
 
-        // Käytetään päivitettyä API-kutsua
+        // Use updated API call
         const response = await apiPut('/entries', backendData);
         console.log("Entry save response:", response);
 
+        // Track HRV save status
         let hrvSaveSuccess = false;
+        
+        // If we have HRV data, save it separately
         if (existingHrvData) {
             console.log("Saving HRV data separately:", existingHrvData);
 
             try {
+                // Make sure we're using consistent field names for HRV data
                 const hrvDataToSave = {
                     readiness: existingHrvData.readiness,
-                    stress_index: existingHrvData.stress_index || existingHrvData.stress,
-                    mean_hr_bpm: existingHrvData.mean_hr_bpm || existingHrvData.bpm,
+                    // Always use database field names first, with fallbacks
+                    stress: existingHrvData.stress || existingHrvData.stress_index,
+                    bpm: existingHrvData.bpm || existingHrvData.mean_hr_bpm,
                     sdnn_ms: existingHrvData.sdnn_ms || existingHrvData.sdnnMs
                 };
 
+                // Import and use apiPost
                 const { apiPost } = await import('../utils/api-client.js');
                 const hrvResponse = await apiPost(`/kubios/user-data/${dateStr}`, hrvDataToSave);
                 console.log("HRV data save result:", hrvResponse);
@@ -148,6 +156,7 @@ export async function saveEntryData(dateStr) {
             }
         }
 
+        // Always reload entries after save to ensure all data is up to date
         try {
             const { getCurrentMonthYear } = await import('./calendar-module.js');
             const { month, year } = getCurrentMonthYear();
@@ -158,6 +167,7 @@ export async function saveEntryData(dateStr) {
             console.error("Error reloading entries:", reloadError);
         }
 
+        // Close modal and update UI
         document.getElementById('entryModal').style.display = 'none';
         updateCalendarView();
         showDayData(dateStr);
