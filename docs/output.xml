@@ -1,114 +1,249 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 7.2.2 (Python 3.13.1 on win32)" generated="2025-04-24T15:52:11.656571" rpa="false" schemaversion="5">
-<suite id="s1" name="Register Success" source="C:\Users\suviw\Documents\developer\DiaBalance\tests\frontend\register_success.robot">
-<test id="s1-t1" name="Test register new user" line="6">
-<kw name="Avaa Sovellus" owner="register">
-<kw name="New Browser" owner="Browser">
-<msg time="2025-04-24T15:52:12.680603" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "C:\\Users\\suviw\\Documents\\developer\\DiaBalance\\docs\\browser\\traces\\temp\\acf5e877-fd68-4cd2-afa3-b76c3295d055"}</msg>
-<msg time="2025-04-24T15:52:12.710819" level="INFO">Starting Browser process C:\Users\suviw\Documents\developer\DiaBalance\.venv\Lib\site-packages\Browser\wrapper\index.js using port 62167</msg>
-<msg time="2025-04-24T15:52:12.710977" level="INFO">Node startup parameters: ['node', 'C:\\Users\\suviw\\Documents\\developer\\DiaBalance\\.venv\\Lib\\site-packages\\Browser\\wrapper\\index.js', '62167']</msg>
-<msg time="2025-04-24T15:52:14.812442" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"C:\\Users\\suviw\\Documents\\developer\\DiaBalance\\docs\\browser\\traces\\temp\\acf5e877-fd68-4cd2-afa3-b76c3295d055"}</msg>
-<arg>chromium</arg>
-<arg>headless=No</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Create a new playwright Browser with specified options.</doc>
-<status status="PASS" start="2025-04-24T15:52:12.679547" elapsed="2.133065"/>
+<robot generator="Robot 7.2.2 (Python 3.13.1 on win32)" generated="2025-04-29T09:14:50.437229" rpa="false" schemaversion="5">
+<suite id="s1" name="Calendar Month Vs Aamu" source="C:\Users\suviw\Documents\developer\DiaBalance\tests\backend\calendar_month_vs_aamu.robot">
+<test id="s1-t1" name="Tarkista vs_aamu-arvot toukokuulta" line="7">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-04-29T09:14:50.769759" level="INFO">Creating Session using : alias=backend, url=http://localhost:3000/api, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<arg>backend</arg>
+<arg>${BACKEND_URL}</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-04-29T09:14:50.769564" elapsed="0.000400"/>
 </kw>
-<kw name="New Page" owner="Browser">
-<msg time="2025-04-24T15:52:15.340760" level="INFO">Successfully initialized new page object and opened url: http://localhost:3001/</msg>
-<msg time="2025-04-24T15:52:15.340839" level="INFO">No context was open. New context was automatically opened when this page is created.</msg>
-<arg>http://localhost:3001/</arg>
-<tag>BrowserControl</tag>
-<tag>Setter</tag>
-<doc>Open a new Page.</doc>
-<status status="PASS" start="2025-04-24T15:52:14.812836" elapsed="0.528134"/>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-04-29T09:14:50.770574" level="INFO">${login_payload} = {'kayttajanimi': 'robotkayttaja', 'salasana': 'robotsalasana123'}</msg>
+<var>${login_payload}</var>
+<arg>kayttajanimi=${REGISTER_USERNAME}</arg>
+<arg>salasana=${REGISTER_PASSWORD}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-04-29T09:14:50.770255" elapsed="0.000343"/>
 </kw>
-<kw name="Sleep" owner="BuiltIn">
-<msg time="2025-04-24T15:52:16.342031" level="INFO">Slept 1 second.</msg>
-<arg>1s</arg>
-<doc>Pauses the test executed for the given time.</doc>
-<status status="PASS" start="2025-04-24T15:52:15.341147" elapsed="1.001003"/>
+<kw name="POST" owner="RequestsLibrary">
+<msg time="2025-04-29T09:14:51.087331" level="INFO">POST Request : url=http://localhost:3000/api/auth/login 
+ path_url=/api/auth/login 
+ headers={'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '65', 'Content-Type': 'application/json'} 
+ body=b'{"kayttajanimi": "robotkayttaja", "salasana": "robotsalasana123"}' 
+ </msg>
+<msg time="2025-04-29T09:14:51.087521" level="INFO">POST Response : url=http://localhost:3000/api/auth/login 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '504', 'ETag': 'W/"1f8-A+tqAKjLfIQmMrnogdqbiXqRcMk"', 'Date': 'Tue, 29 Apr 2025 06:14:51 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":true,"message":"Kirjautuminen onnistui","severity":"success","data":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6Niwia2F5dHRhamFyb29saSI6MCwiaWF0IjoxNzQ1OTA3MjkwLCJleHAiOjE3NDU5MTA4OTB9.rWo5ZeWhAZig7V2Vg9u24SeWdj5S8xfVzl_e0W4h5gs","user":{"kayttaja_id":6,"kayttajanimi":"robotkayttaja","email":"robotkayttaja@example.com","kayttajarooli":0},"kubios":{"success":false,"message":"Virheellinen käyttäjänimi tai salasana (Kubios)"}},"timestamp":"2025-04-29T06:14:51.084Z"} 
+ </msg>
+<msg time="2025-04-29T09:14:51.087912" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${BACKEND_URL}/auth/login</arg>
+<arg>json=${login_payload}</arg>
+<doc>Sends a POST request.</doc>
+<status status="PASS" start="2025-04-29T09:14:50.770867" elapsed="0.317120"/>
 </kw>
-<status status="PASS" start="2025-04-24T15:52:12.678910" elapsed="3.663365"/>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2025-04-29T09:14:51.089571" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.088688" elapsed="0.000991"/>
 </kw>
-<kw name="Click" owner="Browser">
-<msg time="2025-04-24T15:52:16.343134" level="INFO">Clicks the element 'role=link[name="KIRJAUDU / REKISTERÖIDY"]'.</msg>
-<arg>role=link[name="KIRJAUDU / REKISTERÖIDY"]</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" start="2025-04-24T15:52:16.342620" elapsed="0.101865"/>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2025-04-29T09:14:51.091057" level="INFO">${json} = {'success': True, 'message': 'Kirjautuminen onnistui', 'severity': 'success', 'data': {'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6Niwia2F5dHRhamFyb29saSI6MCwiaWF0IjoxNzQ1OTA3Mj...</msg>
+<var>${json}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.090190" elapsed="0.000927"/>
 </kw>
-<kw name="Sleep" owner="BuiltIn">
-<msg time="2025-04-24T15:52:17.446342" level="INFO">Slept 1 second.</msg>
-<arg>1s</arg>
-<doc>Pauses the test executed for the given time.</doc>
-<status status="PASS" start="2025-04-24T15:52:16.444886" elapsed="1.001911"/>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-04-29T09:14:51.092458" level="INFO">${token} = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6Niwia2F5dHRhamFyb29saSI6MCwiaWF0IjoxNzQ1OTA3MjkwLCJleHAiOjE3NDU5MTA4OTB9.rWo5ZeWhAZig7V2Vg9u24SeWdj5S8xfVzl_e0W4h5gs</msg>
+<var>${token}</var>
+<arg>${json['data']}</arg>
+<arg>token</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.091625" elapsed="0.000877"/>
 </kw>
-<kw name="Rekisteröidy sovellukseen" owner="register">
-<kw name="Click" owner="Browser">
-<msg time="2025-04-24T15:52:17.450900" level="INFO">Clicks the element 'css=a[href="register.html"]'.</msg>
-<arg>css=a[href="register.html"]</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" start="2025-04-24T15:52:17.449610" elapsed="0.092451"/>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-04-29T09:14:51.093476" level="INFO">${headers} = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6Niwia2F5dHRhamFyb29saSI6MCwiaWF0IjoxNzQ1OTA3MjkwLCJleHAiOjE3NDU5MTA4OTB9.rWo5ZeWhAZig7V2Vg9u24SeWdj5S8xfVzl_e0W4h5gs'...</msg>
+<var>${headers}</var>
+<arg>Authorization=Bearer ${token}</arg>
+<arg>Content-Type=application/json</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.092983" elapsed="0.000536"/>
 </kw>
-<kw name="Type Text" owner="Browser">
-<msg time="2025-04-24T15:52:17.543559" level="INFO">Types the text 'robot_uusi' in the given field.</msg>
-<arg>id=username</arg>
-<arg>${NEW_REGISTER_USERNAME}</arg>
-<arg>delay=0.3s</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Types the given ``txt`` into the text field found by ``selector``.</doc>
-<status status="PASS" start="2025-04-24T15:52:17.542317" elapsed="3.178674"/>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-04-29T09:14:51.094391" level="INFO">${params} = {'year': '2025', 'month': '05'}</msg>
+<var>${params}</var>
+<arg>year=2025</arg>
+<arg>month=05</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.094106" elapsed="0.000323"/>
 </kw>
-<kw name="Type Text" owner="Browser">
-<msg time="2025-04-24T15:52:20.722722" level="INFO">Types the text 'robot_uusi@example.com' in the given field.</msg>
-<arg>id=email</arg>
-<arg>${NEW_REGISTER_EMAIL}</arg>
-<arg>delay=0.3s</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Types the given ``txt`` into the text field found by ``selector``.</doc>
-<status status="PASS" start="2025-04-24T15:52:20.721430" elapsed="6.942622"/>
+<kw name="GET" owner="RequestsLibrary">
+<msg time="2025-04-29T09:14:51.105593" level="INFO">GET Request : url=http://localhost:3000/api/entries?year=2025&amp;month=05 
+ path_url=/api/entries?year=2025&amp;month=05 
+ headers={'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6Niwia2F5dHRhamFyb29saSI6MCwiaWF0IjoxNzQ1OTA3MjkwLCJleHAiOjE3NDU5MTA4OTB9.rWo5ZeWhAZig7V2Vg9u24SeWdj5S8xfVzl_e0W4h5gs', 'Content-Type': 'application/json'} 
+ body=None 
+ </msg>
+<msg time="2025-04-29T09:14:51.105686" level="INFO">GET Response : url=http://localhost:3000/api/entries?year=2025&amp;month=05 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '2649', 'ETag': 'W/"a59-l5RrrzgISF0tVnSzm7PoRcWXtHc"', 'Date': 'Tue, 29 Apr 2025 06:14:51 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":true,"message":"Haettu 6 merkintää","severity":"success","data":[{"kayttaja_id":6,"pvm":"2025-05-01","vs_aamu":null,"vs_ilta":"7.5","vs_aamupala_ennen":null,"vs_aamupala_jalkeen":null,"vs_lounas_ennen":null,"vs_lounas_jalkeen":null,"vs_valipala_ennen":null,"vs_valipala_jalkeen":null,"vs_paivallinen_ennen":null,"vs_paivallinen_jalkeen":null,"vs_iltapala_ennen":null,"vs_iltapala_jalkeen":null,"oireet":"Ei oireita","kommentti":"muokattu kommentti robot testeihin","formatted_date":"2025-05-01"},{"kayttaja_id":6,"pvm":"2025-05-03","vs_aamu":"7.7","vs_ilta":null,"vs_aamupala_ennen":null,"vs_aamupala_jalkeen":null,"vs_lounas_ennen":null,"vs_lounas_jalkeen":null,"vs_valipala_ennen":null,"vs_valipala_jalkeen":null,"vs_paivallinen_ennen":null,"vs_paivallinen_jalkeen":null,"vs_iltapala_ennen":null,"vs_iltapala_jalkeen":null,"oireet":"Ei oireita","kommentti":"robot merkintä 3","formatted_date":"2025-05-03"},{"kayttaja_id":6,"pvm":"2025-05-04","vs_aamu":null,"vs_ilta":"7.5","vs_aamupala_ennen":null,"vs_aamupala_jalkeen":null,"vs_lounas_ennen":null,"vs_lounas_jalkeen":null,"vs_valipala_ennen":null,"vs_valipala_jalkeen":null,"vs_paivallinen_ennen":null,"vs_paivallinen_jalkeen":null,"vs_iltapala_ennen":null,"vs_iltapala_jalkeen":null,"oireet":"Ei oireita","kommentti":"muokattu kommentti robotilla","formatted_date":"2025-05-04"},{"kayttaja_id":6,"pvm":"2025-05-05","vs_aamu":"7.7","vs_ilta":null,"vs_aamupala_ennen":null,"vs_aamupala_jalkeen":null,"vs_lounas_ennen":null,"vs_lounas_jalkeen":null,"vs_valipala_ennen":null,"vs_valipala_jalkeen":null,"vs_paivallinen_ennen":null,"vs_paivallinen_jalkeen":null,"vs_iltapala_ennen":null,"vs_iltapala_jalkeen":null,"oireet":"Ei oireita","kommentti":"robot merkintä 5","formatted_date":"2025-05-05"},{"kayttaja_id":6,"pvm":"2025-05-10","vs_aamu":null,"vs_ilta":"7.5","vs_aamupala_ennen":null,"vs_aamupala_jalkeen":null,"vs_lounas_ennen":null,"vs_lounas_jalkeen":null,"vs_valipala_ennen":null,"vs_valipala_jalkeen":null,"vs_paivallinen_ennen":null,"vs_paivallinen_jalkeen":null,"vs_iltapala_ennen":null,"vs_iltapala_jalkeen":null,"oireet":"Ei oireita","kommentti":"muokattu kommentti robotilla","formatted_date":"2025-05-10"},{"kayttaja_id":6,"pvm":"2025-05-11","vs_aamu":"13.9","vs_ilta":null,"vs_aamupala_ennen":null,"vs_aamupala_jalkeen":null,"vs_lounas_ennen":null,"vs_lounas_jalkeen":null,"vs_valipala_ennen":null,"vs_valipala_jalkeen":null,"vs_paivallinen_ennen":null,"vs_paivallinen_jalkeen":null,"vs_iltapala_ennen":null,"vs_iltapala_jalkeen":null,"oireet":"Ei oireita","kommentti":"robot merkinnän testaus","formatted_date":"2025-05-11"}],"timestamp":"2025-04-29T06:14:51.103Z"} 
+ </msg>
+<msg time="2025-04-29T09:14:51.105960" level="INFO">${get_response} = &lt;Response [200]&gt;</msg>
+<var>${get_response}</var>
+<arg>${BACKEND_URL}/entries</arg>
+<arg>headers=${headers}</arg>
+<arg>params=${params}</arg>
+<doc>Sends a GET request.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.094923" elapsed="0.011061"/>
 </kw>
-<kw name="Type Secret" owner="Browser">
-<arg>id=password</arg>
-<arg>$NEW_REGISTER_PASSWORD</arg>
-<arg>delay=0.3s</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Types the given secret from ``variable_name`` into the text field
-found by ``selector``.</doc>
-<status status="PASS" start="2025-04-24T15:52:27.664266" elapsed="4.061306"/>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2025-04-29T09:14:51.107192" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${get_response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.106733" elapsed="0.000514"/>
 </kw>
-<kw name="Type Secret" owner="Browser">
-<arg>id=confirmPassword</arg>
-<arg>$NEW_REGISTER_PASSWORD</arg>
-<arg>delay=0.3s</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Types the given secret from ``variable_name`` into the text field
-found by ``selector``.</doc>
-<status status="PASS" start="2025-04-24T15:52:31.726083" elapsed="4.074397"/>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-04-29T09:14:51.108080" level="INFO">${kuukausi} = [{'kayttaja_id': 6, 'pvm': '2025-05-01', 'vs_aamu': None, 'vs_ilta': '7.5', 'vs_aamupala_ennen': None, 'vs_aamupala_jalkeen': None, 'vs_lounas_ennen': None, 'vs_lounas_jalkeen': None, 'vs_valipala_enn...</msg>
+<var>${kuukausi}</var>
+<arg>${get_response.json()}</arg>
+<arg>data</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.107553" elapsed="0.000559"/>
 </kw>
-<kw name="Click" owner="Browser">
-<msg time="2025-04-24T15:52:35.802030" level="INFO">Clicks the element 'text=Luo tunnus'.</msg>
-<arg>text=Luo tunnus</arg>
-<tag>PageContent</tag>
-<tag>Setter</tag>
-<doc>Simulates mouse click on the element found by ``selector``.</doc>
-<status status="PASS" start="2025-04-24T15:52:35.800890" elapsed="0.033479"/>
+<kw name="Create List" owner="BuiltIn">
+<msg time="2025-04-29T09:14:51.108506" level="INFO">${vs_aamut} = []</msg>
+<var>${vs_aamut}</var>
+<doc>Returns a list containing given items.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.108403" elapsed="0.000122"/>
 </kw>
-<status status="PASS" start="2025-04-24T15:52:17.448234" elapsed="18.386336"/>
+<for flavor="IN">
+<iter>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-04-29T09:14:51.109107" level="INFO">${arvo} = None</msg>
+<var>${arvo}</var>
+<arg>${merkinta}</arg>
+<arg>vs_aamu</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.108990" elapsed="0.000135"/>
 </kw>
-<msg time="2025-04-24T15:52:35.839128" level="INFO">Set timeout to: 10000</msg>
-<status status="PASS" start="2025-04-24T15:52:12.678175" elapsed="23.156861"/>
+<kw name="Append To List" owner="Collections">
+<arg>${vs_aamut}</arg>
+<arg>${arvo}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.109187" elapsed="0.000090"/>
+</kw>
+<var name="${merkinta}">{'kayttaja_id': 6, 'pvm': '2025-05-01', 'vs_aamu': None, 'vs_ilta': '7.5', 'vs_aamupala_ennen': None, 'vs_aamupala_jalkeen': None, 'vs_lounas_ennen': None, 'vs_lounas_jalkeen': None, 'vs_valipala_enne...</var>
+<status status="PASS" start="2025-04-29T09:14:51.108917" elapsed="0.000384"/>
+</iter>
+<iter>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-04-29T09:14:51.109506" level="INFO">${arvo} = 7.7</msg>
+<var>${arvo}</var>
+<arg>${merkinta}</arg>
+<arg>vs_aamu</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.109419" elapsed="0.000101"/>
+</kw>
+<kw name="Append To List" owner="Collections">
+<arg>${vs_aamut}</arg>
+<arg>${arvo}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.109570" elapsed="0.000070"/>
+</kw>
+<var name="${merkinta}">{'kayttaja_id': 6, 'pvm': '2025-05-03', 'vs_aamu': '7.7', 'vs_ilta': None, 'vs_aamupala_ennen': None, 'vs_aamupala_jalkeen': None, 'vs_lounas_ennen': None, 'vs_lounas_jalkeen': None, 'vs_valipala_enne...</var>
+<status status="PASS" start="2025-04-29T09:14:51.109375" elapsed="0.000285"/>
+</iter>
+<iter>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-04-29T09:14:51.109830" level="INFO">${arvo} = None</msg>
+<var>${arvo}</var>
+<arg>${merkinta}</arg>
+<arg>vs_aamu</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.109751" elapsed="0.000093"/>
+</kw>
+<kw name="Append To List" owner="Collections">
+<arg>${vs_aamut}</arg>
+<arg>${arvo}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.109890" elapsed="0.000068"/>
+</kw>
+<var name="${merkinta}">{'kayttaja_id': 6, 'pvm': '2025-05-04', 'vs_aamu': None, 'vs_ilta': '7.5', 'vs_aamupala_ennen': None, 'vs_aamupala_jalkeen': None, 'vs_lounas_ennen': None, 'vs_lounas_jalkeen': None, 'vs_valipala_enne...</var>
+<status status="PASS" start="2025-04-29T09:14:51.109714" elapsed="0.000264"/>
+</iter>
+<iter>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-04-29T09:14:51.110146" level="INFO">${arvo} = 7.7</msg>
+<var>${arvo}</var>
+<arg>${merkinta}</arg>
+<arg>vs_aamu</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.110065" elapsed="0.000094"/>
+</kw>
+<kw name="Append To List" owner="Collections">
+<arg>${vs_aamut}</arg>
+<arg>${arvo}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.110205" elapsed="0.000070"/>
+</kw>
+<var name="${merkinta}">{'kayttaja_id': 6, 'pvm': '2025-05-05', 'vs_aamu': '7.7', 'vs_ilta': None, 'vs_aamupala_ennen': None, 'vs_aamupala_jalkeen': None, 'vs_lounas_ennen': None, 'vs_lounas_jalkeen': None, 'vs_valipala_enne...</var>
+<status status="PASS" start="2025-04-29T09:14:51.110028" elapsed="0.000267"/>
+</iter>
+<iter>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-04-29T09:14:51.110465" level="INFO">${arvo} = None</msg>
+<var>${arvo}</var>
+<arg>${merkinta}</arg>
+<arg>vs_aamu</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.110388" elapsed="0.000091"/>
+</kw>
+<kw name="Append To List" owner="Collections">
+<arg>${vs_aamut}</arg>
+<arg>${arvo}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.110526" elapsed="0.000067"/>
+</kw>
+<var name="${merkinta}">{'kayttaja_id': 6, 'pvm': '2025-05-10', 'vs_aamu': None, 'vs_ilta': '7.5', 'vs_aamupala_ennen': None, 'vs_aamupala_jalkeen': None, 'vs_lounas_ennen': None, 'vs_lounas_jalkeen': None, 'vs_valipala_enne...</var>
+<status status="PASS" start="2025-04-29T09:14:51.110348" elapsed="0.000266"/>
+</iter>
+<iter>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-04-29T09:14:51.110772" level="INFO">${arvo} = 13.9</msg>
+<var>${arvo}</var>
+<arg>${merkinta}</arg>
+<arg>vs_aamu</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.110700" elapsed="0.000085"/>
+</kw>
+<kw name="Append To List" owner="Collections">
+<arg>${vs_aamut}</arg>
+<arg>${arvo}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.110829" elapsed="0.000066"/>
+</kw>
+<var name="${merkinta}">{'kayttaja_id': 6, 'pvm': '2025-05-11', 'vs_aamu': '13.9', 'vs_ilta': None, 'vs_aamupala_ennen': None, 'vs_aamupala_jalkeen': None, 'vs_lounas_ennen': None, 'vs_lounas_jalkeen': None, 'vs_valipala_enn...</var>
+<status status="PASS" start="2025-04-29T09:14:51.110666" elapsed="0.000249"/>
+</iter>
+<var>${merkinta}</var>
+<value>@{kuukausi}</value>
+<status status="PASS" start="2025-04-29T09:14:51.108726" elapsed="0.002206"/>
+</for>
+<kw name="Log To Console" owner="BuiltIn">
+<arg>Löydetyt vs_aamu-arvot: ${vs_aamut}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.111158" elapsed="0.000487"/>
+</kw>
+<kw name="List Should Contain Value" owner="Collections">
+<arg>${vs_aamut}</arg>
+<arg>13.9</arg>
+<doc>Fails if the ``value`` is not found from ``list``.</doc>
+<status status="PASS" start="2025-04-29T09:14:51.111879" elapsed="0.000129"/>
+</kw>
+<status status="PASS" start="2025-04-29T09:14:50.768611" elapsed="0.343591"/>
 </test>
-<status status="PASS" start="2025-04-24T15:52:11.657715" elapsed="24.182667"/>
+<status status="PASS" start="2025-04-29T09:14:50.438495" elapsed="0.674392"/>
 </suite>
 <statistics>
 <total>
@@ -117,7 +252,7 @@ found by ``selector``.</doc>
 <tag>
 </tag>
 <suite>
-<stat name="Register Success" id="s1" pass="1" fail="0" skip="0">Register Success</stat>
+<stat name="Calendar Month Vs Aamu" id="s1" pass="1" fail="0" skip="0">Calendar Month Vs Aamu</stat>
 </suite>
 </statistics>
 <errors>

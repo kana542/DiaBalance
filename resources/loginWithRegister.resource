@@ -14,4 +14,4 @@ Kirjaudu sovellukseen rekisteröidyillä tunnuksilla
     Sleep          1s
 
 Vahvista Kirjautuminen Onnistui
-    Wait For Elements State    text="Kirjautuminen onnistui!"    visible    timeout=5s
+    Wait For Elements State    text="Kirjautuminen onnistui"    visible    timeout=5s

@@ -33,14 +33,15 @@ pip install -r requirements.txt
 
 | Käyttötapaus | Tunnus |
 |--------------|--------|
-| Rekisteröityminen | - |
+| Rekisteröityminen | KI_3 |
 | Epäonnistunut kirjautuminen | KI_1 |
 | Onnistunut kirjautuminen | KI_1 |
 | Uuden kalenterimerkinnän lisääminen | DI_1 |
 | Kalenterimerkinnän muokkaus | DO_1 |
 | Kalenterimerkinnän poistaminen | DI_2 |
-| HRV-datan hakeminen Kubioksesta | - |
-| Uloskirjautuminen | - |
+| HRV-datan hakeminen Kubioksesta | KI_4 |
+| Uloskirjautuminen | KI_2 |
+| Chartin tarkastelu | DO_3 |
 
 ---
 
@@ -161,6 +162,38 @@ robot --pythonpath . --log log_delete_entry_backend.html --report report_delete_
 ```
 
 ---
+## Testien suorittaminen yhdellä komennolla
+
+Kaikkien testien ajaminen yhdellä komennolla ei ole tässä projektissa mahdollista ilman lisävalmistelua.  
+Tähän vaikuttavat seuraavat syyt:
+
+| Testi | Miksi ongelmallinen? |
+|:-----|:---------------------|
+| Rekisteröityminen | Samalla käyttäjätunnuksella voi rekisteröityä vain kerran → jos sama tunnus, toinen ajo FAIL. |
+| Uuden kalenterimerkinnän lisääminen | Sama päivämäärä + käyttäjä voi saada Duplicate Key -virheen → FAIL. |
+| Merkinnän muokkaaminen | Ok, toimii, jos merkintä on olemassa. |
+| Merkinnän poistaminen | Poiston jälkeen sama testi ei enää löydä merkintää → FAIL. |
+
+---
+
+**Yhteenveto:**
+
+Monet testit ovat **tilariippuvaisia** (eli riippuvat siitä mitä tietokannassa jo on), jolloin "ajettavuus yhdellä komennolla" ei ole mahdollista ilman isompaa valmistelua (esim. automaattinen tietokannan resetointi ennen ajoa).
+
+Testit on rakennettu ajettaviksi **yksittäin tai oikeassa järjestyksessä**, mikä on tässä projektissa käytännönläheinen ratkaisu.
+
+Kaikki testit voi periaatteessa ajaa komennolla:
+
+```bash
+robot --pythonpath . tests
+```
+
+Tai raportit `docs/`-kansioon:
+
+```bash
+robot --pythonpath . --outputdir docs tests
+```
+Mutta osa testeistä tosiaan epäonnistuisi, joten emme aio käyttää näitä komentoja testeissämme.
 
 
 
