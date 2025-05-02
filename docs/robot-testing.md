@@ -23,9 +23,9 @@ pip install -r requirements.txt
 
 ## Testitiedostojen sijainnit
 
-- Testit: [`tests/frontend/`](../tests/frontend/)
-- Resurssit: [`resources/`](../resources/)
-- Raportit ja julkaisu: [`docs/`](../docs/)
+- Testit: [`testing/tests/`](../testing/tests/)
+- Resurssit: [`resources/`](../testing/resources/)
+- Raportit ja julkaisu: [`testing/results/`](../testing/results/)
 
 ---
 
@@ -164,7 +164,7 @@ robot --pythonpath . --log log_delete_entry_backend.html --report report_delete_
 ---
 ## Testien suorittaminen yhdellä komennolla
 
-Kaikkien testien ajaminen yhdellä komennolla ei ole tässä projektissa mahdollista ilman lisävalmistelua.  
+Kaikkien testien ajaminen yhdellä komennolla ei ole tässä projektissa mahdollista ilman lisävalmistelua.
 Tähän vaikuttavat seuraavat syyt:
 
 | Testi | Miksi ongelmallinen? |
