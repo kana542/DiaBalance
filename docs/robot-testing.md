@@ -115,7 +115,7 @@ pip install -r testing/requirements.txt
 #### Toukokuun vs_aamu arvojen hakeminen
 - [Toukokuun vs_aamu arvot - raportti](../testing/results/old/reports/report_calendar_vs_aamu.html)
 - [Toukokuun vs_aamu arvot - loki](../testing/results/old/logs/log_calendar_vs_aamu.html)
-- ![Toukokuun aamu arvojen haku](../testing/results/old/screenshots/screenshots/vs_aamu_monthValues.png)
+- ![Toukokuun aamu arvojen haku](../testing/results/old/screenshots/vs_aamu_monthValues.png)
 
 #### Aiemman merkinnän muokkaaminen
 - [Muokattu merkintä - raportti](../testing/results/old/reports/report_update_entry_backend.html)
