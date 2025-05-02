@@ -57,7 +57,7 @@ pip install -r testing/requirements.txt
 #### Kirjautuminen epäonnistuu
 - [Kirjautuminen FAIL – raportti](../testing/results/old/reports/report_login_fail.html)
 - [Kirjautuminen FAIL – loki](../testing/results/old/logs/log_login_fail.html)
-- ![Epäonnistunut kirjautuminen](../testing/results/old/screenshots/screenshots/login_FAIL.png)
+- ![Epäonnistunut kirjautuminen](../testing/results/old/screenshots/login_FAIL.png)
 
 #### Kirjautuminen onnistuu
 - [Kirjautuminen SUCCESS – raportti](../testing/results/old/reports/report_login_success.html)
