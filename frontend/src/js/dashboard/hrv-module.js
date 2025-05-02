@@ -164,11 +164,12 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
 
     updateHRVView(hrvDisplay);
 
-    const entries = window.DiaBalance.entries.monthEntries || {};
-    if (entries[dateStr]) {
-      entries[dateStr].hrv_data = hrvDisplay;
+    // TÄRKEÄ KORJAUS: Muokataan suoraan window.DiaBalance.entries.monthEntries 
+    // objektia eikä yritetä korvata sitä kokonaan
+    if (window.DiaBalance.entries.monthEntries[dateStr]) {
+      window.DiaBalance.entries.monthEntries[dateStr].hrv_data = hrvDisplay;
     } else {
-      entries[dateStr] = {
+      window.DiaBalance.entries.monthEntries[dateStr] = {
         morningValue: null,
         eveningValue: null,
         breakfastBefore: null,
@@ -185,8 +186,6 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
         comment: "HRV-datamerkintä",
         hrv_data: hrvDisplay
       };
-
-      window.DiaBalance.entries.monthEntries = entries;
     }
 
     // Call saveHrvDataToDatabase after fetching data to ensure persistence
@@ -224,6 +223,7 @@ export async function saveHrvDataToDatabase(dateStr, hrvData) {
       };
     }
 
+    // KORJAUS: Varmista, että perusmerkintä on olemassa ja odota että operaatio valmistuu
     try {
       const emptyEntry = {
         pvm: dateStr,
@@ -243,11 +243,23 @@ export async function saveHrvDataToDatabase(dateStr, hrvData) {
 
       if (!entryResponse.ok) {
         console.warn('Warning: Failed to ensure basic entry exists:', await entryResponse.text());
-      } else {
-        console.log('Basic entry created/updated successfully');
+        return {
+          success: false,
+          message: 'Perusmerkinnän luonti HRV-datalle epäonnistui'
+        };
       }
+
+      console.log('Basic entry created/updated successfully');
+      
+      // Lisätään pieni viive varmistaakseen että tietokanta on ehtinyt käsitellä merkinnän
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
     } catch (entryError) {
       console.error('Error ensuring basic entry exists:', entryError);
+      return {
+        success: false,
+        message: 'Virhe perusmerkinnän luonnissa: ' + entryError.message
+      };
     }
 
     const rawData = hrvData._rawData || hrvData;
