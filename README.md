@@ -22,7 +22,6 @@ Frontend on toteutettu puhtaalla JavaScriptillä, HTML\:llä ja CSS\:llä. Sovel
 
 * **css**: Tyylitiedostot (dashboard, login, register)
 * **js**: JavaScript-moduulit
-
   * **auth**: Kirjautuminen ja rekisteröinti
   * **dashboard**: Sovelluksen päänäkymän toiminnallisuudet
   * **utils**: Yleiset apufunktiot
@@ -34,7 +33,6 @@ Testauspaketti on toteutettu Robot Framework -työkalulla. Se sisältää automa
 
 * **resources**: Testien avainsanatiedostot
 * **tests**: Testitiedostot
-
   * **backend**: Backend-testit (kirjautuminen, merkintöjen käsittely)
   * **frontend**: Frontend-testit (käyttöliittymän toiminnallisuudet)
 * **results**: Testien tulokset (raportit, kuvakaappaukset)
