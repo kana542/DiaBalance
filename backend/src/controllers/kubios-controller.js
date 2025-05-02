@@ -179,6 +179,7 @@ const formatAndFilterResults = (results, date) => {
 const getUserDataByDate = async (req, res, next) => {
   const userId = req.user.kayttaja_id;
   const { date } = req.params;
+  // Keep the noSave parameter but default it to false instead of true
   const noSave = req.query.noSave === 'true';
 
   logger.debug(`Fetching Kubios data for user ${userId} on date ${date}, noSave: ${noSave}`);
@@ -201,12 +202,12 @@ const getUserDataByDate = async (req, res, next) => {
 
     logger.debug('Got response from Kubios API');
 
-    // Suodatat ja muotoile tulokset
+    // Filter and format results
     const simplifiedResults = formatAndFilterResults(results, date);
 
     logger.debug(`HRV DATA FOR DATE: ${date}`, simplifiedResults);
 
-    // Tallenna tietokantaan vain jos noSave=false (oletusarvo)
+    // Save to database by default unless noSave=true is explicitly set
     if (simplifiedResults.length > 0 && !noSave) {
       try {
         const dbResult = await storeHrvData(userId, date, simplifiedResults[0]);
@@ -214,7 +215,7 @@ const getUserDataByDate = async (req, res, next) => {
       } catch (dbError) {
         logger.error('Error storing HRV data', dbError);
       }
-    } else if (simplifiedResults.length > 0) {
+    } else if (simplifiedResults.length > 0 && noSave) {
       logger.info('HRV data found but not stored due to noSave=true');
     } else {
       logger.info(`No HRV data found for date: ${date}`);
