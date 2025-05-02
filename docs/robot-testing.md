@@ -57,12 +57,12 @@ pip install -r testing/requirements.txt
 #### Kirjautuminen epäonnistuu
 - [Kirjautuminen FAIL – raportti](../testing/results/old/reports/report_login_fail.html)
 - [Kirjautuminen FAIL – loki](../testing/results/old/logs/log_login_fail.html)
-- ![Epäonnistunut kirjautuminen](screenshots/login_FAIL.png)
+- ![Epäonnistunut kirjautuminen](../testing/results/old/screenshots/screenshots/login_FAIL.png)
 
 #### Kirjautuminen onnistuu
 - [Kirjautuminen SUCCESS – raportti](../testing/results/old/reports/report_login_success.html)
 - [Kirjautuminen SUCCESS – loki](../testing/results/old/logs/log_login_success.html)
-- ![Onnistunut kirjautuminen](screenshots/login_SUCCESS.png)
+- ![Onnistunut kirjautuminen](../testing/results/old/screenshots/login_SUCCESS.png)
 
 #### Uloskirjautuminen
 - [Uloskirjautuminen – raportti](../testing/results/old/reports/report_logout.html)
@@ -115,7 +115,7 @@ pip install -r testing/requirements.txt
 #### Toukokuun vs_aamu arvojen hakeminen
 - [Toukokuun vs_aamu arvot - raportti](../testing/results/old/reports/report_calendar_vs_aamu.html)
 - [Toukokuun vs_aamu arvot - loki](../testing/results/old/logs/log_calendar_vs_aamu.html)
-- ![Toukokuun aamu arvojen haku](screenshots/vs_aamu_monthValues.png)
+- ![Toukokuun aamu arvojen haku](../testing/results/old/screenshots/screenshots/vs_aamu_monthValues.png)
 
 #### Aiemman merkinnän muokkaaminen
 - [Muokattu merkintä - raportti](../testing/results/old/reports/report_update_entry_backend.html)
