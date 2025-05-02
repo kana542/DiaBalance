@@ -1,7 +1,7 @@
 *** Settings ***
 Library     Browser    auto_closing_level=KEEP
-Resource    ../resources/loginKeywords.resource
-Resource    ../resources/calendarKeywords.resource
+Resource    ../../resources/loginKeywords.resource
+Resource    ../../resources/calendarKeywords.resource
 
 *** Test Cases ***
 Test new_entry
@@ -15,8 +15,3 @@ Test new_entry
     Siirry kalenteriin ja valitse päivä     2025-04-29
     Tee uusi merkintä
     Tallenna merkintä
-    
-    
-
-
-    

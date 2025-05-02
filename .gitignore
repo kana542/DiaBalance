@@ -1,4 +1,2 @@
 .env
 .venv/
-
-docs/playwright-log*.txt

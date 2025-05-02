@@ -1,6 +1,6 @@
 *** Settings ***
 Library     Browser    auto_closing_level=KEEP
-Resource    ../resources/loginKeywords.resource
+Resource    ../../resources/loginKeywords.resource
 
 *** Test Cases ***
 Test login_fail

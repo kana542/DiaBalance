@@ -1,6 +1,6 @@
 *** Settings ***
 Library     Browser    auto_closing_level=KEEP
-Resource    ../resources/register.resource
+Resource    ../../resources/register.resource
 
 *** Test Cases ***
 Test register new user
@@ -9,4 +9,3 @@ Test register new user
     Sleep    1s
 
     Rekisteröidy sovellukseen
-    

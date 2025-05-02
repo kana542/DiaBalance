@@ -1,6 +1,6 @@
 *** Settings ***
 Library     Browser    auto_closing_level=KEEP
-Resource    ../resources/loginKeywords.resource
+Resource    ../../resources/loginKeywords.resource
 
 *** Test Cases ***
 Test login_success
@@ -9,6 +9,3 @@ Test login_success
     Sleep    1s
     Kirjaudu Sovellukseen
     Vahvista Kirjautuminen Onnistui
-
-
-    

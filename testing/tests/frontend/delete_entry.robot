@@ -1,7 +1,7 @@
 *** Settings ***
 Library     Browser    auto_closing_level=KEEP
-Resource    ../resources/loginKeywords.resource
-Resource    ../resources/calendarKeywords.resource
+Resource    ../../resources/loginKeywords.resource
+Resource    ../../resources/calendarKeywords.resource
 
 *** Test Cases ***
 Test delete_entry
@@ -14,9 +14,3 @@ Test delete_entry
     #Tästä alkaa merkinnän poistaminen
     Siirry kalenteriin ja valitse päivä     2025-04-21
     Poista merkintä
-
-    
-    
-
-
-    
