@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ## Testitiedostojen sijainnit
 
 - Testit: [`testing/tests/`](../testing/tests/)
-- Resurssit: [`resources/`](../testing/resources/)
+- Resurssit: [`testing/resources/`](../testing/resources/)
 - Raportit ja julkaisu: [`testing/results/`](../testing/results/)
 
 ---
