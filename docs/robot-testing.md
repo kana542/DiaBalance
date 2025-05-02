@@ -3,20 +3,21 @@
 
 Tässä projektissa on toteutettu käyttöliittymän automaatiotestit Robot Frameworkin ja Browser-kirjaston avulla.
 
-Projektiin liittyvät Python-kirjastot on määritelty tiedostossa `requirements.txt`.
+Projektiin liittyvät Python-kirjastot on määritelty tiedostossa `testing/requirements.txt`.
 
 ---
 
 ## Testien käyttöönotto
 
-### Virtuaaliympäristön aktivointi (Windows, esim. PowerShell tai Git Bash)
+### Virtuaaliympäristön luonti ja aktivointi (Windows, esim. PowerShell tai Git Bash)
 ```bash
+python -m venv .venv
 source .venv/Scripts/activate
 ```
 
 ### Riippuvuuksien asennus
 ```bash
-pip install -r requirements.txt
+pip install -r testing/requirements.txt
 ```
 
 ---
@@ -50,79 +51,79 @@ pip install -r requirements.txt
 ### Käyttäjätunnistautuminen frontend
 
 #### Rekisteröityminen
-- [Rekisteröityminen – raportti](report_register_success.html)
-- [Rekisteröityminen – loki](log_register_success.html)
+- [Rekisteröityminen – raportti](../testing/results/old/reports/report_register_success.html)
+- [Rekisteröityminen – loki](../testing/results/old/logs/log_register_success.html)
 
 #### Kirjautuminen epäonnistuu
-- [Kirjautuminen FAIL – raportti](report_login_fail.html)
-- [Kirjautuminen FAIL – loki](log_login_fail.html)
+- [Kirjautuminen FAIL – raportti](../testing/results/old/reports/report_login_fail.html)
+- [Kirjautuminen FAIL – loki](../testing/results/old/logs/log_login_fail.html)
 - ![Epäonnistunut kirjautuminen](screenshots/login_FAIL.png)
 
 #### Kirjautuminen onnistuu
-- [Kirjautuminen SUCCESS – raportti](report_login_success.html)
-- [Kirjautuminen SUCCESS – loki](log_login_success.html)
+- [Kirjautuminen SUCCESS – raportti](../testing/results/old/reports/report_login_success.html)
+- [Kirjautuminen SUCCESS – loki](../testing/results/old/logs/log_login_success.html)
 - ![Onnistunut kirjautuminen](screenshots/login_SUCCESS.png)
 
 #### Uloskirjautuminen
-- [Uloskirjautuminen – raportti](report_logout.html)
-- [Uloskirjautuminen – loki](log_logout.html)
+- [Uloskirjautuminen – raportti](../testing/results/old/reports/report_logout.html)
+- [Uloskirjautuminen – loki](../testing/results/old/logs/log_logout.html)
 
 ---
 
 ### Kalenterimerkinnät frontend
 
 #### Uuden merkinnän lisääminen
-- [Uusi merkintä – raportti](report_new_entry.html)
-- [Uusi merkintä – loki](log_new_entry.html)
+- [Uusi merkintä – raportti](../testing/results/old/reports/report_new_entry.html)
+- [Uusi merkintä – loki](../testing/results/old/logs/log_new_entry.html)
 
 #### Merkinnän muokkaus
-- [Muokattu merkintä – raportti](report_update_entry.html)
-- [Muokattu merkintä – loki](log_update_entry.html)
+- [Muokattu merkintä – raportti](../testing/results/old/reports/report_update_entry.html)
+- [Muokattu merkintä – loki](../testing/results/old/logs/log_update_entry.html)
 
 #### Merkinnän poistaminen
-- [Poistettu merkintä – raportti](report_delete_entry.html)
-- [Poistettu merkintä – loki](log_delete_entry.html)
+- [Poistettu merkintä – raportti](../testing/results/old/reports/report_delete_entry.html)
+- [Poistettu merkintä – loki](../testing/results/old/logs/log_delete_entry.html)
 
 ---
 
 ### Terveystiedot HRV
 
 #### HRV-datan haku Kubioksesta
-- [HRV-datan haku – raportti](report_get_HRV_data.html)
-- [HRV-datan haku – loki](log_get_HRV_data.html)
+- [HRV-datan haku – raportti](../testing/results/old/reports/report_get_HRV_data.html)
+- [HRV-datan haku – loki](../testing/results/old/logs/log_get_HRV_data.html)
 
 ---
 
 ### Taustapalvelun testaaminen
 
 #### API-virhekäsittelytesti. Testi tarkistaa, että /api/auth/login palauttaa 401 Unauthorized ja virheilmoituksen "Virheellinen käyttäjätunnus" väärillä tunnuksilla.
-- [Virheellinen kirjautuminen - raportti](report_login_invalid.html)
-- [Virheellinen kirjautuminen - loki](log_login_invalid.html)
+- [Virheellinen kirjautuminen - raportti](../testing/results/old/reports/report_login_invalid.html)
+- [Virheellinen kirjautuminen - loki](../testing/results/old/logs/log_login_invalid.html)
 
 #### Validointitesti. Testataan sitä, mitä tapahtuu kun syötetään puutteellista tai virheellisesti muotoiltua dataa, esimerkiksi puuttuva salasana tai liian lyhyt käyttäjänimi
-- [Validonti: puuttuva salasanaa](report_login_validation.html)
-- [Validointi: puuttuva salasana](log_login_validation.html)
+- [Validonti: puuttuva salasanaa](../testing/results/old/reports/report_login_validation.html)
+- [Validointi: puuttuva salasana](../testing/results/old/logs/log_login_validation.html)
 
 #### Onnistunut kirjautuminen – backend API
-- [Kirjautuminen onnistuu – raportti](report_login_success_backend.html)
-- [Kirjautuminen onnistuu – loki](log_login_success_backend.html)
+- [Kirjautuminen onnistuu – raportti](../testing/results/old/reports/report_login_success_backend.html)
+- [Kirjautuminen onnistuu – loki](../testing/results/old/logs/log_login_success_backend.html)
 
 #### kahden merkinnän lisääminen
-- [Kahden merkinnän lisäys - raportti](report_calendar_entries.html)
-- [Kahden merkinnän lisäys - loki](log_calendar_entries.html)
+- [Kahden merkinnän lisäys - raportti](../testing/results/old/reports/report_calendar_entries.html)
+- [Kahden merkinnän lisäys - loki](../testing/results/old/logs/log_calendar_entries.html)
 
 #### Toukokuun vs_aamu arvojen hakeminen
-- [Toukokuun vs_aamu arvot - raportti](report_calendar_vs_aamu.html)
-- [Toukokuun vs_aamu arvot - loki](log_calendar_vs_aamu.html)
+- [Toukokuun vs_aamu arvot - raportti](../testing/results/old/reports/report_calendar_vs_aamu.html)
+- [Toukokuun vs_aamu arvot - loki](../testing/results/old/logs/log_calendar_vs_aamu.html)
 - ![Toukokuun aamu arvojen haku](screenshots/vs_aamu_monthValues.png)
 
 #### Aiemman merkinnän muokkaaminen
-- [Muokattu merkintä - raportti](report_update_entry_backend.html)
-- [Muokattu merkintä - loki](log_update_entry_backend.html)
+- [Muokattu merkintä - raportti](../testing/results/old/reports/report_update_entry_backend.html)
+- [Muokattu merkintä - loki](../testing/results/old/logs/log_update_entry_backend.html)
 
 #### Aiemman merkinnän poistaminen
-- [Merkinnän poistaminen - raportti](report_delete_entry_backend.html)
-- [Merkinnän poistaminen - loki](log_delete_entry_backend.html)
+- [Merkinnän poistaminen - raportti](../testing/results/old/reports/report_delete_entry_backend.html)
+- [Merkinnän poistaminen - loki](../testing/results/old/logs/log_delete_entry_backend.html)
 
 
 
