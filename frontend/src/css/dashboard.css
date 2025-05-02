@@ -1,0 +1,877 @@
+/* ==============================================
+   YLEISET TYYLIT
+   ============================================== */
+   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+   * {
+       margin: 0;
+       padding: 0;
+       box-sizing: border-box;
+       font-family: 'Poppins', sans-serif;
+   }
+
+   html, body {
+       height: 100%;
+       background-color: #f0f0f0;
+       color: #1a1a1a;
+   }
+
+   body {
+       display: flex;
+       flex-direction: column;
+       min-height: 100vh;
+   }
+
+   :focus {
+     outline: 3px solid #0a96db;
+     outline-offset: 2px;
+   }
+
+   /* ==============================================
+      LAYOUT JA KONTTIEN TYYLIT
+      ============================================== */
+   .main-container {
+       width: 100%;
+       display: flex;
+       flex-direction: column;
+       flex: 1;
+   }
+
+   .dashboard-content {
+       display: flex;
+       flex-direction: column;
+       gap: 20px;
+       width: 100%;
+       max-width: 1200px;
+       margin: 0 auto;
+       padding: 0 20px;
+       flex: 1;
+       justify-content: center;
+   }
+
+   /* ==============================================
+      HEADER JA NAVIGAATIO
+      ============================================== */
+   header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       width: 100%;
+       max-width: 1200px;
+       margin: 0 auto;
+       padding: 20px;
+   }
+
+   h1 {
+       font-size: 28px;
+       font-weight: 600;
+   }
+
+   .user-info {
+       display: flex;
+       align-items: center;
+       gap: 10px;
+   }
+
+   #username {
+       font-weight: 500;
+   }
+
+   .logout-btn {
+       background-color: #0a96db;
+       color: white;
+       border: none;
+       border-radius: 20px;
+       padding: 8px 15px;
+       cursor: pointer;
+       font-size: 14px;
+       font-weight: 500;
+   }
+
+   /* ==============================================
+      DASHBOARD RAKENNE
+      ============================================== */
+   .dashboard-row {
+       display: flex;
+       gap: 20px;
+       width: 100%;
+       margin-bottom: 20px;
+   }
+
+   .dashboard-row:last-child {
+       margin-bottom: 0;
+   }
+
+   .dashboard-card {
+       background: white;
+       border-radius: 10px;
+       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+       padding: 20px;
+       flex: 1;
+       display: flex;
+       flex-direction: column;
+       position: relative;
+   }
+
+   .dashboard-card:first-child {
+       padding: 20px 20px 30px 20px;
+   }
+
+   /* ==============================================
+      KALENTERI
+      ============================================== */
+   .calendar {
+       width: 100%;
+       display: flex;
+       flex-direction: column;
+       position: relative;
+   }
+
+   .calendar-header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       margin-bottom: 25px;
+   }
+
+   .monthYear {
+       font-weight: 500;
+       font-size: 18px;
+   }
+
+   .calendar-nav-btn {
+       background: white;
+       border: none;
+       border-radius: 50%;
+       width: 35px;
+       height: 35px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       cursor: pointer;
+       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+   }
+
+   .days {
+       display: grid;
+       grid-template-columns: repeat(7, 1fr);
+       margin-bottom: 15px;
+   }
+
+   .day {
+       text-align: center;
+       padding: 5px;
+       font-size: 14px;
+       color: #505050;
+       font-weight: 600;
+   }
+
+   .dates {
+       display: grid;
+       grid-template-columns: repeat(7, 1fr);
+       grid-row-gap: 16px;
+       grid-column-gap: 8px;
+       padding: 5px 0 15px 0;
+   }
+
+   .date {
+       height: 40px;
+       width: 40px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       margin: 0 auto;
+       border-radius: 50%;
+       cursor: pointer;
+       font-size: 15px;
+       font-weight: 500;
+       position: relative;
+   }
+
+   .date.active, .date:hover {
+       background-color: #e64458;
+       color: white;
+   }
+
+   .date.inactive {
+       color: #ccc;
+   }
+
+   .date.has-notification::after,
+   .date.has-complete-entry::after,
+   .date.has-partial-entry::after {
+       content: '';
+       position: absolute;
+       top: 2px;
+       right: 2px;
+       width: 8px;
+       height: 8px;
+       border-radius: 50%;
+   }
+
+   .date.has-notification::after {
+       background-color: #e64458;
+   }
+
+   .date.has-complete-entry::after {
+       background-color: #e64458;
+   }
+
+   .date.has-partial-entry::after {
+       background-color: #d98a38;
+   }
+
+   /* Tämän päivän korostus kalenterissa */
+    .date.today {
+    background-color: #0a96db; /* Sovelluksen sininen korostusväri */
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    border: 2px solid #0a96db;
+    position: relative;
+    }
+
+    /* Merkintöjen ja aktiivisen valinnan yhdistäminen tämän päivän korostuksen kanssa */
+    .date.today.active {
+    background-color: #e64458; /* Aktiivisen päivän väri säilyy */
+    border: 2px solid #0a96db; /* Kehys osoittaa että on kyseessä tämä päivä */
+    }
+
+    .date.today.has-complete-entry::after,
+    .date.today.has-partial-entry::after {
+    top: 0px; /* Siirretään indikaattoria hieman, jotta se näkyy paremmin */
+    right: 0px;
+    width: 10px; /* Hieman isompi indikaattori */
+    height: 10px;
+    }
+
+    /* Lisätään hover-efekti tämän päivän korostukselle */
+    .date.today:hover {
+    background-color: #007eb8; /* Tummempi sininen hover-tilassa */
+    transform: scale(1.05);
+    transition: transform 0.2s, background-color 0.2s;
+    }
+
+   /* ==============================================
+      VERENSOKERI-OSIO
+      ============================================== */
+   h2 {
+       font-size: 18px;
+       margin-bottom: 15px;
+       font-weight: 500;
+   }
+
+   h3 {
+       font-size: 16px;
+       margin-bottom: 10px;
+       font-weight: 500;
+   }
+
+   .measurement-filters {
+       display: flex;
+       gap: 20px;
+       margin-bottom: 20px;
+   }
+
+   .filter-group {
+       display: flex;
+       flex-direction: column;
+       gap: 5px;
+   }
+
+   .filter-group label {
+       font-size: 14px;
+       color: #505050;
+   }
+
+   .filter-select {
+       padding: 8px 12px;
+       border: 1px solid #ddd;
+       border-radius: 5px;
+       background-color: white;
+       width: 150px;
+       cursor: pointer;
+   }
+
+   .filter-select:hover {
+       border-color: #bbb;
+   }
+
+   .filter-select:focus {
+       border-color: #39b3aa;
+       outline: none;
+   }
+
+   .measurement-section {
+       display: flex;
+       flex-direction: column;
+       flex: 1;
+       margin-top: 10px;
+   }
+
+   /* ==============================================
+      KAAVIOT JA VISUALISOINNIT
+      ============================================== */
+   .chart-container {
+       flex: 1;
+       min-height: 250px;
+       width: 100%;
+       position: relative;
+       margin-top: 0;
+       display: flex;
+       flex-direction: column;
+   }
+
+   .chart-placeholder {
+       flex: 1;
+       width: 100%;
+       background-color: #f9f9f9;
+       border-radius: 5px;
+       border: 1px dashed #ddd;
+       position: relative;
+   }
+
+   .chart-grid {
+       position: absolute;
+       top: 0;
+       left: 0;
+       right: 0;
+       bottom: 30px;
+       background-image: linear-gradient(#eee 1px, transparent 1px),
+                          linear-gradient(90deg, #eee 1px, transparent 1px);
+       background-size: 10% 25%, 10% 25%;
+   }
+
+   .chart-legend {
+       position: absolute;
+       bottom: 5px;
+       right: 10px;
+       display: flex;
+       gap: 15px;
+   }
+
+   .chart-legend-centered {
+       position: absolute;
+       bottom: 5px;
+       left: 0;
+       right: 0;
+       display: flex;
+       justify-content: center;
+       gap: 30px;
+   }
+
+   .legend-item {
+       display: flex;
+       align-items: center;
+       gap: 5px;
+       font-size: 12px;
+   }
+
+   .legend-color {
+       width: 12px;
+       height: 12px;
+       border-radius: 50%;
+       display: inline-block;
+   }
+
+   .legend-color.before {
+       background-color: #e64458;
+   }
+
+   .legend-color.after {
+       background-color: #39b3aa;
+   }
+
+   /* ==============================================
+      TERVEYSMETRIIKAT
+      ============================================== */
+   .metrics-container {
+       display: flex;
+       width: 100%;
+       gap: 20px;
+   }
+
+   .metric-card {
+       background: white;
+       border-radius: 10px;
+       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+       padding: 20px;
+       flex: 1;
+       text-align: center;
+   }
+
+   .metric-value {
+       font-size: 32px;
+       font-weight: 700;
+       margin: 10px 0;
+       color: #c28900;
+   }
+
+   .metric-value.stress {
+        color: #007f77;
+   }
+
+   .metric-value.heart-rate {
+        color: #007f77;
+   }
+
+   .metric-value.sdnn {
+    color: #8a3d9e;
+  }
+
+   .metric-label {
+       font-size: 12px;
+       color: #505050;
+   }
+
+   /* ==============================================
+      INFO-NAPIT JA OHJEET
+      ============================================== */
+   /* Yleinen info-nappi */
+   .info-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(61, 90, 161, 0.3);
+    border: 2px solid #3d5aa1;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    color: #2d487e;
+    cursor: pointer;
+    z-index: 5;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow to indicate it's clickable */
+   }
+
+   #calendarInfoBtn {
+    top: 10px;
+    right: 70px;
+    top: 15px;
+   }
+
+   .info-button:hover {
+       color: #2d487e;
+       background-color: rgba(61, 90, 161, 0.25);
+       transform: scale(1.1);
+       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+   }
+
+   .info-button:focus {
+       outline: 3px solid #0a96db;
+       outline-offset: 2px;
+   }
+
+   .dashboard-card, .chart-container, .metrics-container {
+    position: relative;
+}
+
+   .no-data-message {
+       text-align: center;
+       padding: 20px;
+       color: #505050;
+       font-style: italic;
+       background-color: #f9f9f9;
+       border-radius: 5px;
+       margin: 10px 0;
+   }
+
+   .home-btn {
+    background-color: #0a96db;
+    display: inline-block;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin: 0 10px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.3s;
+    }
+
+    .home-btn:hover {
+    background-color: #0a85c5;;
+    }
+
+   /* ==============================================
+      MODAALI MERKINTÖJEN MUOKKAAMISEEN
+      ============================================== */
+   .modal {
+       display: none;
+       position: fixed;
+       z-index: 1000;
+       left: 0;
+       top: 0;
+       width: 100%;
+       height: 100%;
+       overflow: auto;
+       background-color: rgba(0, 0, 0, 0.4);
+       animation: fadeIn 0.3s;
+   }
+
+   .modal-content {
+       background-color: #fefefe;
+       margin: 50px auto;
+       padding: 25px;
+       border-radius: 10px;
+       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+       width: 90%;
+       max-width: 800px;
+       animation: slideIn 0.3s;
+   }
+
+   .close-modal {
+       color: #aaa;
+       float: right;
+       font-size: 28px;
+       font-weight: bold;
+       cursor: pointer;
+   }
+
+   .close-modal:hover {
+       color: #333;
+   }
+
+   .modal-header {
+       padding-bottom: 15px;
+       margin-bottom: 20px;
+       border-bottom: 1px solid #eee;
+   }
+
+   .modal-body {
+       max-height: 70vh;
+       overflow-y: auto;
+   }
+
+   .form-row {
+       display: flex;
+       gap: 15px;
+       margin-bottom: 15px;
+       flex-wrap: wrap;
+   }
+
+   .form-group {
+       flex: 1;
+       min-width: 200px;
+   }
+
+   .form-group label {
+       display: block;
+       margin-bottom: 5px;
+       font-size: 14px;
+       color: #505050;
+   }
+
+   .form-group input,
+   .form-group select,
+   .form-group textarea {
+       width: 100%;
+       padding: 8px 12px;
+       border: 1px solid #ddd;
+       border-radius: 5px;
+       font-size: 14px;
+   }
+
+   .form-group input:focus,
+   .form-group select:focus,
+   .form-group textarea:focus {
+       border-color: #39b3aa;
+       outline: none;
+   }
+
+   /* Oirevalinta - selkeämpi ja paremmin eroteltu asettelu */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px; /* Kasvatettu väliä checkboxien välillä */
+    margin: 15px 0;
+    padding: 15px;
+    background-color: #f9f9f9; /* Kevyt taustaväri erottamaan osion */
+    border-radius: 8px;
+    border: 1px solid #eaeaea;
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px; /* Lisää sisäistä täytettä */
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+
+  /* Hoverissa korostetaan valintaa */
+  .checkbox-item:hover {
+    background-color: rgba(10, 150, 219, 0.1);
+  }
+
+  /* Isommat ja selkeämmät valintaruudut */
+  .checkbox-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #0a96db; /* Sama kuin sovelluksen pääväri */
+  }
+
+  .checkbox-item label {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  #infoModalBody p em {
+    display: block;
+    margin-top: 5px;
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    border-left: 3px solid #0a96db;
+    border-radius: 3px;
+  }
+  
+  #infoModalBody p strong {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 16px;
+  }
+
+  /* Responsiivisuus pienemmillä näytöillä */
+  @media (max-width: 768px) {
+    .checkbox-group {
+      grid-template-columns: repeat(2, 1fr);
+      padding: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .checkbox-group {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 10px;
+    }
+  }
+
+   .modal-footer {
+       padding-top: 15px;
+       margin-top: 20px;
+       border-top: 1px solid #eee;
+       display: flex;
+       justify-content: flex-end;
+       gap: 10px;
+   }
+
+   .btn-secondary {
+       background-color: #5a6268;
+       color: white;
+       border: none;
+       padding: 8px 15px;
+       border-radius: 5px;
+       cursor: pointer;
+   }
+
+   .btn-primary {
+       background-color: #0a96db;
+       color: white;
+       border: none;
+       padding: 8px 15px;
+       border-radius: 5px;
+       cursor: pointer;
+   }
+
+   .btn-danger {
+       background-color: #e64458;
+       color: white;
+       border: none;
+       padding: 8px 15px;
+       border-radius: 5px;
+       cursor: pointer;
+   }
+
+   /* ==============================================
+      ANIMAATIOT
+      ============================================== */
+   @keyframes fadeIn {
+       from { opacity: 0; }
+       to { opacity: 1; }
+   }
+
+   @keyframes slideIn {
+       from { transform: translateY(-50px); opacity: 0; }
+       to { transform: translateY(0); opacity: 1; }
+   }
+
+   /* ==============================================
+      RESPONSIIVISUUS
+      ============================================== */
+   @media (max-height: 800px) {
+       .dashboard-content {
+           justify-content: flex-start;
+           padding-top: 20px;
+           padding-bottom: 20px;
+       }
+   }
+
+   @media (max-width: 1024px) {
+       .dashboard-content {
+           padding: 20px;
+       }
+   }
+
+   @media (max-width: 768px) {
+       .dashboard-row {
+           flex-direction: column;
+       }
+
+       .metrics-container {
+           flex-wrap: wrap;
+       }
+
+       .metric-card {
+           min-width: calc(50% - 10px);
+       }
+
+       .modal-content {
+           width: 95%;
+           margin: 20px auto;
+           padding: 15px;
+       }
+
+       .form-row {
+           flex-direction: column;
+           gap: 10px;
+       }
+
+       .form-group {
+           min-width: 100%;
+       }
+
+       button, .btn, select, input[type="checkbox"] + label {
+         min-height: 44px;
+         min-width: 44px;
+       }
+   }
+
+.btn-kubios {
+    background-color: #5a3fd0;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .btn-kubios:hover {
+    background-color: #4a33bd;
+  }
+
+  .btn-kubios:disabled {
+    background-color: #9e94d7;
+    cursor: not-allowed;
+  }
+
+/*Info modal styyles*/
+
+.info-modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s;
+  }
+
+  .info-modal-content {
+    background-color: #fefefe;
+    margin: 50px auto;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 650px;
+    animation: slideIn 0.3s;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .info-modal .modal-header {
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .info-modal .modal-body {
+    line-height: 1.6;
+    color: #333;
+    font-size: 14px;
+  }
+
+  .info-modal .modal-body p {
+    margin-bottom: 15px;
+  }
+
+  .info-modal .modal-body strong {
+    font-weight: 600;
+    color: #0a96db;
+  }
+
+  .info-modal .modal-body em {
+    font-style: italic;
+    color: #444;
+    font-weight: 500;
+  }
+
+  .info-modal .modal-footer {
+    padding-top: 15px;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .info-modal button {
+    min-height: 44px;
+    min-width: 80px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .info-modal-content {
+      width: 95%;
+      max-width: 95%;
+      margin: 20px auto;
+      padding: 15px;
+    }
+
+    .info-modal .modal-body {
+      font-size: 14px;
+    }
+  }
+    #infoModalBody p strong {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 16px;
+  }
+
+  #infoModalBody p em {
+    display: block;
+    margin-top: 5px;
+    padding: 5px 10px;
+    background-color: #f5f5f5;
+    border-left: 3px solid #0a96db;
+    border-radius: 3px;
+  }

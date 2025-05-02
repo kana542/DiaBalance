@@ -1,0 +1,153 @@
+/* Main CSS file for the application */
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+body {
+   font-family: 'Poppins', sans-serif;
+   line-height: 1.6;
+   background-color: #f0f0f0;
+   color: #1a1a1a;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+}
+
+:focus {
+  outline: 3px solid #0a96db;
+  outline-offset: 2px;
+}
+
+.container {
+   max-width: 1200px;
+   margin: 0 auto;
+   padding: 20px;
+   text-align: center;
+}
+
+h1 {
+   margin-bottom: 30px;
+   color: #1a1a1a;
+}
+
+.button-container {
+   margin-top: 30px;
+}
+
+.btn {
+   display: inline-block;
+   background: #3d5aa1;
+   color: #fff;
+   border: none;
+   padding: 10px 20px;
+   margin: 5px;
+   border-radius: 5px;
+   cursor: pointer;
+   text-decoration: none;
+   font-size: 16px;
+   font-family: inherit;
+   transition: background 0.3s;
+}
+
+.btn:hover {
+   background: #2d487e;
+}
+
+.btn-secondary {
+   background: #5a6268;
+}
+
+.btn-secondary:hover {
+   background: #4a5258;
+}
+
+.logo-container {
+   text-align: center;
+}
+.logo {
+   width: 300px;
+   object-fit: contain;
+}
+
+#toast-container {
+   position: fixed;
+   bottom: 20px;
+   right: 20px;
+   z-index: 1000;
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+ }
+
+ .toast {
+   padding: 12px 20px;
+   border-radius: 6px;
+   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+   opacity: 0;
+   transform: translateY(10px);
+   transition: all 0.3s ease-in-out;
+   font-size: 14px;
+   display: flex;
+   align-items: center;
+   max-width: 400px;
+   word-break: break-word;
+ }
+
+ .toast.info {
+   background-color: #e8f4fd;
+   border-left: 4px solid #1cb0f6;
+   color: #333;
+ }
+
+ .toast.success {
+   background-color: #edf7f0;
+   border-left: 4px solid #4ecdc4;
+   color: #333;
+ }
+
+ .toast.warning {
+   background-color: #fff7e8;
+   border-left: 4px solid #ff9f43;
+   color: #333;
+ }
+
+ .toast.error {
+   background-color: #feecef;
+   border-left: 4px solid #ff5869;
+   color: #333;
+ }
+
+ .toast-icon {
+   margin-right: 10px;
+   font-size: 18px;
+ }
+
+ .toast.info .toast-icon {
+   color: #1cb0f6;
+ }
+
+ .toast.success .toast-icon {
+   color: #4ecdc4;
+ }
+
+ .toast.warning .toast-icon {
+   color: #ff9f43;
+ }
+
+ .toast.error .toast-icon {
+   color: #ff5869;
+ }
+
+ .field-error {
+   color: #ff5869;
+   font-size: 12px;
+   margin-top: 5px;
+ }
+
+ input.error, textarea.error, select.error {
+   border-color: #ff5869;
+ }
