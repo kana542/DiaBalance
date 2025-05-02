@@ -249,10 +249,26 @@ const ensureBaseEntryExists = async (userId, date) => {
 
     if (entries.length === 0) {
       logger.debug(`Creating basic entry for date ${date} before saving HRV data`);
+      
+      // Suoritetaan kysely ja odotetaan sen valmistumista
       await promisePool.query(
         'INSERT INTO kirjaus (kayttaja_id, pvm, oireet, kommentti) VALUES (?, ?, ?, ?)',
         [userId, date, 'Ei oireita', 'HRV-datamerkintä']
       );
+      
+      // Odotetaan hetki jotta varmistetaan merkinnän tallentuminen
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Varmistetaan että merkintä todella tallentui
+      const [checkResult] = await promisePool.query(
+        'SELECT 1 FROM kirjaus WHERE kayttaja_id = ? AND pvm = ?',
+        [userId, date]
+      );
+      
+      if (checkResult.length === 0) {
+        logger.error(`Failed to create base entry for date ${date}`);
+        return false;
+      }
     }
 
     return true;
