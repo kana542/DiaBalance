@@ -1,5 +1,5 @@
 *** Settings ***
-Variables    env_variables.py
+Variables    ../variables/env_variables.py
 
 *** Keywords ***
 Kirjaudu ulos sovelluksesta

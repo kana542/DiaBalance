@@ -1,7 +1,7 @@
 *** Settings ***
 Library     RequestsLibrary
 Library     Collections         
-Variables       ../../resources/env_variables.py
+Variables       ../../variables/env_variables.py
 
 *** Test Cases ***
 Onnistunut kirjautuminen palauttaa 200 ja tokenin

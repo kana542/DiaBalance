@@ -12,5 +12,5 @@ Test get HRV-data from Kubios
     Vahvista Kirjautuminen Onnistui
 
     #Tästä alkaa HRV-datan hakeminen
-    Siirry kalenteriin ja valitse päivä     2025-04-22
+    Siirry kalenteriin ja valitse päivä     2025-05-03
     Hae HRV-data ja tallenna

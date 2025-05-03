@@ -12,5 +12,5 @@ Test delete_entry
     Vahvista Kirjautuminen Onnistui
 
     #Tästä alkaa merkinnän poistaminen
-    Siirry kalenteriin ja valitse päivä     2025-04-21
+    Siirry kalenteriin ja valitse päivä     2025-05-03
     Poista merkintä

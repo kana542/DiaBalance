@@ -1,7 +1,7 @@
 *** Settings ***
 Library           RequestsLibrary
 Library           Collections
-Variables         ../../resources/env_variables.py
+Variables         ../../variables/env_variables.py
 
 *** Test Cases ***
 Lisää kaksi merkintää kalenteriin
@@ -17,7 +17,7 @@ Lisää kaksi merkintää kalenteriin
 
     
     ${entry1}=    Create Dictionary
-    ...    pvm=2025-05-10
+    ...    pvm=2025-05-13
     ...    vs_aamu=7.9
     ...    kommentti=robot merkinnän testaus
 
@@ -26,7 +26,7 @@ Lisää kaksi merkintää kalenteriin
 
     
     ${entry2}=    Create Dictionary
-    ...    pvm=2025-05-11
+    ...    pvm=2025-05-12
     ...    vs_aamu=13.9
     ...    kommentti=robot merkinnän testaus
 

@@ -12,6 +12,6 @@ Test new_entry
     Vahvista Kirjautuminen Onnistui
 
     #Tästä alkaa uuden merkinnän lisääminen
-    Siirry kalenteriin ja valitse päivä     2025-04-29
+    Siirry kalenteriin ja valitse päivä     2025-05-02
     Tee uusi merkintä
     Tallenna merkintä

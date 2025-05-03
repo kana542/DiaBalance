@@ -1,5 +1,5 @@
 *** Settings ***
-Variables    resources/env_variables.py
+Variables    ../variables/env_variables.py
 
 *** Keywords ***
 Avaa Sovellus

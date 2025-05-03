@@ -1,6 +1,6 @@
 *** Settings ***
 Library     Browser    auto_closing_level=KEEP
-Variables   ../../resources/env_variables.py
+Variables   ../../variables/env_variables.py
 Resource    ../../resources/loginWithRegister.resource
 Resource    ../../resources/logoutKeywords.resource
 

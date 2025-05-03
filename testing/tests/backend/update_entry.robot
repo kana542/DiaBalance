@@ -1,7 +1,7 @@
 *** Settings ***
 Library           RequestsLibrary
 Library           Collections
-Variables         ../../resources/env_variables.py
+Variables         ../../variables/env_variables.py
 
 *** Test Cases ***
 Muokkaa olemassa olevaa merkintää ja varmista päivitys
@@ -16,11 +16,11 @@ Muokkaa olemassa olevaa merkintää ja varmista päivitys
     ${token}=   Get From Dictionary    ${json['data']}    token
     ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json
 
-    # Päivitä merkintä (PUT) päivälle 2025-05-01
+    # Päivitä merkintä (PUT) päivälle 2025-05-12
     ${entry}=    Create Dictionary
-    ...    pvm=2025-05-01
+    ...    pvm=2025-05-12
     ...    vs_ilta=9
-    ...    kommentti=muokattu kommentti robot testeihin!
+    ...    kommentti=robot merkinnän testaus
 
     ${res}=    PUT    ${BACKEND_URL}/entries    headers=${headers}    json=${entry}
     Should Be Equal As Integers    ${res.status_code}    200
@@ -35,7 +35,7 @@ Muokkaa olemassa olevaa merkintää ja varmista päivitys
 
     FOR    ${merkinta}    IN    @{data}
         ${pvm}=    Get From Dictionary    ${merkinta}    pvm
-        Run Keyword If    '${pvm}' == '2025-05-01'    Set Test Variable    ${kommentti}    ${merkinta['kommentti']}
+        Run Keyword If    '${pvm}' == '2025-05-12'    Set Test Variable    ${kommentti}    ${merkinta['kommentti']}
     END
 
-    Should Be Equal    ${kommentti}    muokattu kommentti robot testeihin!
+    Should Be Equal    ${kommentti}    robot merkinnän testaus

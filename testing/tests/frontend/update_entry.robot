@@ -12,5 +12,5 @@ Test update_entry
     Vahvista Kirjautuminen Onnistui
 
     #Tästä alkaa merkinnän muokkaaminen
-    Siirry kalenteriin ja valitse päivä     2025-04-22
+    Siirry kalenteriin ja valitse päivä     2025-05-02
     Muokkaa merkintää

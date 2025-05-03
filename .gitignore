@@ -1,2 +1,6 @@
 .env
 .venv/
+docs/playwright-log-*.txt
+/testing/results/playwright-log-*.txt
+/testing/results/playwright-log.txt
+

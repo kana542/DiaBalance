@@ -46,7 +46,49 @@ pip install -r testing/requirements.txt
 
 ---
 
-## Testitulokset
+## Testit ajettiin vielä kertaallen läpi, kun siirryttiin mainiin ja koodissa oli tehty hieman muutoksia. Tällä kertaa tehtiin ajot hieman eri tavoin:
+
+## Testien suorituskomennot (Robot Framework)
+Tulokset tallentuvat kansioon `testing/results`. Jokainen komento ajetaan erikseen, ja tulokset (log.html, report.html) nimetään käsin halutulla tavalla testin mukaan.
+
+Viimeisimpien testien tulokset löytyvät
+- Raportit ja julkaisu: [`testing/results/`](../testing/results/latest)
+
+### Frontend-testit
+```bash
+robot -d testing/results testing/tests/frontend/register_success.robot
+robot -d testing/results testing/tests/frontend/login_fail.robot
+robot -d testing/results testing/tests/frontend/login_success.robot
+robot -d testing/results testing/tests/frontend/new_entry.robot
+robot -d testing/results testing/tests/frontend/update_entry.robot
+robot -d testing/results testing/tests/frontend/delete_entry.robot
+robot -d testing/results testing/tests/frontend/get_HRV_data.robot
+robot -d testing/results testing/tests/frontend/log_out.robot
+```
+
+### Backend-testit
+```bash
+robot -d testing/results testing/tests/backend/login_invalid.robot
+robot -d testing/results testing/tests/backend/login_validation.robot
+robot -d testing/results testing/tests/backend/login_success.robot
+robot -d testing/results testing/tests/backend/calendar_entries.robot
+robot -d testing/results testing/tests/backend/calendar_month_vs_aamu.robot
+robot -d testing/results testing/tests/backend/update_entry.robot
+robot -d testing/results testing/tests/backend/delete_entry.robot
+```
+
+---
+
+Tee testin ajon jälkeen:
+- Nimeä `log.html` ja `report.html` testin mukaan (esim. `log_login_success.html`).
+- Siirrä ne oikeaan alikansioon projektin `results/`-rakenteessa, esimerkiksi `results/latest/reports` ja `results/latest/logs`.
+
+Näin varmistat, että tulokset säilyvät ja ovat selkeästi eroteltavissa.
+
+---
+
+
+## Testitulokset ennen mainiin siirtymistä
 
 ### Käyttäjätunnistautuminen frontend
 

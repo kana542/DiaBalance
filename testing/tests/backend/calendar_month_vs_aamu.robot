@@ -1,7 +1,7 @@
 *** Settings ***
 Library           RequestsLibrary
 Library           Collections
-Variables         ../../resources/env_variables.py
+Variables         ../../variables/env_variables.py
 
 *** Test Cases ***
 Tarkista vs_aamu-arvot toukokuulta
@@ -32,5 +32,5 @@ Tarkista vs_aamu-arvot toukokuulta
     Log To Console    Löydetyt vs_aamu-arvot: ${vs_aamut}
 
     # Tarkistetaan, että odotetut arvot löytyvät
-    List Should Contain Value    ${vs_aamut}    13.9
+    List Should Contain Value    ${vs_aamut}    7.9
     

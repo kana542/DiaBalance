@@ -1,7 +1,7 @@
 
 *** Settings ***
 Library           RequestsLibrary
-Variables         ../../resources/env_variables.py
+Variables         ../../variables/env_variables.py
 
 *** Test Cases ***
 Virheellinen kirjautuminen palauttaa 401

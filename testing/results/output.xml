@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.2.2 (Python 3.13.1 on win32)" generated="2025-05-03T11:25:23.785189" rpa="false" schemaversion="5">
+<suite id="s1" name="Delete Entry" source="C:\Users\suviw\Documents\developer\DiaBalance\testing\tests\backend\delete_entry.robot">
+<test id="s1-t1" name="Poista olemassa oleva merkintä ja varmista poisto" line="7">
+<kw name="Create Session" owner="RequestsLibrary">
+<msg time="2025-05-03T11:25:24.105105" level="INFO">Creating Session using : alias=backend, url=http://localhost:3000/api, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<arg>backend</arg>
+<arg>${BACKEND_URL}</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<status status="PASS" start="2025-05-03T11:25:24.104872" elapsed="0.000429"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-05-03T11:25:24.105852" level="INFO">${login_payload} = {'kayttajanimi': 'robotkayttaja3', 'salasana': 'robotsalasana3'}</msg>
+<var>${login_payload}</var>
+<arg>kayttajanimi=${REGISTER_USERNAME}</arg>
+<arg>salasana=${REGISTER_PASSWORD}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.105553" elapsed="0.000321"/>
+</kw>
+<kw name="POST" owner="RequestsLibrary">
+<msg time="2025-05-03T11:25:24.451549" level="INFO">POST Request : url=http://localhost:3000/api/auth/login 
+ path_url=/api/auth/login 
+ headers={'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '64', 'Content-Type': 'application/json'} 
+ body=b'{"kayttajanimi": "robotkayttaja3", "salasana": "robotsalasana3"}' 
+ </msg>
+<msg time="2025-05-03T11:25:24.451735" level="INFO">POST Response : url=http://localhost:3000/api/auth/login 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '509', 'ETag': 'W/"1fd-lIxTm80bBDAwfJIobJt5woPB2LA"', 'Date': 'Sat, 03 May 2025 08:25:24 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":true,"message":"Kirjautuminen onnistui","severity":"success","data":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6MTIsImtheXR0YWphcm9vbGkiOjAsImlhdCI6MTc0NjI2MDcyNCwiZXhwIjoxNzQ2MjY0MzI0fQ.aogoDL_AcRxqVOnwQbRspCTWOF--i0i8liKQGS7Qq2Q","user":{"kayttaja_id":12,"kayttajanimi":"robotkayttaja3","email":"robotkayttaja3@example.com","kayttajarooli":0},"kubios":{"success":false,"message":"Virheellinen käyttäjänimi tai salasana (Kubios)"}},"timestamp":"2025-05-03T08:25:24.449Z"} 
+ </msg>
+<msg time="2025-05-03T11:25:24.451960" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<var>${response}</var>
+<arg>${BACKEND_URL}/auth/login</arg>
+<arg>json=${login_payload}</arg>
+<doc>Sends a POST request.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.106127" elapsed="0.345875"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2025-05-03T11:25:24.453480" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.452574" elapsed="0.001005"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2025-05-03T11:25:24.454896" level="INFO">${json} = {'success': True, 'message': 'Kirjautuminen onnistui', 'severity': 'success', 'data': {'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6MTIsImtheXR0YWphcm9vbGkiOjAsImlhdCI6MTc0NjI2MD...</msg>
+<var>${json}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.454107" elapsed="0.000831"/>
+</kw>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-05-03T11:25:24.455735" level="INFO">${token} = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6MTIsImtheXR0YWphcm9vbGkiOjAsImlhdCI6MTc0NjI2MDcyNCwiZXhwIjoxNzQ2MjY0MzI0fQ.aogoDL_AcRxqVOnwQbRspCTWOF--i0i8liKQGS7Qq2Q</msg>
+<var>${token}</var>
+<arg>${json['data']}</arg>
+<arg>token</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.455196" elapsed="0.000567"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-05-03T11:25:24.456453" level="INFO">${headers} = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6MTIsImtheXR0YWphcm9vbGkiOjAsImlhdCI6MTc0NjI2MDcyNCwiZXhwIjoxNzQ2MjY0MzI0fQ.aogoDL_AcRxqVOnwQbRspCTWOF--i0i8liKQGS7Qq2...</msg>
+<var>${headers}</var>
+<arg>Authorization=Bearer ${token}</arg>
+<arg>Content-Type=application/json</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.456177" elapsed="0.000305"/>
+</kw>
+<kw name="DELETE" owner="RequestsLibrary">
+<msg time="2025-05-03T11:25:24.474444" level="INFO">DELETE Request : url=http://localhost:3000/api/entries/2025-05-13 
+ path_url=/api/entries/2025-05-13 
+ headers={'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6MTIsImtheXR0YWphcm9vbGkiOjAsImlhdCI6MTc0NjI2MDcyNCwiZXhwIjoxNzQ2MjY0MzI0fQ.aogoDL_AcRxqVOnwQbRspCTWOF--i0i8liKQGS7Qq2Q', 'Content-Type': 'application/json', 'Content-Length': '0'} 
+ body=None 
+ </msg>
+<msg time="2025-05-03T11:25:24.474539" level="INFO">DELETE Response : url=http://localhost:3000/api/entries/2025-05-13 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '146', 'ETag': 'W/"92-p6auUR/OHTi+Ks5iN3UKnLdvGOw"', 'Date': 'Sat, 03 May 2025 08:25:24 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":true,"message":"Kirjaus poistettu onnistuneesti","severity":"success","data":{"affectedRows":1},"timestamp":"2025-05-03T08:25:24.472Z"} 
+ </msg>
+<msg time="2025-05-03T11:25:24.474656" level="INFO">${delete} = &lt;Response [200]&gt;</msg>
+<var>${delete}</var>
+<arg>${BACKEND_URL}/entries/2025-05-13</arg>
+<arg>headers=${headers}</arg>
+<doc>Sends a DELETE request.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.456847" elapsed="0.017833"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2025-05-03T11:25:24.475632" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${delete.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.475093" elapsed="0.000591"/>
+</kw>
+<kw name="Create Dictionary" owner="BuiltIn">
+<msg time="2025-05-03T11:25:24.476463" level="INFO">${params} = {'year': '2025', 'month': '05'}</msg>
+<var>${params}</var>
+<arg>year=2025</arg>
+<arg>month=05</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.476305" elapsed="0.000179"/>
+</kw>
+<kw name="GET" owner="RequestsLibrary">
+<msg time="2025-05-03T11:25:24.483540" level="INFO">GET Request : url=http://localhost:3000/api/entries?year=2025&amp;month=05 
+ path_url=/api/entries?year=2025&amp;month=05 
+ headers={'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYXl0dGFqYV9pZCI6MTIsImtheXR0YWphcm9vbGkiOjAsImlhdCI6MTc0NjI2MDcyNCwiZXhwIjoxNzQ2MjY0MzI0fQ.aogoDL_AcRxqVOnwQbRspCTWOF--i0i8liKQGS7Qq2Q', 'Content-Type': 'application/json'} 
+ body=None 
+ </msg>
+<msg time="2025-05-03T11:25:24.483612" level="INFO">GET Response : url=http://localhost:3000/api/entries?year=2025&amp;month=05 
+ status=200, reason=OK 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '540', 'ETag': 'W/"21c-/YZpUkOm77fRZeMnG2krS0DIZr8"', 'Date': 'Sat, 03 May 2025 08:25:24 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":true,"message":"Haettu 1 merkintää","severity":"success","data":[{"kayttaja_id":12,"pvm":"2025-05-12","vs_aamu":null,"vs_ilta":"9.0","vs_aamupala_ennen":null,"vs_aamupala_jalkeen":null,"vs_lounas_ennen":null,"vs_lounas_jalkeen":null,"vs_valipala_ennen":null,"vs_valipala_jalkeen":null,"vs_paivallinen_ennen":null,"vs_paivallinen_jalkeen":null,"vs_iltapala_ennen":null,"vs_iltapala_jalkeen":null,"oireet":"Ei oireita","kommentti":"robot merkinnän testaus","formatted_date":"2025-05-12"}],"timestamp":"2025-05-03T08:25:24.482Z"} 
+ </msg>
+<msg time="2025-05-03T11:25:24.483874" level="INFO">${get} = &lt;Response [200]&gt;</msg>
+<var>${get}</var>
+<arg>${BACKEND_URL}/entries</arg>
+<arg>headers=${headers}</arg>
+<arg>params=${params}</arg>
+<doc>Sends a GET request.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.476658" elapsed="0.007237"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2025-05-03T11:25:24.484585" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${get.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.484204" elapsed="0.000419"/>
+</kw>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-05-03T11:25:24.485358" level="INFO">${data} = [{'kayttaja_id': 12, 'pvm': '2025-05-12', 'vs_aamu': None, 'vs_ilta': '9.0', 'vs_aamupala_ennen': None, 'vs_aamupala_jalkeen': None, 'vs_lounas_ennen': None, 'vs_lounas_jalkeen': None, 'vs_valipala_en...</msg>
+<var>${data}</var>
+<arg>${get.json()}</arg>
+<arg>data</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.484971" elapsed="0.000405"/>
+</kw>
+<kw name="Create List" owner="BuiltIn">
+<msg time="2025-05-03T11:25:24.485828" level="INFO">${merkinnat} = []</msg>
+<var>${merkinnat}</var>
+<doc>Returns a list containing given items.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.485733" elapsed="0.000112"/>
+</kw>
+<for flavor="IN">
+<iter>
+<kw name="Get From Dictionary" owner="Collections">
+<msg time="2025-05-03T11:25:24.486384" level="INFO">${pvm} = 2025-05-12</msg>
+<var>${pvm}</var>
+<arg>${merkinta}</arg>
+<arg>pvm</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.486288" elapsed="0.000110"/>
+</kw>
+<kw name="Append To List" owner="Collections">
+<arg>${merkinnat}</arg>
+<arg>${pvm}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.486452" elapsed="0.000079"/>
+</kw>
+<var name="${merkinta}">{'kayttaja_id': 12, 'pvm': '2025-05-12', 'vs_aamu': None, 'vs_ilta': '9.0', 'vs_aamupala_ennen': None, 'vs_aamupala_jalkeen': None, 'vs_lounas_ennen': None, 'vs_lounas_jalkeen': None, 'vs_valipala_enn...</var>
+<status status="PASS" start="2025-05-03T11:25:24.486235" elapsed="0.000318"/>
+</iter>
+<var>${merkinta}</var>
+<value>@{data}</value>
+<status status="PASS" start="2025-05-03T11:25:24.486060" elapsed="0.000518"/>
+</for>
+<kw name="List Should Not Contain Value" owner="Collections">
+<arg>${merkinnat}</arg>
+<arg>2025-05-13</arg>
+<doc>Fails if the ``value`` is found from ``list``.</doc>
+<status status="PASS" start="2025-05-03T11:25:24.486917" elapsed="0.000107"/>
+</kw>
+<status status="PASS" start="2025-05-03T11:25:24.104023" elapsed="0.383281"/>
+</test>
+<status status="PASS" start="2025-05-03T11:25:23.786424" elapsed="0.701720"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="Delete Entry" id="s1" pass="1" fail="0" skip="0">Delete Entry</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

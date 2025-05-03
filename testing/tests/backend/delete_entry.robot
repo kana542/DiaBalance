@@ -1,7 +1,7 @@
 *** Settings ***
 Library           RequestsLibrary
 Library           Collections
-Variables         ../../resources/env_variables.py
+Variables         ../../variables/env_variables.py
 
 *** Test Cases ***
 Poista olemassa oleva merkintä ja varmista poisto
@@ -17,7 +17,7 @@ Poista olemassa oleva merkintä ja varmista poisto
     ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json
 
     # Poista merkintä päivältä 2025-05-02
-    ${delete}=    DELETE    ${BACKEND_URL}/entries/2025-05-02    headers=${headers}
+    ${delete}=    DELETE    ${BACKEND_URL}/entries/2025-05-13    headers=${headers}
     Should Be Equal As Integers    ${delete.status_code}    200
 
     # Tarkista, ettei merkintä enää ole mukana toukokuun merkinnöissä
@@ -33,4 +33,4 @@ Poista olemassa oleva merkintä ja varmista poisto
         Append To List    ${merkinnat}    ${pvm}
     END
 
-    List Should Not Contain Value    ${merkinnat}    2025-05-02
+    List Should Not Contain Value    ${merkinnat}    2025-05-13
