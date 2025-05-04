@@ -14,6 +14,66 @@ Tietokanta koostuu viidestä päätaulusta:
 4. **potilas_hoitaja** - Potilas-hoitajasuhteet (määritelty jatkokehitystä varten, ei käytössä nykyisessä toteutuksessa)
 5. **ajanvaraus** - Ajanvaraustiedot (määritelty jatkokehitystä varten, ei käytössä nykyisessä toteutuksessa)
 
+```mermaid
+erDiagram
+    kayttaja {
+        int kayttaja_id PK
+        varchar kayttajanimi
+        varchar email
+        varchar salasana
+        text kubios_token
+        datetime kubios_expiration
+        int kayttajarooli
+    }
+    
+    kirjaus {
+        int kayttaja_id PK,FK
+        date pvm PK
+        decimal vs_aamu
+        decimal vs_ilta
+        decimal vs_aamupala_ennen
+        decimal vs_aamupala_jalkeen
+        decimal vs_lounas_ennen
+        decimal vs_lounas_jalkeen
+        decimal vs_valipala_ennen
+        decimal vs_valipala_jalkeen
+        decimal vs_paivallinen_ennen
+        decimal vs_paivallinen_jalkeen
+        decimal vs_iltapala_ennen
+        decimal vs_iltapala_jalkeen
+        varchar oireet
+        varchar kommentti
+    }
+    
+    hrv_kirjaus {
+        int kayttaja_id PK,FK
+        date pvm PK,FK
+        decimal stress
+        decimal readiness
+        int bpm
+        decimal sdnn_ms
+    }
+    
+    potilas_hoitaja {
+        int hoidonseuraaja PK,FK
+        int potilas PK,FK
+    }
+    
+    ajanvaraus {
+        int hoidonseuraaja PK,FK
+        int potilas PK,FK
+        date ajanvaraus_pvm PK
+        time ajanvaraus_aloitus PK
+        time ajanvaraus_lopetus
+    }
+    
+    kayttaja ||--o{ kirjaus : "user has entries"
+    kirjaus ||--o| hrv_kirjaus : "entry has HRV data"
+    kayttaja ||--o{ potilas_hoitaja : "user is caretaker"
+    kayttaja ||--o{ potilas_hoitaja : "user is patient"
+    potilas_hoitaja ||--o{ ajanvaraus : "relationship has appointments"
+```
+
 > **Huomio:** `potilas_hoitaja` ja `ajanvaraus` -taulut on määritelty tietokantaskeemassa, mutta ne eivät ole nykyisessä koodissa käytössä aikaresurssin puutteen vuoksi. Ne ovat mukana jatkokehitystä varten.
 
 ### Taulujen rakenne
