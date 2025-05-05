@@ -81,7 +81,7 @@ Testauspaketti on toteutettu Robot Framework -työkalulla:
 - **variables**: Ympäristömuuttujat testeille
 
 ### Docs
-Sovelluksen dokumentaatio, käyttöohjeet ja testausdokumentaatio.
+Sovelluksen dokumentaatio, testausdokumentaatio, kuvakaappaukset jne.
 
 ## Asennus ja käyttöönotto
 
