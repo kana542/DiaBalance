@@ -120,7 +120,10 @@ robot tests
 ## Dokumentaatio
 
 Tarkempi dokumentaatio löytyy kansiosta `docs` sekä erillisistä dokumentaatiotiedostoista backend- ja frontend-kansioissa:
-
-* **Backend-arkkitehtuuri**: `backend/docs/ARCHITECTURE.md`
-* **Tietokantakuvaus**: `backend/docs/DATABASE.md`
-* **API-dokumentaatio**: `backend/apidoc/index.html`
+* **Wireframe kuvakaappaukset**: [wireframe](docs/wireframe)
+* **Figma kuvakaappaukset**: [figma](docs/figma)
+* **Käyttöliittymä kuvakaappaukset**: [screenshots](docs/screenshots)
+* **Backend-arkkitehtuuri**: [ARCHITECTURE.md](backend/docs/ARCHITECTURE.md)
+* **Tietokantakuvaus**: [DATABASE.md](backend/docs/DATABASE.md)
+* **API-dokumentaatio**: [index.html](backend/apidoc/index.html)
+* **RobotFrameWork logit ja raportit**: [robot-testing.md](docs/robot-testing.md) tai [GitHub.io](https://kana542.github.io/DiaBalance/)
