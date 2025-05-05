@@ -4,25 +4,31 @@ import { showToast, NotificationSeverity } from '../utils/ui-utils.js';
 import { updateCalendarView } from './calendar-module.js';
 import { showDayData, showEmptyView } from './chart-module.js';
 
+// Kuukauden merkinnät tallennetaan tähän objektiin
 export let monthEntries = {};
 
+// Alustaa merkintämoduulin
 export function initializeEntryModule() {
     console.log('Entry module initialized');
 }
 
+// Lataa kuukauden merkinnät palvelimelta
 export async function loadMonthEntries(year, month) {
     console.log(`Loading entries for ${year}-${month}`);
 
     try {
+      // Haetaan merkinnät API:sta
       const entries = await apiGet(`/entries?year=${year}&month=${month}`, false);
 
       console.log("Entries from server:", entries);
 
       monthEntries = {};
 
+      // Käsitellään jokainen merkintä
       entries.forEach(entry => {
         if (!entry.pvm) return;
 
+        // Käsitellään päivämäärän eri formaatit
         let dateStr;
         if (typeof entry.pvm === 'string') {
           if (entry.pvm.includes('T')) {
@@ -38,8 +44,10 @@ export async function loadMonthEntries(year, month) {
         if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
           console.log(`Found entry for date: ${dateStr}`);
 
+          // Muunnetaan backend-muoto frontend-muotoon
           const convertedEntry = convertBackendEntryToFrontend(entry);
 
+          // Lisätään HRV-data jos se löytyy
           if (entry.hrv_data) {
             console.log(`Found HRV data for date: ${dateStr}`, entry.hrv_data);
             convertedEntry.hrv_data = entry.hrv_data;
@@ -60,7 +68,7 @@ export async function loadMonthEntries(year, month) {
     }
   }
 
-
+// Muuntaa HRV-datan backend-muotoon tallennusta varten
 function convertHrvDataToBackend(dateStr, hrvData) {
   return {
     pvm: dateStr,
@@ -71,14 +79,17 @@ function convertHrvDataToBackend(dateStr, hrvData) {
   };
 }
 
+// Tallentaa merkinnän tiedot palvelimelle
 export async function saveEntryData(dateStr) {
     console.log("Saving entry data for date:", dateStr);
 
     const form = document.getElementById('entryForm');
     if (!form) return false;
 
+    // Kerätään lomakkeen tiedot
     const formData = new FormData(form);
 
+    // Käsittelee kenttäarvon oikein
     const processValue = (value) => {
         if (value === undefined || value === null || value === "") {
             return null;
@@ -86,6 +97,7 @@ export async function saveEntryData(dateStr) {
         return value;
     };
 
+    // Kootaan merkinnän data lomakkeesta
     const entryData = {
         morningValue: processValue(formData.get('morningValue')),
         eveningValue: processValue(formData.get('eveningValue')),
@@ -103,16 +115,17 @@ export async function saveEntryData(dateStr) {
         comment: processValue(formData.get('comment'))
     };
 
+    // Kerää valitut oireet
     document.querySelectorAll('input[name="symptoms"]:checked').forEach(checkbox => {
         entryData.symptoms.push(checkbox.value);
     });
 
     try {
-        // Preserve existing HRV data if present
+        // Säilytä olemassa oleva HRV-data jos sellaista on
         const existingEntry = monthEntries[dateStr];
         const existingHrvData = existingEntry && existingEntry.hrv_data;
 
-        // If there's only HRV data and no other values, set a default comment
+        // Jos on vain HRV-dataa eikä muita arvoja, asetetaan oletuskommentti
         if (existingHrvData && Object.values(entryData).every(value =>
             value === null ||
             (Array.isArray(value) && value.length === 0) ||
@@ -120,32 +133,33 @@ export async function saveEntryData(dateStr) {
             entryData.comment = "HRV-datamerkintä";
         }
 
+        // Muunnetaan data backend-muotoon
         const backendData = convertFrontendEntryToBackend(dateStr, entryData);
 
         console.log("Saving entry to backend with date:", dateStr, backendData);
 
-        // Use updated API call
+        // Lähetetään data palvelimelle
         const response = await apiPut('/entries', backendData);
         console.log("Entry save response:", response);
 
-        // Track HRV save status
+        // Seurataan HRV-datan tallennuksen tilaa
         let hrvSaveSuccess = false;
         
-        // If we have HRV data, save it separately
+        // Jos on HRV-dataa, tallennetaan se erikseen
         if (existingHrvData) {
             console.log("Saving HRV data separately:", existingHrvData);
 
             try {
-                // Make sure we're using consistent field names for HRV data
+                // Varmistetaan että käytetään yhdenmukaisia kenttien nimiä HRV-datalle
                 const hrvDataToSave = {
                     readiness: existingHrvData.readiness,
-                    // Always use database field names first, with fallbacks
+                    // Käytetään ensisijaisesti tietokannan kenttien nimiä, varavaihtoehtoina muita
                     stress: existingHrvData.stress || existingHrvData.stress_index,
                     bpm: existingHrvData.bpm || existingHrvData.mean_hr_bpm,
                     sdnn_ms: existingHrvData.sdnn_ms || existingHrvData.sdnnMs
                 };
 
-                // Import and use apiPost
+                // Tuodaan ja käytetään apiPost-funktiota
                 const { apiPost } = await import('../utils/api-client.js');
                 const hrvResponse = await apiPost(`/kubios/user-data/${dateStr}`, hrvDataToSave);
                 console.log("HRV data save result:", hrvResponse);
@@ -156,7 +170,7 @@ export async function saveEntryData(dateStr) {
             }
         }
 
-        // Always reload entries after save to ensure all data is up to date
+        // Ladataan merkinnät uudelleen tallennuksen jälkeen
         try {
             const { getCurrentMonthYear } = await import('./calendar-module.js');
             const { month, year } = getCurrentMonthYear();
@@ -167,7 +181,7 @@ export async function saveEntryData(dateStr) {
             console.error("Error reloading entries:", reloadError);
         }
 
-        // Close modal and update UI
+        // Suljetaan modaali ja päivitetään käyttöliittymä
         document.getElementById('entryModal').style.display = 'none';
         updateCalendarView();
         showDayData(dateStr);
@@ -179,6 +193,7 @@ export async function saveEntryData(dateStr) {
     }
 }
 
+// Poistaa merkinnän tietyltä päivältä
 export async function deleteEntryData(dateStr) {
     if (!dateStr || !monthEntries[dateStr]) {
         showToast('Ei merkintää poistettavaksi', NotificationSeverity.ERROR);
@@ -188,17 +203,17 @@ export async function deleteEntryData(dateStr) {
     try {
         console.log("Deleting entry for date:", dateStr);
 
-        // Käytetään päivitettyä API-kutsua
+        // Lähetetään poistopyyntö palvelimelle
         const response = await apiDelete(`/entries/${dateStr}`);
         console.log("Delete response:", response);
 
-        // Poista merkintä muistista
+        // Poista merkintä paikallisesta muistista
         delete monthEntries[dateStr];
 
-        // Päivitä UI
+        // Päivitä käyttöliittymä
         document.getElementById('entryModal').style.display = 'none';
-        updateCalendarView(); // Päivitä kalenteri
-        showEmptyView(dateStr); // Näytä tyhjä näkymä
+        updateCalendarView();
+        showEmptyView(dateStr);
 
         console.log("Entry deleted successfully");
         return true;
@@ -208,9 +223,11 @@ export async function deleteEntryData(dateStr) {
     }
 }
 
+// Tarkistaa onko merkintä täydellinen (kaikki kentät täytetty)
 export function isEntryComplete(entry) {
     if (!entry) return false;
 
+    // Verensokerikentät joiden täyttöastetta tarkistetaan
     const glucoseFields = [
         'morningValue', 'eveningValue',
         'breakfastBefore', 'breakfastAfter',
@@ -220,12 +237,14 @@ export function isEntryComplete(entry) {
         'eveningSnackBefore', 'eveningSnackAfter'
     ];
 
+    // Tarkistetaan että kaikki kentät on täytetty
     return glucoseFields.every(field =>
         entry[field] !== undefined &&
         entry[field] !== null &&
         entry[field] !== '');
 }
 
+// Muuntaa backend-muotoisen merkinnän frontend-muotoon
 export function convertBackendEntryToFrontend(entry) {
     try {
         const result = {
@@ -252,6 +271,7 @@ export function convertBackendEntryToFrontend(entry) {
     }
 }
 
+// Muuntaa frontend-muotoisen merkinnän backend-muotoon
 export function convertFrontendEntryToBackend(dateStr, entry) {
     try {
         return {

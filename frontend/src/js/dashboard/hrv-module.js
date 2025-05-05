@@ -1,9 +1,12 @@
+// Alustaa HRV-moduulin
 export function initializeHRVModule() {
   console.log('HRV module initialized');
 
+  // Nollaa mittausarvot alussa
   resetHRVValues();
 }
 
+// Päivittää HRV-mittausnäkymän datan perusteella
 export function updateHRVView(hrvData) {
   if (!hrvData) {
     resetHRVValues();
@@ -12,6 +15,7 @@ export function updateHRVView(hrvData) {
 
   console.log('Updating HRV view with data:', hrvData);
 
+  // Haetaan tarvittavat elementit mittausarvojen näyttämiseen
   const elements = {
     readiness: document.querySelector('.metrics-container .metric-value:not(.stress):not(.heart-rate):not(.sdnn)'),
     stress: document.querySelector('.metrics-container .metric-value.stress'),
@@ -26,6 +30,7 @@ export function updateHRVView(hrvData) {
     sdnn: elements.sdnn?.textContent
   });
 
+  // Päivitetään palautumisarvo (readiness)
   if (elements.readiness) {
     if (hrvData.readiness !== null && hrvData.readiness !== undefined) {
       elements.readiness.textContent = typeof hrvData.readiness === 'number' ?
@@ -36,8 +41,9 @@ export function updateHRVView(hrvData) {
     }
   }
 
+  // Päivitetään stressiarvo
   if (elements.stress) {
-    // Use consistent field naming prioritization
+    // Käytetään johdonmukaista kenttien nimien priorisointia
     const stressValue = hrvData.stress !== undefined ? hrvData.stress :
                       (hrvData.stress_index !== undefined ? hrvData.stress_index :
                       hrvData.stressi_indeksi);
@@ -48,8 +54,9 @@ export function updateHRVView(hrvData) {
     }
   }
 
+  // Päivitetään keskisyke
   if (elements.heartRate) {
-    // Use consistent field naming prioritization
+    // Käytetään johdonmukaista kenttien nimien priorisointia
     const bpmValue = hrvData.bpm !== null && hrvData.bpm !== undefined ? hrvData.bpm :
                    (hrvData.mean_hr_bpm !== null && hrvData.mean_hr_bpm !== undefined ? hrvData.mean_hr_bpm :
                    hrvData.syke);
@@ -60,6 +67,7 @@ export function updateHRVView(hrvData) {
     }
   }
 
+  // Päivitetään SDNN-arvo
   if (elements.sdnn) {
     if (hrvData.sdnn_ms !== null && hrvData.sdnn_ms !== undefined) {
       elements.sdnn.textContent = typeof hrvData.sdnn_ms === 'number' ?
@@ -71,9 +79,11 @@ export function updateHRVView(hrvData) {
   }
 }
 
+// Hakee HRV-tietoja tietokannasta
 export async function fetchHrvDataFromDatabase(dateStr) {
   console.log(`Fetching HRV data from database for date ${dateStr}`);
   try {
+    // Tarkistetaan onko käyttäjä kirjautunut
     const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
 
@@ -82,6 +92,7 @@ export async function fetchHrvDataFromDatabase(dateStr) {
       return null;
     }
 
+    // Tarkistetaan löytyykö tietoja paikallisesta välimuistista
     const entries = window.DiaBalance.entries.monthEntries || {};
     const entry = entries[dateStr];
 
@@ -90,6 +101,7 @@ export async function fetchHrvDataFromDatabase(dateStr) {
       return entry.hrv_data;
     }
 
+    // Nollataan näkymä jos tietoja ei löydy
     resetHRVValues();
     return null;
   } catch (error) {
@@ -99,10 +111,11 @@ export async function fetchHrvDataFromDatabase(dateStr) {
   }
 }
 
+// Hakee ja tallentaa HRV-tiedot tietylle päivälle
 export async function fetchAndSaveHrvDataForDay(dateStr) {
   console.log(`Fetching HRV data for date ${dateStr}`);
   try {
-    // Get user ID and token
+    // Haetaan käyttäjätiedot ja token
     const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
 
@@ -115,7 +128,7 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
 
     console.log('Sending request to Kubios API through our backend...');
 
-    // IMPORTANT CHANGE: Removed noSave=true parameter so data will be saved to database
+    // TÄRKEÄ MUUTOS: Poistettu noSave=true parametri jotta data tallennetaan tietokantaan
     const response = await fetch(`http://localhost:3000/api/kubios/user-data/${dateStr}`, {
       method: 'GET',
       headers: {
@@ -137,7 +150,7 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
 
     const hrvData = data.data || [];
 
-    // Check if we actually have HRV data
+    // Tarkistetaan löytyikö HRV-dataa
     if (hrvData.length === 0) {
       return {
         success: false,
@@ -145,15 +158,16 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
       };
     }
 
-    // Log the raw API response for debugging
+    // Logataan API-vastaus debuggausta varten
     console.log('Raw API response fields:', Object.keys(hrvData[0]));
     console.log('API response data:', hrvData[0]);
 
     const apiResponse = hrvData[0];
 
+    // Muokataan näytettävä HRV-data oikeaan muotoon
     const hrvDisplay = {
       readiness: apiResponse.readiness,
-      // Consistent field naming - prioritize database names first
+      // Yhdenmukainen kenttien nimeäminen - priorisoidaan tietokannan nimiä
       stress: apiResponse.stress || apiResponse.stress_index,
       bpm: apiResponse.bpm || apiResponse.mean_hr_bpm,
       sdnn_ms: apiResponse.sdnn_ms,
@@ -162,6 +176,7 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
 
     console.log('Transformed HRV data for UI:', hrvDisplay);
 
+    // Päivitetään näkymä
     updateHRVView(hrvDisplay);
 
     // TÄRKEÄ KORJAUS: Muokataan suoraan window.DiaBalance.entries.monthEntries 
@@ -169,6 +184,7 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
     if (window.DiaBalance.entries.monthEntries[dateStr]) {
       window.DiaBalance.entries.monthEntries[dateStr].hrv_data = hrvDisplay;
     } else {
+      // Jos merkintää ei vielä ole, luodaan uusi merkintä HRV-datalla
       window.DiaBalance.entries.monthEntries[dateStr] = {
         morningValue: null,
         eveningValue: null,
@@ -188,7 +204,7 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
       };
     }
 
-    // Call saveHrvDataToDatabase after fetching data to ensure persistence
+    // Varmistetaan tietojen säilyvyys tallentamalla ne tietokantaan
     const saveResult = await saveHrvDataToDatabase(dateStr, hrvDisplay);
     
     if (saveResult.success) {
@@ -211,6 +227,7 @@ export async function fetchAndSaveHrvDataForDay(dateStr) {
   }
 }
 
+// Tallentaa HRV-tiedot tietokantaan
 export async function saveHrvDataToDatabase(dateStr, hrvData) {
   console.log(`Saving HRV data to database for date ${dateStr}`);
   try {
@@ -223,7 +240,7 @@ export async function saveHrvDataToDatabase(dateStr, hrvData) {
       };
     }
 
-    // KORJAUS: Varmista, että perusmerkintä on olemassa ja odota että operaatio valmistuu
+    // KORJAUS: Varmistetaan että perusmerkintä on olemassa ja odotetaan operaation valmistumista
     try {
       const emptyEntry = {
         pvm: dateStr,
@@ -231,7 +248,7 @@ export async function saveHrvDataToDatabase(dateStr, hrvData) {
         kommentti: 'Automaattinen kirjaus HRV-dataa varten'
       };
 
-      // Create or update base entry
+      // Luodaan tai päivitetään perusmerkintä
       const entryResponse = await fetch('http://localhost:3000/api/entries', {
         method: 'PUT',
         headers: {
@@ -251,7 +268,7 @@ export async function saveHrvDataToDatabase(dateStr, hrvData) {
 
       console.log('Basic entry created/updated successfully');
       
-      // Lisätään pieni viive varmistaakseen että tietokanta on ehtinyt käsitellä merkinnän
+      // Pieni viive varmistaa että tietokanta ehtii käsitellä merkinnän
       await new Promise(resolve => setTimeout(resolve, 500));
       
     } catch (entryError) {
@@ -262,15 +279,17 @@ export async function saveHrvDataToDatabase(dateStr, hrvData) {
       };
     }
 
+    // Valmistellaan HRV-data tallennusta varten
     const rawData = hrvData._rawData || hrvData;
     const hrvToSave = {
       readiness: rawData.readiness,
-      // Consistent field naming - prioritize database names
+      // Yhdenmukainen kenttien nimeäminen - priorisoidaan tietokannan nimet
       stress: rawData.stress || rawData.stress_index,
       bpm: rawData.bpm || rawData.mean_hr_bpm,
       sdnn_ms: rawData.sdnn_ms
     };
 
+    // Tallennetaan HRV-data
     const response = await fetch(`http://localhost:3000/api/kubios/user-data/${dateStr}`, {
       method: 'POST',
       headers: {
@@ -304,7 +323,9 @@ export async function saveHrvDataToDatabase(dateStr, hrvData) {
   }
 }
 
+// Asettaa mittausarvot oletusarvoon
 function resetHRVValues() {
+  // Haetaan mittausarvojen elementit
   const elements = {
     readiness: document.querySelector('.metrics-container .metric-value:not(.stress):not(.heart-rate):not(.sdnn)'),
     stress: document.querySelector('.metrics-container .metric-value.stress'),
@@ -312,7 +333,7 @@ function resetHRVValues() {
     sdnn: document.querySelector('.metrics-container .metric-value.sdnn')
   };
 
-  // Debug: check that elements are found
+  // Tarkistetaan että elementit löytyvät
   console.log('HRV reset elements found:', {
     readiness: !!elements.readiness,
     stress: !!elements.stress,
@@ -320,7 +341,7 @@ function resetHRVValues() {
     sdnn: !!elements.sdnn
   });
 
-  // Set dashes for all elements
+  // Asetetaan viivat kaikille elementeille
   Object.values(elements).forEach(el => {
     if (el) el.textContent = '–';
   });

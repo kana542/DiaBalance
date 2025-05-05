@@ -1,19 +1,24 @@
 import { formatLocalizedDate } from '../utils/date-utils.js';
 import { updateHRVView } from './hrv-module.js';
 
+// Moduulin sisäiset muuttujat kaaviolle
 let currentMeasurementType = 'Ateriat';
 let currentMealType = 'Iltapala';
 let glucoseChart = null;
 
+// Alustaa kaavionäkymän
 export function initializeChartView() {
+    // Lisää Chart.js-kirjasto dokumenttiin
     addChartJsLibrary();
 
+    // Haetaan tarvittavat HTML-elementit
     const measurementTypeSelect = document.getElementById('measurementType');
     const mealTypeGroup = document.getElementById('mealTypeGroup');
 
     if (measurementTypeSelect && mealTypeGroup) {
         currentMeasurementType = measurementTypeSelect.value;
 
+        // Lisätään tapahtumankäsittelijä mittaustyypin valinnalle
         measurementTypeSelect.addEventListener('change', function() {
             currentMeasurementType = this.value;
             mealTypeGroup.style.display = this.value === 'Perus' ? 'none' : 'flex';
@@ -21,6 +26,7 @@ export function initializeChartView() {
             updateMonthChart();
         });
 
+        // Lisätään tapahtumankäsittelijä ateriatyypin valinnalle
         const mealTypeSelect = document.getElementById('mealType');
         if (mealTypeSelect) {
             currentMealType = mealTypeSelect.value;
@@ -32,14 +38,18 @@ export function initializeChartView() {
             });
         }
 
+        // Näytetään/piilotetaan ateriatyypin valinta mittaustyypin mukaan
         mealTypeGroup.style.display = measurementTypeSelect.value === 'Perus' ? 'none' : 'flex';
 
+        // Valmistellaan kaaviokontaineri
         prepareChartContainer();
 
+        // Alustetaan kalenterin muutoksien käsittely
         setupCalendarChangeListener();
     }
 }
 
+// Lisää Chart.js-kirjasto
 function addChartJsLibrary() {
     if (document.getElementById('chart-js-lib')) return;
 
@@ -54,6 +64,7 @@ function addChartJsLibrary() {
     document.head.appendChild(script);
 }
 
+// Valmistelee kaavion kontainerin
 function prepareChartContainer() {
     const chartPlaceholder = document.getElementById('chart-placeholder');
     if (!chartPlaceholder) return;
@@ -68,6 +79,7 @@ function prepareChartContainer() {
     chartPlaceholder.appendChild(canvas);
 }
 
+// Alustaa kaavion Chart.js-kirjastolla
 function initializeChart() {
     if (typeof Chart === 'undefined') {
         console.error('Chart.js not loaded');
@@ -77,10 +89,12 @@ function initializeChart() {
     const chartCanvas = document.getElementById('glucose-chart');
     if (!chartCanvas) return;
 
+    // Tuhoa aiempi kaavio jos sellainen on
     if (glucoseChart) {
         glucoseChart.destroy();
     }
 
+    // Luo uusi kaavio
     glucoseChart = new Chart(chartCanvas, {
         type: 'line',
         data: {
@@ -130,6 +144,7 @@ function initializeChart() {
             plugins: {
                 tooltip: {
                     callbacks: {
+                        // Muotoile työkaluvihjeen otsikko
                         title: function(tooltipItems) {
                             const dateStr = tooltipItems[0].label;
                             if (dateStr && dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
@@ -142,6 +157,7 @@ function initializeChart() {
                             }
                             return dateStr;
                         },
+                        // Muotoile työkaluvihjeen teksti
                         label: function(context) {
                             return `${context.dataset.label}: ${context.raw || '-'} mmol/l`;
                         }
@@ -159,25 +175,30 @@ function initializeChart() {
         }
     });
 
+    // Päivitä kaavio
     updateMonthChart();
 }
 
+// Asettaa kalenterin muutoksien kuuntelijat
 function setupCalendarChangeListener() {
     const prevButton = document.getElementById('prevBtn');
     const nextButton = document.getElementById('nextBtn');
 
+    // Päivitä kaavio kun siirrytään edelliseen kuukauteen
     if (prevButton) {
         prevButton.addEventListener('click', () => {
             setTimeout(() => refreshChart(), 300);
         });
     }
 
+    // Päivitä kaavio kun siirrytään seuraavaan kuukauteen
     if (nextButton) {
         nextButton.addEventListener('click', () => {
             setTimeout(() => refreshChart(), 300);
         });
     }
 
+    // Korvaa merkintöjen latausfunktio omalla versiolla, joka päivittää myös kaavion
     if (window.DiaBalance && window.DiaBalance.entries) {
         const originalLoadMonthEntries = window.DiaBalance.entries.loadMonthEntries;
 
@@ -192,6 +213,7 @@ function setupCalendarChangeListener() {
         }
     }
 
+    // Korvaa kalenterinäkymän päivitysfunktio omalla versiolla, joka päivittää myös kaavion
     if (window.DiaBalance && window.DiaBalance.calendar) {
         const originalUpdateCalendarView = window.DiaBalance.calendar.updateCalendarView;
 
@@ -206,16 +228,20 @@ function setupCalendarChangeListener() {
         }
     }
 
+    // Päivitä kaavio sivun latautumisen jälkeen
     window.addEventListener('load', () => {
         setTimeout(() => refreshChart(), 500);
     });
 }
 
+// Näyttää valitun päivämäärän tiedot
 export function showDayData(dateStr) {
     console.log("Showing data for date:", dateStr);
 
+    // Korostaa valitun päivän
     highlightSelectedDate(dateStr);
 
+    // Hae merkinnät ja päivitä HRV-näkymä, jos HRV-dataa löytyy
     const entries = window.DiaBalance.entries.monthEntries || {};
     const entry = entries[dateStr];
 
@@ -227,15 +253,18 @@ export function showDayData(dateStr) {
       updateHRVView(null);
     }
 
+    // Päivitä kaavio
     updateMonthChart();
   }
 
+// Korostaa valitun päivämäärän kaaviossa
 function highlightSelectedDate(dateStr) {
     if (!glucoseChart) return;
 
     console.log("Selected date:", dateStr);
 }
 
+// Päivittää kuukauden verensokeridatan kaavioon
 function updateMonthChart() {
     if (!glucoseChart) {
         initializeChart();
@@ -244,6 +273,7 @@ function updateMonthChart() {
 
     const entries = window.DiaBalance.entries.monthEntries || {};
 
+    // Järjestä päivämäärät aikajärjestykseen
     const sortedDates = Object.keys(entries).sort();
 
     const chartData = {
@@ -252,12 +282,14 @@ function updateMonthChart() {
         afterValues: []
     };
 
+    // Kerätään kaavion data merkinnöistä
     sortedDates.forEach(dateStr => {
         const entry = entries[dateStr];
         if (!entry) return;
 
         let beforeValue = null, afterValue = null;
 
+        // Valitaan mittausarvot mittaustyypin ja ateriatyypin mukaan
         if (currentMeasurementType === 'Perus') {
             beforeValue = entry.morningValue;
             afterValue = entry.eveningValue;
@@ -281,6 +313,7 @@ function updateMonthChart() {
             }
         }
 
+        // Muunnetaan tekstiarvot numeroiksi
         beforeValue = beforeValue !== null && beforeValue !== '' ? parseFloat(beforeValue) : null;
         afterValue = afterValue !== null && afterValue !== '' ? parseFloat(afterValue) : null;
 
@@ -289,8 +322,10 @@ function updateMonthChart() {
         chartData.afterValues.push(afterValue);
     });
 
+    // Päivitä kaavion data
     glucoseChart.data.labels = chartData.labels;
 
+    // Aseta oikeat selitteet mittaustyypin mukaan
     const beforeLabel = currentMeasurementType === 'Perus' ? 'Aamu' : 'Ennen';
     const afterLabel = currentMeasurementType === 'Perus' ? 'Ilta' : 'Jälkeen';
 
@@ -300,6 +335,7 @@ function updateMonthChart() {
     glucoseChart.data.datasets[1].label = afterLabel;
     glucoseChart.data.datasets[1].data = chartData.afterValues;
 
+    // Aseta kaavion otsikko mittaustyypin mukaan
     let chartTitle = '';
     if (currentMeasurementType === 'Perus') {
         chartTitle = 'Perusseuranta: Aamu- ja ilta-arvot';
@@ -311,15 +347,18 @@ function updateMonthChart() {
         glucoseChart.options.plugins.title.text = chartTitle;
     }
 
+    // Päivitä kaavio
     glucoseChart.update();
 }
 
+// Näyttää tyhjän näkymän (käytetään esim. merkinnän poiston jälkeen)
 export function showEmptyView(dateStr) {
     updateHRVView();
 
     updateMonthChart();
 }
 
+// Asettaa mittaustyypin (Perus/Ateriat)
 export function setMeasurementType(type) {
     const measurementTypeSelect = document.getElementById('measurementType');
     if (measurementTypeSelect && (type === 'Perus' || type === 'Ateriat')) {
@@ -335,6 +374,7 @@ export function setMeasurementType(type) {
     }
 }
 
+// Asettaa ateriatyypin
 export function setMealType(type) {
     const mealTypeSelect = document.getElementById('mealType');
     const validTypes = ['Aamupala', 'Lounas', 'Välipala', 'Päivällinen', 'Iltapala'];
@@ -347,6 +387,7 @@ export function setMealType(type) {
     }
 }
 
+// Palauttaa kaavion nykyiset asetukset
 export function getCurrentChartSettings() {
     return {
         measurementType: currentMeasurementType,
@@ -354,6 +395,7 @@ export function getCurrentChartSettings() {
     };
 }
 
+// Päivittää kaavion nykyisen kuukauden tiedoilla
 export function refreshChart() {
     console.log("Refreshing chart with current month data");
     updateMonthChart();

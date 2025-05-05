@@ -1,3 +1,4 @@
+// Ohjetekstit eri sovelluksen osioille
 const infoContent = {
     calendar: {
         title: "Kalenterin käyttö",
@@ -31,13 +32,16 @@ const infoContent = {
 
 // Luo modaali HTML-elementti dokumenttiin, jos sitä ei vielä ole
 function createInfoModal() {
+    // Tarkistetaan onko modaali jo luotu
     let modal = document.getElementById('infoModal');
     
     if (!modal) {
+        // Luodaan modaalielementti
         modal = document.createElement('div');
         modal.id = 'infoModal';
         modal.className = 'modal info-modal';
         
+        // Asetetaan modaalin HTML-rakenne
         modal.innerHTML = `
             <div class="modal-content info-modal-content">
                 <span class="close-modal">&times;</span>
@@ -52,16 +56,17 @@ function createInfoModal() {
             </div>
         `;
         
+        // Lisätään modaali dokumenttiin
         document.body.appendChild(modal);
         
-        // Lisää sulkemistoiminnallisuus
+        // Lisätään sulkemistoiminnallisuus modaalin napeille
         const closeBtn = modal.querySelector('.close-modal');
         const footerCloseBtn = modal.querySelector('#infoModalCloseBtn');
         
         closeBtn.onclick = () => closeInfoModal();
         footerCloseBtn.onclick = () => closeInfoModal();
         
-        // Sulje modaali kun klikataan modaalin ulkopuolelta
+        // Suljetaan modaali kun klikataan modaalin ulkopuolelta
         modal.onclick = (event) => {
             if (event.target === modal) {
                 closeInfoModal();
@@ -72,32 +77,36 @@ function createInfoModal() {
     return modal;
 }
 
-// Näytä info-modaali
+// Näyttää info-modaalin annetulla sisällöllä
 function showInfoModal(infoKey) {
+    // Haetaan oikea sisältö avaimen perusteella
     const info = infoContent[infoKey];
     if (!info) return;
     
+    // Luodaan tai haetaan modaali
     const modal = createInfoModal();
     const modalTitle = document.getElementById('infoModalTitle');
     const modalBody = document.getElementById('infoModalBody');
     
+    // Asetetaan otsikko
     modalTitle.textContent = info.title;
     
-    // Tarkista onko sisältö HTML-muodossa (esim. HRV-analyysi)
+    // Tarkistetaan onko sisältö HTML-muodossa vai tavallisena tekstinä
     if (info.content.includes('<p>') || info.content.includes('<strong>')) {
         modalBody.innerHTML = info.content;
     } else {
-        // Muunna perinteinen teksti HTML-muotoon, säilyttäen rivinvaihdot
+        // Muunnetaan tavallinen teksti HTML-muotoon, säilyttäen rivinvaihdot
         modalBody.innerHTML = info.content
             .split('\n\n')
             .map(paragraph => `<p>${paragraph}</p>`)
             .join('');
     }
     
+    // Näytetään modaali
     modal.style.display = 'block';
 }
 
-// Sulje info-modaali
+// Sulkee info-modaalin
 function closeInfoModal() {
     const modal = document.getElementById('infoModal');
     if (modal) {
@@ -105,8 +114,9 @@ function closeInfoModal() {
     }
 }
 
-// Määritä info-nappien toiminnallisuus
+// Asettaa info-nappien toiminnallisuuden
 export function setupInfoButtons() {
+    // Määritetään eri osioiden info-napit
     const infoButtons = {
         calendar: document.getElementById('calendarInfoBtn'),
         bloodSugar: document.getElementById('bloodSugarInfoBtn'),
@@ -114,6 +124,7 @@ export function setupInfoButtons() {
         hrv: document.getElementById('hrvInfoBtn')
     };
 
+    // Lisätään klikkaustapahtuma jokaiselle napille
     for (const [key, button] of Object.entries(infoButtons)) {
         if (button) {
             button.addEventListener('click', () => {
@@ -123,12 +134,13 @@ export function setupInfoButtons() {
     }
 }
 
-// Yleinen ohje-funktio, joka näyttää joko spesifisen tai yleisen ohjeen
+// Näyttää yleisen tai spesifisen ohjeen
 export function showHelp(component) {
     if (infoContent[component]) {
+        // Näytetään komponentin spesifinen ohje
         showInfoModal(component);
     } else {
-        // Yleinen ohje, jos spesifistä sisältöä ei löydy
+        // Näytetään yleinen ohje jos spesifistä sisältöä ei löydy
         const generalInfo = {
             title: "DiaBalance-sovelluksen käyttöohje",
             content: `
@@ -139,6 +151,7 @@ export function showHelp(component) {
             `
         };
         
+        // Näytetään yleinen ohje modaalissa
         const modal = createInfoModal();
         const modalTitle = document.getElementById('infoModalTitle');
         const modalBody = document.getElementById('infoModalBody');

@@ -5,53 +5,56 @@ import { saveEntryData, deleteEntryData } from './entry-module.js';
 import { fetchAndSaveHrvDataForDay } from './hrv-module.js';
 import { setupBloodSugarValidation } from '../utils/blood-sugar-validation.js';
 
-// Moduulin sisäiset muuttujat
+// Nykyisen modaalin päivämäärä
 let currentModalDate = null;
 
+// Alustaa modaalimoduulin toiminnallisuuden
 export function initializeModalModule() {
     console.log('Initializing modal module');
     setupModalEvents();
-    // Liitä verensokeriarvojen validointi
+    // Lisätään verensokeriarvojen validointi
     setupEntryModalBloodSugarValidation();
     console.log('Modal module initialized with blood sugar validation');
 
-    // Piilota peruuta-nappi
+    // Piilotetaan peruuta-nappi (ei käytössä nykyisessä toteutuksessa)
     const cancelBtn = document.getElementById('cancelButton');
     if (cancelBtn) {
         cancelBtn.style.display = 'none';
     }
 }
 
+// Avaa merkinnän muokkausmodaalin tietylle päivälle
 export function openEntryModal(dateStr) {
     console.log("Opening entry modal for date:", dateStr);
 
+    // Haetaan modaalielementti
     const modal = document.getElementById('entryModal');
     if (!modal) {
         alert('Merkinnän lisäys/muokkaus ei ole käytettävissä.');
         return;
     }
 
-    // Tallenna päivämäärä
+    // Tallennetaan päivämäärä
     currentModalDate = dateStr;
 
-    // Aseta päivämäärä modaaliin
+    // Asetetaan päivämäärä modaaliin data-attribuuttina
     modal.setAttribute('data-date', dateStr);
 
-    // Aseta otsikko
+    // Asetetaan otsikko
     const modalTitle = modal.querySelector('.modal-title');
     if (modalTitle) {
         const formattedDate = formatLocalizedDate(dateStr);
         modalTitle.textContent = `Merkintä: ${formattedDate}`;
     }
 
-    // Tyhjennä lomake
+    // Tyhjennetään lomake
     const entryForm = document.getElementById('entryForm');
     if (entryForm) entryForm.reset();
 
-    // Resetoi lomakekenttien tyylit ja mahdollisesti olemassa olevat kuuntelijat
+    // Resetoidaan lomakekenttien tyylit ja kuuntelijat
     resetFormInputs();
 
-    // Näytä tai piilota poista-nappi sen mukaan, onko tämä uusi vai olemassa oleva merkintä
+    // Näytetään tai piilotetaan poista-nappi sen mukaan, onko merkintä olemassa
     const deleteButton = document.getElementById('deleteButton');
     if (deleteButton) {
         const entry = getMonthEntries()[dateStr];
@@ -62,25 +65,25 @@ export function openEntryModal(dateStr) {
         }
     }
 
-    // Hae merkintä jos se on olemassa
+    // Haetaan merkintä jos se on olemassa
     const entry = getMonthEntries()[dateStr];
-
     if (entry) {
         populateEntryForm(entry);
     }
 
-    // Resetoi HRV-napin tila
+    // Resetoidaan HRV-napin tila
     resetHrvButton();
 
-    // Näytä modaali
+    // Näytetään modaali
     modal.style.display = 'block';
     
-    // Varmista että validointi on aktiivinen uusille kentille
+    // Varmistetaan että validointi on aktiivinen uusille kentille
     setupEntryModalBloodSugarValidation();
 }
 
-// Uusi funktio vanhojen kuuntelijoiden ja tyylien poistamiseen
+// Poistaa vanhat kuuntelijat ja tyylit lomakekentistä
 function resetFormInputs() {
+    // Kaikki verensokerikentät
     const bloodSugarFields = [
         'morningValue', 'eveningValue',
         'breakfastBefore', 'breakfastAfter',
@@ -90,14 +93,14 @@ function resetFormInputs() {
         'eveningSnackBefore', 'eveningSnackAfter'
     ];
 
-    // Resetoi jokaisen kentän tyylit ja poista mahdolliset virheilmoitukset
+    // Resetoidaan jokaisen kentän tyylit ja virheilmoitukset
     bloodSugarFields.forEach(fieldId => {
         const input = document.getElementById(fieldId);
         if (input) {
-            // Poista tyylimääritykset
+            // Poistetaan reunatyylit
             input.style.borderColor = '';
 
-            // Poista vanhat validointiviestit
+            // Poistetaan validointiviestit
             const feedback = input.parentNode.querySelector('.validation-feedback');
             if (feedback) {
                 feedback.remove();
@@ -105,7 +108,7 @@ function resetFormInputs() {
         }
     });
 
-    // Poista kaikki verensokeriin liittyvät toast-ilmoitukset
+    // Poistetaan kaikki verensokeriin liittyvät toast-ilmoitukset
     const toastContainer = document.getElementById('toast-container');
     if (toastContainer) {
         const toasts = toastContainer.querySelectorAll('.toast');
@@ -117,16 +120,17 @@ function resetFormInputs() {
     }
 }
 
+// Täyttää lomakkeen olemassa olevan merkinnän tiedoilla
 function populateEntryForm(entry) {
     if (!entry) return;
 
     console.log("Populating form with entry:", entry);
 
-    // Perusseuranta
+    // Täytetään perusseurannan arvot
     setInputValue('morningValue', entry.morningValue);
     setInputValue('eveningValue', entry.eveningValue);
 
-    // Ateriat
+    // Täytetään aterioiden arvot
     setInputValue('breakfastBefore', entry.breakfastBefore);
     setInputValue('breakfastAfter', entry.breakfastAfter);
     setInputValue('lunchBefore', entry.lunchBefore);
@@ -138,12 +142,12 @@ function populateEntryForm(entry) {
     setInputValue('eveningSnackBefore', entry.eveningSnackBefore);
     setInputValue('eveningSnackAfter', entry.eveningSnackAfter);
 
-    // Tyhjennä ensin kaikki oireet
+    // Tyhjennätään ensin kaikki oireet
     document.querySelectorAll('input[name="symptoms"]').forEach(checkbox => {
         checkbox.checked = false;
     });
 
-    // Oireet
+    // Valitaan oireet merkinnästä
     if (entry.symptoms && Array.isArray(entry.symptoms)) {
         entry.symptoms.forEach(symptom => {
             const checkbox = document.querySelector(`input[name="symptoms"][value="${symptom}"]`);
@@ -151,15 +155,11 @@ function populateEntryForm(entry) {
         });
     }
 
-    // Kommentti
+    // Täytetään kommentti
     setInputValue('comment', entry.comment);
 }
 
-/**
- * Validoi kaikki verensokeriarvot ennen lomakkeen lähetystä
- * @param {FormData} formData - Lomakkeen data
- * @returns {boolean} Onko lomake validi
- */
+// Validoi kaikki verensokeriarvot ennen lomakkeen lähetystä
 function validateAllBloodSugarValues(formData) {
     const bloodSugarFields = [
         'morningValue', 'eveningValue',
@@ -172,7 +172,7 @@ function validateAllBloodSugarValues(formData) {
 
     let isValid = true;
 
-    // Tarkista jokainen kenttä
+    // Tarkistetaan jokainen kenttä
     bloodSugarFields.forEach(field => {
         const value = formData.get(field);
 
@@ -181,20 +181,20 @@ function validateAllBloodSugarValues(formData) {
             return;
         }
 
-        // Tarkista arvoalue ja muotoilu
+        // Tarkistetaan arvoalue ja muotoilu
         const numValue = parseFloat(value);
         if (isNaN(numValue) || numValue < 1 || numValue > 30) {
             isValid = false;
 
-            // Korosta virheellinen kenttä
+            // Korostetaan virheellinen kenttä
             const input = document.getElementById(field);
             if (input) {
                 input.style.borderColor = '#e74c3c';
                 
-                // Check if feedback element already exists
+                // Tarkistetaan onko palauteelementti jo olemassa
                 let feedbackElement = input.parentNode.querySelector('.validation-feedback');
                 if (!feedbackElement) {
-                    // Create feedback element if it doesn't exist
+                    // Luodaan palauteelementti jos sitä ei ole
                     feedbackElement = document.createElement('div');
                     feedbackElement.className = 'validation-feedback';
                     feedbackElement.style.fontSize = '12px';
@@ -212,22 +212,18 @@ function validateAllBloodSugarValues(formData) {
     return isValid;
 }
 
-/**
- * Sulkee modaali-ikkunan
- */
+// Sulkee modaali-ikkunan
 export function closeEntryModal() {
     const modal = document.getElementById('entryModal');
     if (modal) {
         modal.style.display = 'none';
 
-        // Resetoi validointivirheet kun modaali suljetaan
+        // Resetoidaan validointivirheet suljettaessa
         resetFormInputs();
     }
 }
 
-/**
- * Resetoi HRV-napin tila
- */
+// Resetoi HRV-napin tilan
 function resetHrvButton() {
     const fetchHrvBtn = document.getElementById('fetchHrvButton');
     if (fetchHrvBtn) {
@@ -236,22 +232,21 @@ function resetHrvButton() {
     }
 }
 
-/**
- * Asettaa modaalin tapahtumien käsittelijät
- */
+// Asettaa modaalin tapahtumien käsittelijät
 function setupModalEvents() {
     const modal = document.getElementById('entryModal');
     if (!modal) return;
 
+    // Haetaan tarvittavat napit
     const closeBtn = modal.querySelector('.close-modal');
     const saveBtn = document.getElementById('saveButton');
     const deleteBtn = document.getElementById('deleteButton');
     const fetchHrvBtn = document.getElementById('fetchHrvButton');
 
-    // Sulje-napin toiminta
+    // Lisätään sulkunapille toiminnallisuus
     if (closeBtn) closeBtn.onclick = closeEntryModal;
 
-    // Tallenna-napin toiminta
+    // Lisätään tallennusnapille toiminnallisuus
     if (saveBtn) {
         saveBtn.onclick = () => {
             const dateStr = modal.getAttribute('data-date');
@@ -260,20 +255,22 @@ function setupModalEvents() {
             if (form) {
                 const formData = new FormData(form);
 
-                // Validoi arvot ennen tallennusta
+                // Validoidaan arvot ennen tallennusta
                 if (!validateAllBloodSugarValues(formData)) {
-                    return; // Pysäytä tallennus jos arvot eivät ole kelvollisia
+                    return; // Pysäytetään tallentaminen jos validointi epäonnistuu
                 }
 
+                // Tallennetaan merkintä
                 saveEntryData(dateStr);
             }
         };
     }
 
-    // Poista-napin toiminta
+    // Lisätään poistonapille toiminnallisuus
     if (deleteBtn) {
         deleteBtn.onclick = () => {
             const dateStr = modal.getAttribute('data-date');
+            // Varmistetaan että käyttäjä haluaa varmasti poistaa merkinnän
             showConfirmDialog('Haluatko varmasti poistaa tämän merkinnän?')
                 .then(confirmed => {
                     if (confirmed) {
@@ -283,23 +280,23 @@ function setupModalEvents() {
         };
     }
 
-    // HRV-napin toiminta
+    // Lisätään HRV-datan hakunapille toiminnallisuus
     if (fetchHrvBtn) {
         fetchHrvBtn.onclick = async () => {
           const dateStr = modal.getAttribute('data-date');
 
-          // Näytä latauksen tila
+          // Näytetään latauksen tila napissa
           fetchHrvBtn.textContent = 'Haetaan...';
           fetchHrvBtn.disabled = true;
 
           try {
-            // Kutsu HRV-moduulin toteutusta
+            // Haetaan HRV-data
             const result = await fetchAndSaveHrvDataForDay(dateStr);
 
-            // Näytä ilmoitus
+            // Näytetään ilmoitus haun tuloksesta
             showToast(result.message || 'HRV-data haettu', result.success ? 'success' : 'warning');
 
-            // Palauta napin tila
+            // Palautetaan napin tila
             fetchHrvBtn.textContent = 'Hae HRV-data';
             fetchHrvBtn.disabled = false;
           } catch (error) {
@@ -312,14 +309,11 @@ function setupModalEvents() {
     }
 }
 
-/**
- * Liitä validointi modal-lomakkeen verensokerisyöttökenttiin
- * Tämä suoritetaan modaalia avattaessa
- */
+// Liittää validoinnin modal-lomakkeen verensokerisyöttökenttiin
 export function setupEntryModalBloodSugarValidation() {
     console.log('Setting up blood sugar validation for modal fields');
     
-    // Kaikki verensokerikenttien ID:t
+    // Verensokerisyöttökenttien ID:t
     const bloodSugarInputIds = [
         'morningValue', 'eveningValue',
         'breakfastBefore', 'breakfastAfter',
@@ -329,7 +323,7 @@ export function setupEntryModalBloodSugarValidation() {
         'eveningSnackBefore', 'eveningSnackAfter'
     ];
 
-    // Liitä validointi jokaiseen kenttään
+    // Lisätään validointi jokaiseen kenttään
     bloodSugarInputIds.forEach(id => {
         const input = document.getElementById(id);
         if (input) {
@@ -341,9 +335,7 @@ export function setupEntryModalBloodSugarValidation() {
     });
 }
 
-/**
- * Päivittää modaalin tilan
- */
+// Päivittää modaalin tilan
 export function updateModalState() {
     const modal = document.getElementById('entryModal');
     if (!modal || !currentModalDate) return;
@@ -351,7 +343,7 @@ export function updateModalState() {
     const entry = getMonthEntries()[currentModalDate];
     const deleteButton = document.getElementById('deleteButton');
 
-    // Päivitä poista-napin tila
+    // Päivitetään poista-napin näkyvyys
     if (deleteButton) {
         deleteButton.style.display = entry ? 'inline-block' : 'none';
     }
