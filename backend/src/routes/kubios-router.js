@@ -32,32 +32,32 @@ import {
 } from "../controllers/kubios-controller.js";
 import { validationErrorHandler } from "../middlewares/error-handler.js";
 import { hrvDataValidation } from "../validation/entry-validation.js";
-import logger from "../utils/logger.js"
+import logger from "../utils/logger.js";
 
 // luodaan Express-reititin Kubios HRV -toiminnoille
 const kubiosRouter = express.Router();
 
 // hae kaikki käyttäjän Kubios HRV -tiedot: GET /api/kubios/user-data
 /**
-  * @api {get} /api/kubios/user-data Hae kaikki HRV-tiedot
-  * @apiName GetUserData
-  * @apiGroup Kubios
-  * @apiPermission Kirjautunut
-  *
-  * @apiHeader {String} Authorization Bearer-token
-  *
-  * @apiSuccess {Boolean} success Toiminnon tila
-  * @apiSuccess {String} message Viesti
-  * @apiSuccess {Object[]} data Lista HRV-tiedoista
-  *
-  * @apiSuccessExample {json} Success:
-  * HTTP/1.1 200 OK
-  * {
-  *   "success": true,
-  *   "message": "Kubios-tiedot haettu onnistuneesti",
-  *   "data": [ ... ]
-  * }
-  */
+ * @api {get} /api/kubios/user-data Hae kaikki HRV-tiedot
+ * @apiName GetUserData
+ * @apiGroup Kubios
+ * @apiPermission Kirjautunut
+ *
+ * @apiHeader {String} Authorization Bearer-token
+ *
+ * @apiSuccess {Boolean} success Toiminnon tila
+ * @apiSuccess {String} message Viesti
+ * @apiSuccess {Object[]} data Lista HRV-tiedoista
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *   "success": true,
+ *   "message": "Kubios-tiedot haettu onnistuneesti",
+ *   "data": [ ... ]
+ * }
+ */
 kubiosRouter.get("/user-data", authenticateToken, getUserData);
 
 // hae käyttäjän perustiedot Kubios-palvelusta: GET /api/kubios/user-info
@@ -94,41 +94,41 @@ kubiosRouter.get("/user-info", authenticateToken, getUserInfo);
 
 // hae käyttäjän HRV-tiedot tietyltä päivämäärältä: GET /api/kubios/user-data/:date
 /**
-  * @api {get} /api/kubios/user-data/:date Hae HRV-tiedot tietylle päivälle
-  * @apiName GetUserDataByDate
-  * @apiGroup Kubios
-  * @apiPermission Kirjautunut
-  *
-  * @apiParam {String} date Päivämäärä
-  * @apiHeader {String} Authorization Bearer-token
-  *
-  * @apiSuccess {Boolean} success Toiminnon tila
-  * @apiSuccess {String} message Viesti
-  * @apiSuccess {Object[]} data HRV-tulokset kyseiseltä päivältä
-  *
-  * @apiSuccessExample {json} Success:
-  * HTTP/1.1 200 OK
-  * {
-  *   "success": true,
-  *   "message": "HRV-tiedot haettu onnistuneesti",
-  *   "data": [
-  *     {
-  *       "date": "2025-04-14",
-  *       "stress_index": 28,
-  *       ...
-  *     }
-  *   ]
-  * }
-  */
+ * @api {get} /api/kubios/user-data/:date Hae HRV-tiedot tietylle päivälle
+ * @apiName GetUserDataByDate
+ * @apiGroup Kubios
+ * @apiPermission Kirjautunut
+ *
+ * @apiParam {String} date Päivämäärä
+ * @apiHeader {String} Authorization Bearer-token
+ *
+ * @apiSuccess {Boolean} success Toiminnon tila
+ * @apiSuccess {String} message Viesti
+ * @apiSuccess {Object[]} data HRV-tulokset kyseiseltä päivältä
+ *
+ * @apiSuccessExample {json} Success:
+ * HTTP/1.1 200 OK
+ * {
+ *   "success": true,
+ *   "message": "HRV-tiedot haettu onnistuneesti",
+ *   "data": [
+ *     {
+ *       "date": "2025-04-14",
+ *       "stress_index": 28,
+ *       ...
+ *     }
+ *   ]
+ * }
+ */
 kubiosRouter.get("/user-data/:date", authenticateToken, getUserDataByDate);
 
 // tallenna käyttäjän HRV-tiedot tietylle päivämäärälle: POST /api/kubios/user-data/:date
 kubiosRouter.post(
-  "/user-data/:date",
-  authenticateToken,
-  hrvDataValidation,
-  validationErrorHandler,
-  saveHrvData
+   "/user-data/:date",
+   authenticateToken,
+   hrvDataValidation,
+   validationErrorHandler,
+   saveHrvData
 );
 
 export default kubiosRouter;

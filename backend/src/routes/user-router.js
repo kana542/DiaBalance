@@ -24,27 +24,30 @@ import express from "express";
 import { register, updateMe } from "../controllers/user-controller.js";
 import { authenticateToken } from "../middlewares/authentication.js";
 import { validationErrorHandler } from "../middlewares/error-handler.js";
-import { registerValidation, profileUpdateValidation } from "../validation/auth-validation.js";
-import logger from "../utils/logger.js"
+import {
+   registerValidation,
+   profileUpdateValidation,
+} from "../validation/auth-validation.js";
+import logger from "../utils/logger.js";
 
 // luodaan Express-reititin käyttäjien hallintaan
 const userRouter = express.Router();
 
 // uuden käyttäjän rekisteröinti: POST /api/users/register
 userRouter.post(
-  "/register",
-  registerValidation,
-  validationErrorHandler,
-  register
+   "/register",
+   registerValidation,
+   validationErrorHandler,
+   register
 );
 
 // käyttäjän omien tietojen päivitys: PUT /api/users/me
 userRouter.put(
-  "/me",
-  authenticateToken,
-  profileUpdateValidation,
-  validationErrorHandler,
-  updateMe
+   "/me",
+   authenticateToken,
+   profileUpdateValidation,
+   validationErrorHandler,
+   updateMe
 );
 
 export default userRouter;

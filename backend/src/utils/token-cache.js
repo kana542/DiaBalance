@@ -2,6 +2,7 @@
  * token-cache.js - Kubios-tokenien välimuistijärjestelmä (in-memory välimuistimekanismi)
  * --------------
  * parantaa sovelluksen suorituskykyä vähentämällä tietokantahakuja usein tarvittaville tokeneille.
+ * tbh menin jo itekkin sekasin tän idean/koodin kanssa, to future me: do this better.
  *
  * pääominaisuudet:
  *    1. tokenien tallennus Map-tietorakenteeseen muistissa
@@ -19,7 +20,7 @@
  *    - optimoi kubios-controller.js:n API-kutsuja vähentämällä tietokantaoperaatioita
  */
 
-import logger from "./logger.js"
+import logger from "./logger.js";
 
 // tokenivälimuistin tietorakenne - käytetään Map-tietorakennetta, joka mahdollistaa avain-arvo-parit
 const tokenCache = new Map();
