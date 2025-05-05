@@ -4,7 +4,8 @@
 
 DiaBalance on selaimessa toimiva sovellus diabeteksen kokonaisvaltaiseen seurantaan. Sovellus yhdistää verensokerin monitoroinnin ja sydämen sykevälivaihtelun (HRV) analysoinnin, tarjoten käyttäjille kattavan työkalun terveytensä hallintaan.
 
-![screenshot2](https://github.com/user-attachments/assets/d4a164ca-f823-4068-bd37-d1db39442bb8)
+![dashboard](https://github.com/user-attachments/assets/3becef6f-b702-4b01-86bd-fdec97a92b29)
+[Kaikki kuvakaappaukset](docs/screenshots)
 
 ## Ominaisuudet
 
