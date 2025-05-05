@@ -127,3 +127,14 @@ Tarkempi dokumentaatio löytyy kansiosta `docs` sekä erillisistä dokumentaatio
 * **Tietokantakuvaus**: [DATABASE.md](backend/docs/DATABASE.md)
 * **API-dokumentaatio**: [index.html](backend/apidoc/index.html)
 * **RobotFrameWork logit ja raportit**: [robot-testing.md](docs/robot-testing.md) tai [GitHub.io](https://kana542.github.io/DiaBalance/)
+
+##  Tiedossa olevat bugit/ongelmat
+-
+
+## Referenssit
+-
+
+## Tekoälyn käyttö projektissa
+Tässä projektissa on hyödynnetty tekoälyä kehitysapuna, esimerkiksi koodin tarkistukseen ja parannusehdotuksiin.
+- [ChatGPT 4o](https://chatgpt.com/)
+- [Claude 3.7 Sonnet (extended)](https://claude.ai)
