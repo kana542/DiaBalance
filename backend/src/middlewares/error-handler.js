@@ -1,5 +1,5 @@
 /**
- * error-handler.js - "single responsibility"-periaate (hehee oon vitun itfilosofi t. jonne)
+ * error-handler.js - "single responsibility"-periaate (https://blog.logrocket.com/solid-principles-single-responsibility-in-javascript-frameworks/)
  * ----------------
  * backendin keskitetty virheidenkäsittelyn järjestelmä, joka standardoi API-vastaukset.
  * ideana tehdä virheiden ja ilmoitusten käsittelystä johdonmukaista koko sovelluksessa.
