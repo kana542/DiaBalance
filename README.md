@@ -1,68 +1,100 @@
 # DiaBalance
 
-DiaBalance on selaimessa toimiva sovellus diabeteksen seurantaan. Sovellus yhdistää verensokerin seurannan ja sydämen sykevälivaihtelun (HRV) analysoinnin, tarjoten käyttäjille kokonaisvaltaisen työkalun terveytensä hallintaan.
+## Yleiskatsaus
+
+DiaBalance on selaimessa toimiva sovellus diabeteksen kokonaisvaltaiseen seurantaan. Sovellus yhdistää verensokerin monitoroinnin ja sydämen sykevälivaihtelun (HRV) analysoinnin, tarjoten käyttäjille kattavan työkalun terveytensä hallintaan.
+
+![screenshot2](https://github.com/user-attachments/assets/d4a164ca-f823-4068-bd37-d1db39442bb8)
+
+## Ominaisuudet
+
+### Käyttäjähallinta
+- Rekisteröityminen käyttäjänimellä, sähköpostilla ja salasanalla
+- Kirjautuminen ja uloskirjautuminen
+- Kirjautumistilan säilyttäminen JWT-tokeneilla
+- Käyttäjäprofiilin hallinta ja päivitys
+
+### Verensokeriseuranta
+- Uusien merkintöjen lisääminen, muokkaaminen ja poistaminen
+- Päiväkohtaiset perusmittaukset (aamu/ilta)
+- Ateriakohtaiset mittaukset (ennen/jälkeen aterioiden)
+- Oireseuranta
+- Vapaamuotoiset kommentit
+
+### Kalenteri ja visualisointi
+- Kuukausikalenteri merkintöjen seurantaan
+- Värikoodatut merkinnät täydellisille ja osittaisille kirjauksille
+- Verensokeriarvojen graafinen esitys
+- Mittaustyypin vaihtamismahdollisuus (perusseuranta/ateriat)
+- Ateriakohtainen suodatus kaavioissa
+
+### HRV-integraatio (Kubios)
+- Automaattinen Kubios-kirjautuminen
+- HRV-datan nouto ja yhdistäminen verensokerimerkintöihin
+- Keskeiset HRV-metriikat:
+  - Palautuminen (Readiness Score)
+  - Stressi (Baevskyn stressi-indeksi)
+  - Keskisyke (lyöntiä/min)
+  - SDNN (sykevälivaihtelun mitta, ms)
+
+### Käyttöliittymä
+- Responsiivinen suunnittelu eri laitteille
+- Selkeä navigointi
+- Saavutettavat väri- ja kontrastivalinnat
+
+## Teknologiapino
+
+- **Backend**: Node.js, Express, MySQL
+- **Frontend**: JavaScript, HTML, CSS
+- **Testaus**: Robot Framework, Browser Library
+- **Integraatiot**: Kubios Cloud API (HRV-data)
 
 ## Projektin rakenne
 
 ### Backend
+Backend on toteutettu Node.js ja Express -teknologioilla, tarjoten REST API -rajapinnan:
 
-Backend-toteutus on rakennettu Node.js ja Express -teknologioilla. Se tarjoaa REST API -rajapinnan diabetesmerkintöjen hallintaan ja Kubios HRV -datan integrointiin.
-
-* **controllers**: Sisältää logiikan API-pyyntöjen käsittelyyn (auth, entry, kubios)
-* **middlewares**: Autentikointi ja virheenkäsittely
-* **models**: Tietokantaoperaatiot ja datamallit
-* **routes**: API-rajapinnan reitit
-* **utils**: Apufunktiot kuten tietokantayhteydet ja lokitus
-* **validation**: Syötteiden validointisäännöt
-* **db**: Tietokantaskeema ja SQL-skriptit
+- **controllers**: API-pyyntöjen käsittely (auth, entry, kubios)
+- **middlewares**: Autentikointi ja virheenkäsittely
+- **models**: Tietokantaoperaatiot ja datamallit
+- **routes**: API-rajapinnan reitit
+- **utils**: Apufunktiot (tietokantayhteydet, lokitus)
+- **validation**: Syötteiden validointisäännöt
+- **db**: Tietokantaskeema ja SQL-skriptit
 
 ### Frontend
+Frontend on toteutettu puhtaalla JavaScriptillä, HTML:llä ja CSS:llä moduulipohjaisella arkkitehtuurilla:
 
-Frontend on toteutettu puhtaalla JavaScriptillä, HTML\:llä ja CSS\:llä. Sovellus käyttää moduulipohjaista arkkitehtuuria.
-
-* **css**: Tyylitiedostot (dashboard, login, register)
-* **js**: JavaScript-moduulit
-  * **auth**: Kirjautuminen ja rekisteröinti
-  * **dashboard**: Sovelluksen päänäkymän toiminnallisuudet
-  * **utils**: Yleiset apufunktiot
-* **pages**: HTML-sivut (dashboard, login, register)
+- **css**: Tyylitiedostot
+- **js**: JavaScript-moduulit
+  - **auth**: Kirjautuminen ja rekisteröinti
+  - **dashboard**: Päänäkymän toiminnallisuudet
+  - **utils**: Yleiset apufunktiot
+- **pages**: HTML-sivut
 
 ### Testing
+Testauspaketti on toteutettu Robot Framework -työkalulla:
 
-Testauspaketti on toteutettu Robot Framework -työkalulla. Se sisältää automaatiotestit sekä frontend- että backend-toteutuksille.
-
-* **resources**: Testien avainsanatiedostot
-* **tests**: Testitiedostot
-  * **backend**: Backend-testit (kirjautuminen, merkintöjen käsittely)
-  * **frontend**: Frontend-testit (käyttöliittymän toiminnallisuudet)
-* **results**: Testien tulokset (raportit, kuvakaappaukset)
-* **variables**: Ympäristömuuttujat testeille
+- **resources**: Testien avainsanatiedostot
+- **tests**: Testitiedostot (backend ja frontend)
+- **results**: Testien tulokset
+- **variables**: Ympäristömuuttujat testeille
 
 ### Docs
-
-Sisältää yleisiä dokumentaatiotiedostoja kuten käyttöohjeet ja testausdokumentaation.
-
-## Teknologiapino
-
-* **Backend**: Node.js, Express, MySQL
-* **Frontend**: JavaScript, HTML, CSS
-* **Testaus**: Robot Framework, Browser Library
-* **Muut**: Kubios Cloud API -integraatio (HRV-data)
+Sovelluksen dokumentaatio, käyttöohjeet ja testausdokumentaatio.
 
 ## Asennus ja käyttöönotto
 
 ### Vaatimukset
-
-* Node.js (v18 tai uudempi)
-* MySQL-tietokanta
-* Kubios-tunnukset (HRV-ominaisuuksia varten)
+- Node.js (v18 tai uudempi)
+- MySQL-tietokanta
+- Kubios-tunnukset (HRV-ominaisuuksia varten)
 
 ### Backend-asennus
-
 ```bash
 cd backend
 npm install
-cp .env.example .env # täytä tarvittavat tiedot
+cp .env.example .env  # täytä tarvittavat tiedot
 mysql -u root -p < db/diabalance.sql
 npm run dev
 ```
@@ -81,7 +113,7 @@ npm run dev
 cd testing
 pip install -r requirements.txt
 cp .env.sample .env # täytä tarvittavat tiedot
-robot tests/
+robot tests
 ```
 
 ## Dokumentaatio
