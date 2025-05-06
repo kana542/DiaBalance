@@ -39,22 +39,23 @@ import logger from "../utils/logger.js"
 const baseUrl = process.env.KUBIOS_API_URI;
 
 /**
- * * Etsii käyttäjän tietokannasta joko sähköpostin tai käyttäjätunnuksen perusteella.
- * * Jos sähköpostia ei löydy, yrittää käyttäjätunnusta.
- * @param {string} emailOrUsername
- * @returns {object|null} käyttäjän tiedot tai null jos ei löydy
+ * etsii käyttäjän tietokannasta sähköpostin tai käyttäjänimen perusteella
+ * @param {string} emailOrUsername - käyttäjän sähköpostiosoite tai käyttäjänimi
+ * @returns {Object|null} käyttäjän tiedot objektina tai null jos käyttäjää ei löydy
  */
 const findUserByEmailOrUsername = async (emailOrUsername) => {
   try {
-    // Check if this looks like an email
+    // tarkistetaan onko kyseessä sähköpostiosoite (sisältää @-merkin)
     const isEmail = emailOrUsername.includes('@');
 
+    // haetaan käyttäjä joko sähköpostin tai käyttäjänimen perusteella
     const [rows] = await promisePool.query(
       isEmail
         ? 'SELECT kayttaja_id, kayttajanimi, email, salasana, kayttajarooli FROM kayttaja WHERE email = ?' : 'SELECT kayttaja_id, kayttajanimi, email, salasana, kayttajarooli FROM kayttaja WHERE kayttajanimi = ?',
       [emailOrUsername]
     );
 
+    // jos haku oli sähköpostilla eikä käyttäjää löytynyt, yritetään vielä käyttäjänimellä
     if (isEmail && rows.length === 0) {
       logger.debug(`No user found with email ${emailOrUsername}, trying username lookup`);
       const [usernameRows] = await promisePool.query(
@@ -62,36 +63,46 @@ const findUserByEmailOrUsername = async (emailOrUsername) => {
         [emailOrUsername]
       );
 
+      // jos löytyy käyttäjänimellä, palautetaan se
       if (usernameRows.length > 0) {
         logger.debug(`Found user by username: ${emailOrUsername}`);
         return usernameRows[0];
       }
     }
 
+    // jos käyttäjää ei löytynyt, palautetaan null
     if (rows.length === 0) {
       logger.debug(`No user found with ${isEmail ? 'email' : 'username'} ${emailOrUsername}`);
       return null;
     }
 
+    // käyttäjä löytyi, lokitetaan ja palautetaan käyttäjätiedot
     logger.debug(`Found user by ${isEmail ? 'email' : 'username'}: ${emailOrUsername}`);
     return rows[0];
   } catch (error) {
+    // virhetilanteessa lokitetaan virhe ja palautetaan null
     logger.error('Error finding user', error);
     return null;
   }
 };
 
 /**
- *
- * @param {string} username Käyttäjätunnus tai sähköposti
- * @param {string} password salasana
- * @returns idToken ja expiresIn
+ * kirjautuu Kubios-palveluun käyttäjänimellä ja salasanalla
+ * @param {string} username - käyttäjän tunnus tai sähköpostiosoite Kubios-palveluun
+ * @param {string} password - käyttäjän salasana Kubios-palveluun
+ * @returns {Object} kirjautumistiedot objektina
+ *   @returns {string} idToken - Kubios API:n autentikointitoken
+ *   @returns {number} expiresIn - tokenin voimassaoloaika sekunteina (tyypillisesti 3600s)
+ * @throws {Error} virhe jos kirjautuminen epäonnistuu (väärät tunnukset tai palvelimeen ei saada yhteyttä)
  */
 const kubiosLogin = async (username, password) => {
+  // luodaan CSRF-token suojaamaan pyyntöä
   const csrf = v4();
   const headers = new Headers();
   headers.append('Cookie', `XSRF-TOKEN=${csrf}`);
   headers.append('User-Agent', process.env.KUBIOS_USER_AGENT);
+
+  // valmistellaan kirjautumistiedot lomakemuodossa
   const searchParams = new URLSearchParams();
   searchParams.set('username', username);
   searchParams.set('password', password);
@@ -101,42 +112,51 @@ const kubiosLogin = async (username, password) => {
   searchParams.set('scope', 'openid');
   searchParams.set('_csrf', csrf);
 
+  // määritellään pyynnön asetukset
   const options = {
     method: 'POST',
     headers: headers,
-    redirect: 'manual',
+    redirect: 'manual', // estetään automaattinen uudelleenohjaus, jottei kaapata tokenia ig (t. claude)
     body: searchParams,
   };
 
   try {
+    // lähetetään kirjautumispyyntö Kubios-palveluun
     const response = await fetch(process.env.KUBIOS_LOGIN_URL, options);
 
+    // tarkistetaan onnistuiko pyyntö
     if (!response.ok && !response.headers.has('location')) {
       logger.error(`Kubios login failed with status: ${response.status}`);
       throw createAuthenticationError('Virheellinen käyttäjänimi tai salasana (Kubios)');
     }
 
+    // onnistunut kirjautuminen aiheuttaa uudelleenohjauksen, jonka osoitteesta saadaan token
     const location = response.headers.get('location');
 
+    // tarkistetaan virheellinen kirjautumistilanne
     if (location.includes('login?null')) {
       logger.error('Kubios login failed - login?null in location');
       throw createAuthenticationError('Virheellinen käyttäjänimi tai salasana (Kubios)');
     }
 
+    // parsitaan token uudelleenohjausosoitteesta
     const regex = /id_token=(.*)&access_token=(.*)&expires_in=(.*)/;
     const match = location.match(regex);
 
+    // varmistetaan että token löytyi
     if (!match || !match[1]) {
       logger.error(`Could not extract token from location: ${location}`);
       throw createExternalApiError('Virhe Kubios-kirjautumisessa: tokenia ei löytynyt');
     }
 
+    // poimitaan token ja sen voimassaoloaika
     const idToken = match[1];
     const expiresIn = match[3] || 3600;
 
     logger.info(`Kubios login successful for user. Token expires in ${expiresIn} seconds`);
     return { idToken, expiresIn };
   } catch (error) {
+    // virhetilanteessa lokitetaan virhe ja heitetään poikkeus eteenpäin
     logger.error('Kubios login error', error);
     if (error.status) throw error;
     throw createExternalApiError('Virhe Kubios-kirjautumisessa');
@@ -144,38 +164,45 @@ const kubiosLogin = async (username, password) => {
 };
 
 /**
- * Hakee käyttäjän tiedot Kubios API:sta
- * @description Hakee käyttäjän tiedot Kubios API:sta käyttäen idTokenia
- * @param {string} idToken Kubios idToken
- * @returns {object} Kubios käyttäjätiedot
+ * hakee käyttäjän perustiedot Kubios API -palvelusta
+ * @param {string} idToken - Kubios-palvelun autentikointitoken
+ * @returns {Object} käyttäjän tiedot objektina, sisältäen mm. nimen, sähköpostin ja demografisia tietoja
+ * @throws {Error} virhe jos tietojen haku epäonnistuu (virheellinen token tai palvelinyhteysongelma)
  */
 const kubiosUserInfo = async (idToken) => {
   logger.debug('Getting user info from Kubios API');
+  // määritellään HTTP-pyynnön otsikkotiedot
   const headers = new Headers();
   headers.append('User-Agent', process.env.KUBIOS_USER_AGENT);
   headers.append('Authorization', idToken);
 
   try {
+    // lähetetään pyyntö Kubios API:n käyttäjätietojen päätepisteeseen
     const response = await fetch(baseUrl + '/user/self', {
       method: 'GET',
       headers: headers,
     });
 
+    // tarkistetaan onnistuiko pyyntö
     if (!response.ok) {
       logger.error(`Kubios user info request failed with status: ${response.status}`);
       throw createExternalApiError('Kubios-käyttäjätietojen haku epäonnistui');
     }
 
+    // parsitaan vastaus JSON-muotoon
     const responseJson = await response.json();
 
+    // tarkistetaan vastauksen tila
     if (responseJson.status === 'ok') {
       logger.debug('Successfully retrieved Kubios user info');
-      return responseJson.user;
+      return responseJson.user; // palautetaan käyttäjätiedot
     } else {
+      // vastaus ei ole ok-tilassa, heitetään virhe
       logger.error('Kubios API returned error', responseJson);
       throw createExternalApiError('Kubios-käyttäjätietojen haku epäonnistui');
     }
   } catch (error) {
+    // virhetilanteiden käsittely
     logger.error('Error fetching Kubios user info', error);
     if (error.status) throw error;
     throw createExternalApiError('Virhe Kubios-käyttäjätietojen haussa');
@@ -183,12 +210,13 @@ const kubiosUserInfo = async (idToken) => {
 };
 
 /**
- * Käsittelee Kubios-kirjautumisen ja luo JWT-tokenin
- * @param {Request} req HTTP-pyyntö, joka sisältää käyttäjätunnuksen ja salasanan
- * @param {Response} res HTTP-vastaus, joka palautetaan asiakkaalle
- * @param {Function} next seuraava middlevare virheenkäsittelyyn
- * @description Kirjautuu käyttäjän Kubios API:in ja luo JWT-tokenin
- * @returns
+ * käsittelee käyttäjän kirjautumisen Kubios API -palveluun ja luo JWT-tokenin
+ * @param {Request} req - HTTP-pyyntöobjekti, jossa käyttäjän kirjautumistiedot
+ * @param {string} req.body.kayttajanimi - käyttäjän tunnus tai sähköpostiosoite
+ * @param {string} req.body.salasana - käyttäjän salasana
+ * @param {Response} res - HTTP-vastausobjekti asiakkaalle vastaamiseen
+ * @param {Function} next - seuraava middleware-funktio virheenkäsittelyä varten
+ * @returns {Object} HTTP-vastaus, joka sisältää JWT-tokenin ja käyttäjätiedot
  */
 const postLogin = async (req, res, next) => {
   const { kayttajanimi, salasana } = req.body;
@@ -196,24 +224,25 @@ const postLogin = async (req, res, next) => {
   try {
     logger.info(`Processing Kubios login for user: ${kayttajanimi}`);
 
-    // First check if user exists in our database by email or username
+    // tarkistetaan ensin löytyykö käyttäjä omasta tietokannasta
     logger.debug(`Finding user by email or username: ${kayttajanimi}`);
     const localUser = await findUserByEmailOrUsername(kayttajanimi);
 
+    // jos käyttäjää ei löydy, palautetaan virhe
     if (!localUser) {
       return next(createNotFoundError(`Käyttäjää ei löydy järjestelmästä. Varmista, että sähköpostiosoite tai käyttäjänimi on oikein.`));
     }
 
     logger.debug(`Found local user with ID ${localUser.kayttaja_id} and username ${localUser.kayttajanimi}`);
 
-    // Login to Kubios API
+    // kirjaudutaan Kubios API -palveluun käyttäjän tunnuksilla
     const { idToken } = await kubiosLogin(kayttajanimi, salasana);
 
-    // Get basic Kubios user info (optional - can be used for logging)
+    // haetaan käyttäjän perustiedot Kubios-palvelusta (valinnainen - käytetään lokitukseen)
     const kubiosUser = await kubiosUserInfo(idToken);
     logger.debug(`Kubios user info: ${kubiosUser.email}`);
 
-    // Create JWT token with Kubios token included
+    // luodaan JWT-token, joka sisältää Kubios-tokenin
     const token = jwt.sign(
       {
         kayttaja_id: localUser.kayttaja_id,
@@ -226,42 +255,51 @@ const postLogin = async (req, res, next) => {
 
     logger.info(`Kubios login successful for user ID: ${localUser.kayttaja_id}`);
 
+    // poistetaan salasana ennen käyttäjätietojen palauttamista
     delete localUser.salasana;
 
+    // palautetaan token ja käyttäjätiedot onnistumisviestin kanssa
     res.json(createResponse({
       token,
       user: localUser
     }, 'Kirjautuminen onnistui (Kubios)', Severity.SUCCESS));
   } catch (err) {
+    // virhetilanteessa lokitetaan virhe ja siirretään se keskitetylle käsittelijälle
     logger.error('Error in Kubios login process', err);
     next(createExternalApiError('Kirjautuminen Kubios API:in epäonnistui', err));
   }
 };
 
 /**
- * Palauttaa kirjautuneen käyttäjän tiedot ja mahdollisen Kubios-tokenin
- * @param {Request} req - HTTP-pyyntö tokenin kera
- * @param {Response} res - JSON-vastaus käyttäjätiedoilla ja Kubios-tokenilla
- * @param {Function} next - Seuraava middleware virheenkäsittelyyn
- * @returns {object} JSON-vastaus (user ja kubios_token)
- * @route GET /api/auth/kubios-me
+ * hakee kirjautuneen käyttäjän tiedot ja Kubios-tokenin
+ * @param {Request} req - HTTP-pyyntöobjekti, joka sisältää käyttäjän tunnistetiedot
+ * @param {Object} req.user - autentikoitu käyttäjä JWT-tokenista
+ * @param {number} req.user.kayttaja_id - käyttäjän ID tietokannassa
+ * @param {string} req.user.kubiosIdToken - Kubios API:n autentikointitoken
+ * @param {Response} res - HTTP-vastausobjekti asiakkaalle vastaamiseen
+ * @param {Function} next - seuraava middleware-funktio virheenkäsittelyä varten
+ * @returns {Object} JSON-vastaus, joka sisältää käyttäjätiedot ja Kubios-tokenin
  */
 const getKubiosMe = async (req, res, next) => {
   try {
+    // haetaan käyttäjän perustiedot tietokannasta (ilman salasanaa)
     const [rows] = await promisePool.query(
       'SELECT kayttaja_id, kayttajanimi, email, kayttajarooli FROM kayttaja WHERE kayttaja_id = ?',
       [req.user.kayttaja_id]
     );
 
+    // tarkistetaan löytyikö käyttäjä
     if (rows.length === 0) {
       return next(createNotFoundError('Käyttäjää ei löytynyt'));
     }
 
+    // palautetaan käyttäjätiedot ja Kubios-token
     res.json(createResponse({
       user: rows[0],
       kubios_token: req.user.kubiosIdToken
     }, 'Käyttäjätiedot haettu', Severity.SUCCESS));
   } catch (err) {
+    // virhetilanteessa siirretään virhe keskitetylle käsittelijälle
     next(createDatabaseError("Käyttäjätietojen hakeminen epäonnistui", err));
   }
 };

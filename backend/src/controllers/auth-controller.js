@@ -92,19 +92,23 @@ const generateToken = (user) => {
  * @returns {Object} Kubios-kirjautumisen tila
  */
 const handleKubiosLogin = async (user, salasana) => {
+   // alustetaan vastaustila oletusarvoilla
    let kubiosStatus = {
       success: false,
       message: "Kubios-kirjautumista ei yritetty",
    };
 
    try {
+      // varmistetaan että käyttäjällä on sähköpostiosoite Kubios-kirjautumista varten
       if (user.email) {
          logger.info(`Attempting Kubios login for user ID: ${user.kayttaja_id}`);
+         // kutsutaan Kubios-kirjautumistoimintoa sähköpostilla ja salasanalla
          const { idToken, expiresIn } = await kubiosLogin(user.email, salasana);
 
-         // tallenna token tietokantaan
+         // tallenna saatu token tietokantaan myöhempää käyttöä varten
          await updateKubiosToken(user.kayttaja_id, idToken, expiresIn);
 
+         // päivitetään onnistuneen kirjautumisen tila
          kubiosStatus = {
             success: true,
             message: "Kubios-kirjautuminen onnistui",
@@ -112,6 +116,7 @@ const handleKubiosLogin = async (user, salasana) => {
 
          logger.info(`Kubios login successful for user ID: ${user.kayttaja_id}`);
       } else {
+         // jos sähköpostia ei ole, päivitetään tilatiedot sen mukaisesti
          logger.info(`Cannot attempt Kubios login - no email for user: ${user.kayttajanimi}`);
          kubiosStatus = {
             success: false,
@@ -120,6 +125,7 @@ const handleKubiosLogin = async (user, salasana) => {
          };
       }
    } catch (kubiosError) {
+      // virhetilanteessa lokitetaan virhe ja päivitetään tilatiedot
       logger.error("Kubios login error", kubiosError);
       kubiosStatus = {
          success: false,
@@ -131,31 +137,36 @@ const handleKubiosLogin = async (user, salasana) => {
 };
 
 /**
- * Kirjautuu sisään käyttäjänimellä ja salasanalla.
- * Jos onnistuu, palauttaa JWT-tokenin ja käyttäjätiedot (ilman salasanaa).
- * Lisäksi yrittää kirjautua myös Kubios-palveluun, jos käyttäjällä on sähköposti.
- * @param {Request} req - HTTP-pyyntö, bodyssä käyttäjätunnus ja salasana
- * @param {Response} res - HTTP-vastaus JSON-muodossa (token, user, kubios)
- * @param {Function} next - Seuraava middleware virheenkäsittelyyn
- * @returns {object} JSON-vastaus jossa token ja käyttäjätiedot
+ * kirjautuu sisään käyttäjänimellä ja salasanalla.
+ * jos onnistuu, palauttaa JWT-tokenin ja käyttäjätiedot (ilman salasanaa).
+ * lisäksi yrittää kirjautua myös Kubios-palveluun, jos käyttäjällä on sähköposti.
+ * @param {Request} req - HTTP-pyyntöobjekti, joka sisältää kirjautumistiedot
+ * @param {Object} req.body - pyynnön rungossa olevat tiedot JSON-muodossa
+ * @param {string} req.body.kayttajanimi - käyttäjätunnus tai sähköpostiosoite
+ * @param {string} req.body.salasana - käyttäjän salasana selkokielisenä
+ * @param {Response} res - HTTP-vastausobjekti JSON-muodossa palauttamista varten
+ * @param {Function} next - seuraava middleware-funktio virheenkäsittelyä varten
+ * @returns {object} JSON-vastaus jossa token, käyttäjätiedot ja Kubios-kirjautumisen tila
  * @route POST /api/auth/login
  */
 const login = async (req, res, next) => {
    try {
+      // poimitaan käyttäjänimi ja salasana pyynnön bodystä
       const { kayttajanimi, salasana } = req.body;
 
-      // Autentikoi käyttäjä
+      // autentikoidaan käyttäjä vertaamalla salasanaa tietokannassa olevaan
       const user = await authenticateUser(kayttajanimi, salasana);
 
-      // Luo token
+      // luodaan JWT-token autentikoitua käyttäjää varten
       const token = generateToken(user);
 
-      // Poista salasana vastauksesta
+      // poistetaan salasana käyttäjäobjektista ennen clientille palauttamista
       delete user.salasana;
 
-      // Yritä Kubios-kirjautumista
+      // yritetään kirjautua Kubios-palveluun käyttäjän tiedoilla
       const kubiosStatus = await handleKubiosLogin(user, salasana);
 
+      // palautetaan onnistunut vastaus, joka sisältää:
       res.json(
          createResponse(
             {
@@ -168,6 +179,7 @@ const login = async (req, res, next) => {
          )
       );
    } catch (error) {
+      // käsitellään virhetilanteet
       if (error.status) {
          next(error);
       } else {
@@ -178,81 +190,98 @@ const login = async (req, res, next) => {
 
 /**
  * Kirjaa käyttäjän ulos ja poistaa Kubios-tokenin tietokannasta.
- * @param {Request} req - HTTP-pyyntö, token mukana
- * @param {Response} res - HTTP-vastaus JSON-muodossa (tokenRemoved)
- * @param {Function} next - Seuraava middleware virheenkäsittelyyn
- * @returns {object} JSON-vastaus jossa poistamisen tila
+ * @param {Request} req - HTTP-pyyntöobjekti, joka sisältää JWT-tokenin autentikaatioheaderissa
+ * @param {Object} req.user - autentikoidun käyttäjän tiedot, jotka on purettu JWT-tokenista
+ * @param {number} req.user.kayttaja_id - autentikoidun käyttäjän yksilöllinen tunniste tietokannassa
+ * @param {Response} res - HTTP-vastausobjekti JSON-muodossa vastauksen palauttamiseen
+ * @param {Function} next - Seuraava middleware-funktio virhetilanteen käsittelyä varten
+ * @returns {object} JSON-muotoinen vastaus, joka kertoo Kubios-tokenin poistamisen onnistumisesta
  * @route POST /api/auth/logout
  */
 const logout = async (req, res, next) => {
    try {
-      // Tarkista että kayttaja_id on olemassa
+      // tarkistetaan että käyttäjän ID on olemassa autentikaatiotiedoissa
+      // käytetään optional chaining -operaattoria (?.) mahdollisten null-arvojen varalta
       const userId = req.user?.kayttaja_id;
 
+      // jos käyttäjän ID puuttuu, palautetaan validointivirhe
       if (!userId) {
          return next(createValidationError("Käyttäjän ID puuttuu"));
       }
 
+      // lokitetaan uloskirjautuminen ja Kubios-tokenin poistotoimenpide
       logger.info(`Logging out user ID: ${userId}, removing Kubios token`);
 
-      // Poista Kubios token ja logita toimenpide
+      // poistetaan käyttäjän Kubios-token tietokannasta
+      // removeKubiosToken palauttaa tiedon operaation onnistumisesta (true/false)
       const result = await removeKubiosToken(userId);
 
+      // palautetaan onnistunut vastaus riippumatta siitä, oliko tokenia poistettavaksi
       res.json(
          createResponse(
             {
-               tokenRemoved: result,
+               tokenRemoved: result, // sisältää tiedon, onnistuiko tokenin poisto
             },
             "Uloskirjautuminen onnistui",
             Severity.SUCCESS
          )
       );
    } catch (error) {
+      // virhetilanteessa lokitetaan virhe
       logger.error("Logout error", error);
       next(createDatabaseError("Uloskirjautuminen epäonnistui", error));
    }
 };
 
 /**
- * Hakee kirjautuneen käyttäjän profiilin (tokenin perusteella).
- * @param {Request} req - HTTP-pyyntö, token mukana
- * @param {Response} res - HTTP-vastaus JSON-muodossa (user-tiedot)
- * @param {Function} next - Seuraava middleware virheenkäsittelyyn
- * @returns {object} JSON-profiilidata
+ * hakee kirjautuneen käyttäjän profiilin tiedot tokenin perusteella.
+ * @param {Request} req - HTTP-pyyntöobjekti, joka sisältää autentikaatiotiedot
+ * @param {Object} req.user - autentikoidun käyttäjän tiedot, jotka on purettu JWT-tokenista
+ * @param {number} req.user.kayttaja_id - autentikoidun käyttäjän yksilöllinen tunniste tietokannassa
+ * @param {Response} res - HTTP-vastausobjekti JSON-muodossa käyttäjätietojen palauttamiseen
+ * @param {Function} next - Seuraava middleware-funktio virhetilanteen käsittelyä varten
+ * @returns {object} JSON-muotoinen profiilidata sisältäen käyttäjän tiedot ilman salasanaa
  * @route GET /api/auth/me
  */
 const getMe = async (req, res, next) => {
    try {
+      // haetaan käyttäjän profiilitiedot tietokannasta käyttäen autentikoidun käyttäjän ID:tä
       const user = await getMyProfile(req.user.kayttaja_id);
 
+      // tarkistetaan löytyikö käyttäjä tietokannasta
       if (!user) {
          return next(createNotFoundError("Käyttäjää ei löytynyt"));
       }
 
+      // palautetaan käyttäjän tiedot onnistuneessa vastauksessa
       res.json(createResponse(user, "Käyttäjätiedot haettu", Severity.SUCCESS));
    } catch (error) {
-      next(
-         createDatabaseError("Käyttäjätietojen hakeminen epäonnistui", error)
-      );
+      // virhetilanteessa siirretään virhe keskitetylle käsittelijälle
+      next(createDatabaseError("Käyttäjätietojen hakeminen epäonnistui", error));
    }
 };
 
 /**
- * Tarkistaa onko token vielä voimassa ja palauttaa käyttäjän tiedot.
- * @param {Request} req - HTTP-pyyntö, token mukana
- * @param {Response} res - HTTP-vastaus JSON-muodossa
- * @param {Function} next - Seuraava middleware virheenkäsittelyyn
- * @returns {object} JSON-tarkistusvastaus
+ * tarkistaa onko token vielä voimassa ja palauttaa käyttäjän tiedot.
+ * @param {Request} req - HTTP-pyyntöobjekti, token mukana autentikaatioheaderissa
+ * @param {Object} req.user - autentikoidun käyttäjän tiedot tokenista purettuna
+ * @param {number} req.user.kayttaja_id - käyttäjän yksilöllinen tunniste tietokannassa
+ * @param {Response} res - HTTP-vastausobjekti JSON-muodossa asiakkaalle palauttamista varten
+ * @param {Function} next - Seuraava middleware-funktio virheenkäsittelyyn siirtymistä varten
+ * @returns {object} JSON-muotoinen vastaus tokenin validoinnista ja käyttäjätiedoista
  * @route GET /api/auth/validate
  */
 const validateToken = async (req, res, next) => {
    try {
+      // haetaan käyttäjän profiilitiedot tietokannasta token-objektissa olevan ID:n perusteella
       const user = await getMyProfile(req.user.kayttaja_id);
 
+      // tarkistetaan löytyikö käyttäjä tietokannasta
       if (!user) {
          return next(createNotFoundError("Käyttäjää ei löytynyt"));
       }
 
+      // palautetaan onnistunut vastaus ja käyttäjän tiedot
       res.json(
          createResponse(
             {
@@ -264,6 +293,7 @@ const validateToken = async (req, res, next) => {
          )
       );
    } catch (error) {
+      // virhetilanteessa siirretään virhe keskitetylle käsittelijälle
       next(createDatabaseError("Tokenin validointi epäonnistui", error));
    }
 };
