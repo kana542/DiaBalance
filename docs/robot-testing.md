@@ -85,6 +85,69 @@ Tee testin ajon jälkeen:
 
 Näin varmistat, että tulokset säilyvät ja ovat selkeästi eroteltavissa.
 
+## Testitulokset MAIN-branchista
+
+#### Rekisteröityminen
+- [Rekisteröityminen – raportti](../testing/results/latest/reports/report.register_success.html)
+- [Rekisteröityminen – loki](../testing/results/latest/logs/log.register_success.html)
+
+#### Kirjautuminen epäonnistuu
+- [Kirjautuminen FAIL – raportti](../testing/results/latest/reports/report.login_fail.html)
+- [Kirjautuminen FAIL – loki](../testing/results/latest/logs/log.login_fail.html)
+
+#### Kirjautuminen onnistuu
+- [Kirjautuminen SUCCESS – raportti](../testing/results/latest/reports/report.login_success.html)
+- [Kirjautuminen SUCCESS – loki](../testing/results/latest/logs/log.login_success.html)
+
+#### Uloskirjautuminen
+- [Uloskirjautuminen – raportti](../testing/results/latest/reports/report.log_out.html)
+- [Uloskirjautuminen – loki](../testing/results/latest/logs/log.log_out.html)
+
+#### Uuden kalenterimerkinnän lisääminen
+- [Uusi merkintä – raportti](../testing/results/latest/reports/report.new_entry.html)
+- [Uusi merkintä – loki](../testing/results/latest/logs/log.new_entry.html)
+
+#### Kalenterimerkinnän muokkaus
+- [Muokattu merkintä – raportti](../testing/results/latest/reports/report.update_entry.html)
+- [Muokattu merkintä – loki](../testing/results/latest/logs/log.update_entry.html)
+
+#### Kalenterimerkinnän poistaminen
+- [Poistettu merkintä – raportti](../testing/results/latest/reports/report.delete_entry.html)
+- [Poistettu merkintä – loki](../testing/results/latest/logs/log.delete_entry.html)
+
+#### HRV-datan haku Kubioksesta
+- [HRV-datan haku – raportti](../testing/results/latest/reports/report.get_HRV_data.html)
+- [HRV-datan haku – loki](../testing/results/latest/logs/log.get_HRV_data.html)
+
+#### API-virhekäsittely (401 Unauthorized)
+- [Virheellinen kirjautuminen – raportti](../testing/results/latest/reports/report.login_invalid.html)
+- [Virheellinen kirjautuminen – loki](../testing/results/latest/logs/log.login_invalid.html)
+
+#### Validointitesti (puuttuva salasana)
+- [Validointi – raportti](../testing/results/latest/reports/report.login_validation.html)
+- [Validointi – loki](../testing/results/latest/logs/log.login_validation.html)
+
+#### Backendin onnistunut kirjautuminen
+- [Kirjautuminen (backend) – raportti](../testing/results/latest/reports/report.login_success.backend.html)
+- [Kirjautuminen (backend) – loki](../testing/results/latest/logs/log.login_success.backend.html)
+
+#### Kahden merkinnän lisääminen
+- [Merkintöjen lisäys – raportti](../testing/results/latest/reports/report.calendar_entries.html)
+- [Merkintöjen lisäys – loki](../testing/results/latest/logs/log.calendar_entries.html)
+
+#### vs_aamu-arvojen haku kuukaudelta
+- [vs_aamu-arvot – raportti](../testing/results/latest/reports/report.calendar_month.html)
+- [vs_aamu-arvot – loki](../testing/results/latest/logs/log.calendar_month.html)
+
+#### Backend: merkinnän muokkaus
+- [Merkinnän muokkaus (backend) – raportti](../testing/results/latest/reports/report.update_entry_backend.html)
+- [Merkinnän muokkaus (backend) – loki](../testing/results/latest/logs/log.update_entry_backend.html)
+
+#### Backend: merkinnän poisto
+- [Merkinnän poisto (backend) – raportti](../testing/results/latest/reports/report.delete_entry_backend.html)
+- [Merkinnän poisto (backend) – loki](../testing/results/latest/logs/log.delete_entry_backend.html)
+
+
 ---
 
 
