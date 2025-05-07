@@ -81,6 +81,11 @@
         .result-section {
             margin-top: 40px;
         }
+        .test-group {
+            margin-bottom: 25px;
+            padding-left: 15px;
+            border-left: 3px solid #eee;
+        }
     </style>
 </head>
 <body>
@@ -111,7 +116,12 @@ source .venv/Scripts/activate</code></pre>
             <ul>
                 <li>Testit: <code>testing/tests/</code></li>
                 <li>Resurssit: <code>testing/resources/</code></li>
-                <li>Raportit ja julkaisu: <code>testing/results/</code></li>
+                <li>Raportit ja julkaisu: <code>testing/results/</code>
+                    <ul>
+                        <li>Viimeisimmät: <code>testing/results/latest/</code></li>
+                        <li>Vanhat: <code>testing/results/old/</code></li>
+                    </ul>
+                </li>
             </ul>
         </div>
 
@@ -207,105 +217,199 @@ robot -d testing/results testing/tests/backend/delete_entry.robot</code></pre>
             <h3>Käyttäjätunnistautuminen frontend</h3>
 
             <h4>Rekisteröityminen</h4>
-            <p>
-                <a href="testing/results/old/reports/report_register_success.html">Rekisteröityminen – raportti</a><br>
-                <a href="testing/results/old/logs/log_register_success.html">Rekisteröityminen – loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_register_success.html">Rekisteröityminen – raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_register_success.html">Rekisteröityminen – loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_register_success.html">Rekisteröityminen – raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_register_success.html">Rekisteröityminen – loki (vanha)</a>
+                </p>
+            </div>
 
             <h4>Kirjautuminen epäonnistuu</h4>
-            <p>
-                <a href="testing/results/old/reports/report_login_fail.html">Kirjautuminen FAIL – raportti</a><br>
-                <a href="testing/results/old/logs/log_login_fail.html">Kirjautuminen FAIL – loki</a>
-            </p>
-            <p><img src="testing/results/old/screenshots/login_FAIL.png" alt="Epäonnistunut kirjautuminen" style="max-width:100%;"></p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_login_fail.html">Kirjautuminen FAIL – raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_login_fail.html">Kirjautuminen FAIL – loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_login_fail.html">Kirjautuminen FAIL – raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_login_fail.html">Kirjautuminen FAIL – loki (vanha)</a>
+                </p>
+                <p><img src="testing/results/old/screenshots/login_FAIL.png" alt="Epäonnistunut kirjautuminen" style="max-width:100%;"></p>
+            </div>
 
             <h4>Kirjautuminen onnistuu</h4>
-            <p>
-                <a href="testing/results/old/reports/report_login_success.html">Kirjautuminen SUCCESS – raportti</a><br>
-                <a href="testing/results/old/logs/log_login_success.html">Kirjautuminen SUCCESS – loki</a>
-            </p>
-            <p><img src="testing/results/old/screenshots/login_SUCCESS.png" alt="Onnistunut kirjautuminen" style="max-width:100%;"></p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_login_success.html">Kirjautuminen SUCCESS – raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_login_success.html">Kirjautuminen SUCCESS – loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_login_success.html">Kirjautuminen SUCCESS – raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_login_success.html">Kirjautuminen SUCCESS – loki (vanha)</a>
+                </p>
+                <p><img src="testing/results/old/screenshots/login_SUCCESS.png" alt="Onnistunut kirjautuminen" style="max-width:100%;"></p>
+            </div>
 
             <h4>Uloskirjautuminen</h4>
-            <p>
-                <a href="testing/results/old/reports/report_logout.html">Uloskirjautuminen – raportti</a><br>
-                <a href="testing/results/old/logs/log_logout.html">Uloskirjautuminen – loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_logout.html">Uloskirjautuminen – raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_logout.html">Uloskirjautuminen – loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_logout.html">Uloskirjautuminen – raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_logout.html">Uloskirjautuminen – loki (vanha)</a>
+                </p>
+            </div>
 
             <h3>Kalenterimerkinnät frontend</h3>
 
             <h4>Uuden merkinnän lisääminen</h4>
-            <p>
-                <a href="testing/results/old/reports/report_new_entry.html">Uusi merkintä – raportti</a><br>
-                <a href="testing/results/old/logs/log_new_entry.html">Uusi merkintä – loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_new_entry.html">Uusi merkintä – raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_new_entry.html">Uusi merkintä – loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_new_entry.html">Uusi merkintä – raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_new_entry.html">Uusi merkintä – loki (vanha)</a>
+                </p>
+            </div>
 
             <h4>Merkinnän muokkaus</h4>
-            <p>
-                <a href="testing/results/old/reports/report_update_entry.html">Muokattu merkintä – raportti</a><br>
-                <a href="testing/results/old/logs/log_update_entry.html">Muokattu merkintä – loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_update_entry.html">Muokattu merkintä – raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_update_entry.html">Muokattu merkintä – loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_update_entry.html">Muokattu merkintä – raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_update_entry.html">Muokattu merkintä – loki (vanha)</a>
+                </p>
+            </div>
 
             <h4>Merkinnän poistaminen</h4>
-            <p>
-                <a href="testing/results/old/reports/report_delete_entry.html">Poistettu merkintä – raportti</a><br>
-                <a href="testing/results/old/logs/log_delete_entry.html">Poistettu merkintä – loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_delete_entry.html">Poistettu merkintä – raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_delete_entry.html">Poistettu merkintä – loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_delete_entry.html">Poistettu merkintä – raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_delete_entry.html">Poistettu merkintä – loki (vanha)</a>
+                </p>
+            </div>
 
             <h3>Terveystiedot HRV</h3>
 
             <h4>HRV-datan haku Kubioksesta</h4>
-            <p>
-                <a href="testing/results/old/reports/report_get_HRV_data.html">HRV-datan haku – raportti</a><br>
-                <a href="testing/results/old/logs/log_get_HRV_data.html">HRV-datan haku – loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_get_HRV_data.html">HRV-datan haku – raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_get_HRV_data.html">HRV-datan haku – loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_get_HRV_data.html">HRV-datan haku – raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_get_HRV_data.html">HRV-datan haku – loki (vanha)</a>
+                </p>
+            </div>
 
             <h3>Taustapalvelun testaaminen</h3>
 
             <h4>API-virhekäsittelytesti</h4>
             <p>Testi tarkistaa, että /api/auth/login palauttaa 401 Unauthorized ja virheilmoituksen "Virheellinen käyttäjätunnus" väärillä tunnuksilla.</p>
-            <p>
-                <a href="testing/results/old/reports/report_login_invalid.html">Virheellinen kirjautuminen - raportti</a><br>
-                <a href="testing/results/old/logs/log_login_invalid.html">Virheellinen kirjautuminen - loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_login_invalid.html">Virheellinen kirjautuminen - raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_login_invalid.html">Virheellinen kirjautuminen - loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_login_invalid.html">Virheellinen kirjautuminen - raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_login_invalid.html">Virheellinen kirjautuminen - loki (vanha)</a>
+                </p>
+            </div>
 
             <h4>Validointitesti</h4>
             <p>Testataan sitä, mitä tapahtuu kun syötetään puutteellista tai virheellisesti muotoiltua dataa, esimerkiksi puuttuva salasana tai liian lyhyt käyttäjänimi.</p>
-            <p>
-                <a href="testing/results/old/reports/report_login_validation.html">Validonti: puuttuva salasanaa</a><br>
-                <a href="testing/results/old/logs/log_login_validation.html">Validointi: puuttuva salasana</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_login_validation.html">Validointi: puuttuva salasana - raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_login_validation.html">Validointi: puuttuva salasana - loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_login_validation.html">Validointi: puuttuva salasana - raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_login_validation.html">Validointi: puuttuva salasana - loki (vanha)</a>
+                </p>
+            </div>
 
             <h4>Onnistunut kirjautuminen – backend API</h4>
-            <p>
-                <a href="testing/results/old/reports/report_login_success_backend.html">Kirjautuminen onnistuu – raportti</a><br>
-                <a href="testing/results/old/logs/log_login_success_backend.html">Kirjautuminen onnistuu – loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_login_success_backend.html">Kirjautuminen onnistuu – raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_login_success_backend.html">Kirjautuminen onnistuu – loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_login_success_backend.html">Kirjautuminen onnistuu – raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_login_success_backend.html">Kirjautuminen onnistuu – loki (vanha)</a>
+                </p>
+            </div>
 
             <h4>Kahden merkinnän lisääminen</h4>
-            <p>
-                <a href="testing/results/old/reports/report_calendar_entries.html">Kahden merkinnän lisäys - raportti</a><br>
-                <a href="testing/results/old/logs/log_calendar_entries.html">Kahden merkinnän lisäys - loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_calendar_entries.html">Kahden merkinnän lisäys - raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_calendar_entries.html">Kahden merkinnän lisäys - loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_calendar_entries.html">Kahden merkinnän lisäys - raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_calendar_entries.html">Kahden merkinnän lisäys - loki (vanha)</a>
+                </p>
+            </div>
 
             <h4>Toukokuun vs_aamu arvojen hakeminen</h4>
-            <p>
-                <a href="testing/results/old/reports/report_calendar_vs_aamu.html">Toukokuun vs_aamu arvot - raportti</a><br>
-                <a href="testing/results/old/logs/log_calendar_vs_aamu.html">Toukokuun vs_aamu arvot - loki</a>
-            </p>
-            <p><img src="testing/results/old/screenshots/vs_aamu_monthValues.png" alt="Toukokuun aamu arvojen haku" style="max-width:100%;"></p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_calendar_vs_aamu.html">Toukokuun vs_aamu arvot - raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_calendar_vs_aamu.html">Toukokuun vs_aamu arvot - loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_calendar_vs_aamu.html">Toukokuun vs_aamu arvot - raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_calendar_vs_aamu.html">Toukokuun vs_aamu arvot - loki (vanha)</a>
+                </p>
+                <p>
+                    <img src="testing/results/old/screenshots/vs_aamu_monthValues.png" alt="Toukokuun aamu arvojen haku" style="max-width:100%;">
+                    <br>
+                    <img src="testing/results/latest/screenshots/vs_aamu_monthValues.png" alt="Toukokuun aamu arvojen haku (viimeisin)" style="max-width:100%;">
+                </p>
+            </div>
 
             <h4>Aiemman merkinnän muokkaaminen</h4>
-            <p>
-                <a href="testing/results/old/reports/report_update_entry_backend.html">Muokattu merkintä - raportti</a><br>
-                <a href="testing/results/old/logs/log_update_entry_backend.html">Muokattu merkintä - loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_update_entry_backend.html">Muokattu merkintä - raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_update_entry_backend.html">Muokattu merkintä - loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_update_entry_backend.html">Muokattu merkintä - raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_update_entry_backend.html">Muokattu merkintä - loki (vanha)</a>
+                </p>
+            </div>
 
             <h4>Aiemman merkinnän poistaminen</h4>
-            <p>
-                <a href="testing/results/old/reports/report_delete_entry_backend.html">Merkinnän poistaminen - raportti</a><br>
-                <a href="testing/results/old/logs/log_delete_entry_backend.html">Merkinnän poistaminen - loki</a>
-            </p>
+            <div class="test-group">
+                <p>
+                    <a href="testing/results/latest/reports/report_delete_entry_backend.html">Merkinnän poistaminen - raportti (viimeisin)</a><br>
+                    <a href="testing/results/latest/logs/log_delete_entry_backend.html">Merkinnän poistaminen - loki (viimeisin)</a>
+                </p>
+                <p>
+                    <a href="testing/results/old/reports/report_delete_entry_backend.html">Merkinnän poistaminen - raportti (vanha)</a><br>
+                    <a href="testing/results/old/logs/log_delete_entry_backend.html">Merkinnän poistaminen - loki (vanha)</a>
+                </p>
+            </div>
         </div>
 
         <div class="section">
@@ -364,7 +468,7 @@ robot -d testing/results testing/tests/backend/delete_entry.robot</code></pre>
         </div>
 
         <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; color: #777;">
-            <p>Robot Framework -testausdokumentaatio &copy; 2025</p>
+            <p>r3 &copy; 2025</p>
         </footer>
     </div>
 </body>
