@@ -125,7 +125,7 @@ Tarkempi dokumentaatio löytyy kansiosta `docs` sekä erillisistä dokumentaatio
 * **Käyttöliittymä kuvakaappaukset**: [screenshots](docs/screenshots)
 * **Backend-arkkitehtuuri**: [ARCHITECTURE.md](backend/docs/ARCHITECTURE.md)
 * **Tietokantakuvaus**: [DATABASE.md](backend/docs/DATABASE.md)
-* **API-dokumentaatio**: [index.html](backend/apidoc/index.html)
+* **API-dokumentaatio**: [index.html](backend/apidoc/index.html) tai [GitHub.io](https://kana542.github.io/DiaBalance/apidoc.html)
 * **RobotFrameWork logit ja raportit**: [robot-testing.md](docs/robot-testing.md) tai [GitHub.io](https://kana542.github.io/DiaBalance/)
 
 ##  Tiedossa olevat bugit/ongelmat
